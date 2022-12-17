@@ -17,8 +17,8 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System.Windows.Media;
-using System.Windows.Media.TextFormatting;
+// using System.Windows.Media;
+// using System.Windows.Media.TextFormatting;
 
 namespace dnSpy.Contracts.Hex.Formatting {
 	/// <summary>
@@ -33,7 +33,7 @@ namespace dnSpy.Contracts.Hex.Formatting {
 		/// <summary>
 		/// Gets the default text properties
 		/// </summary>
-		public abstract TextRunProperties DefaultTextProperties { get; }
+		// public abstract TextRunProperties DefaultTextProperties { get; }
 
 		/// <summary>
 		/// Gets the sequencer

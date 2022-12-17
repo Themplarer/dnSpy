@@ -19,7 +19,7 @@
 
 using System;
 using System.Windows;
-using System.Windows.Media;
+// using System.Windows.Media;
 using VSTF = Microsoft.VisualStudio.Text.Formatting;
 
 namespace dnSpy.Contracts.Hex.Formatting {
@@ -41,7 +41,7 @@ namespace dnSpy.Contracts.Hex.Formatting {
 		/// Gets or creates the visual
 		/// </summary>
 		/// <returns></returns>
-		public abstract Visual GetOrCreateVisual();
+		// public abstract Visual GetOrCreateVisual();
 
 		/// <summary>
 		/// Removes the visual
@@ -76,7 +76,7 @@ namespace dnSpy.Contracts.Hex.Formatting {
 		/// Sets the visible area
 		/// </summary>
 		/// <param name="visibleArea">Visible area</param>
-		public abstract void SetVisibleArea(Rect visibleArea);
+		// public abstract void SetVisibleArea(Rect visibleArea);
 
 		/// <summary>
 		/// Disposes this instance

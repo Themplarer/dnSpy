@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-using System.Windows.Threading;
+// using System.Windows.Threading;
 
 namespace dnSpy.Contracts.TreeView {
 	/// <summary>
@@ -34,7 +34,7 @@ namespace dnSpy.Contracts.TreeView {
 		protected readonly CancellationToken cancellationToken;
 		readonly object lockObj;
 		readonly List<Action> uiThreadActions;
-		readonly Dispatcher dispatcher;
+		// readonly Dispatcher dispatcher;
 		readonly TreeNodeData targetNode;
 		ITreeNode? msgNode;
 
@@ -45,7 +45,7 @@ namespace dnSpy.Contracts.TreeView {
 		protected AsyncNodeProvider(TreeNodeData targetNode) {
 			lockObj = new object();
 			this.targetNode = targetNode;
-			dispatcher = Dispatcher.CurrentDispatcher;
+			// dispatcher = Dispatcher.CurrentDispatcher;
 			uiThreadActions = new List<Action>();
 			cancellationTokenSource = new CancellationTokenSource();
 			cancellationToken = cancellationTokenSource.Token;
@@ -59,8 +59,8 @@ namespace dnSpy.Contracts.TreeView {
 				uiThreadActions.Add(action);
 				start = uiThreadActions.Count == 1;
 			}
-			if (start)
-				dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(ExecActions));
+			// if (start)
+			// 	dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(ExecActions));
 		}
 
 		/// <summary>

@@ -36,7 +36,7 @@ namespace dnSpy.Contracts.Controls {
 		/// <param name="command">Gets called when the key combination is pressed</param>
 		/// <param name="modifiers">Modifiers</param>
 		/// <param name="key">Key</param>
-		void Add(ICommand command, ModifierKeys modifiers, Key key);
+		// void Add(ICommand command, ModifierKeys modifiers, Key key);
 
 		/// <summary>
 		/// Adds a command and key binding
@@ -45,7 +45,7 @@ namespace dnSpy.Contracts.Controls {
 		/// <param name="realCommand">The real command that will handle <paramref name="command"/> events</param>
 		/// <param name="modifiers">Modifiers</param>
 		/// <param name="key">Key</param>
-		void Add(RoutedCommand command, ICommand realCommand, ModifierKeys modifiers = ModifierKeys.None, Key key = Key.None);
+		// void Add(RoutedCommand command, ICommand realCommand, ModifierKeys modifiers = ModifierKeys.None, Key key = Key.None);
 
 		/// <summary>
 		/// Adds a command and key binding(s)
@@ -59,6 +59,6 @@ namespace dnSpy.Contracts.Controls {
 		/// <param name="key2">Key</param>
 		/// <param name="modifiers3">Modifiers</param>
 		/// <param name="key3">Key</param>
-		void Add(RoutedCommand command, ExecutedRoutedEventHandler exec, CanExecuteRoutedEventHandler canExec, ModifierKeys modifiers1 = ModifierKeys.None, Key key1 = Key.None, ModifierKeys modifiers2 = ModifierKeys.None, Key key2 = Key.None, ModifierKeys modifiers3 = ModifierKeys.None, Key key3 = Key.None);
+		// void Add(RoutedCommand command, ExecutedRoutedEventHandler exec, CanExecuteRoutedEventHandler canExec, ModifierKeys modifiers1 = ModifierKeys.None, Key key1 = Key.None, ModifierKeys modifiers2 = ModifierKeys.None, Key key2 = Key.None, ModifierKeys modifiers3 = ModifierKeys.None, Key key3 = Key.None);
 	}
 }

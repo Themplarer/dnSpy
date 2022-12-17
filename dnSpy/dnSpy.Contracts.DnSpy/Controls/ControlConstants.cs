@@ -18,7 +18,7 @@
 */
 
 using System;
-using System.Windows.Controls;
+// using System.Windows.Controls;
 using dnSpy.Contracts.Documents.Tabs.DocViewer;
 using dnSpy.Contracts.Hex.Editor;
 using dnSpy.Contracts.TreeView;

@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Windows.Input;
-using System.Windows.Threading;
+// using System.Windows.Threading;
 
 namespace dnSpy.Contracts.MVVM.Dialogs {
 	/// <summary>
@@ -86,7 +86,7 @@ namespace dnSpy.Contracts.MVVM.Dialogs {
 		/// </summary>
 		public ICommand CancelCommand => new RelayCommand(a => Cancel(), a => CanCancel);
 
-		readonly Dispatcher dispatcher;
+		// readonly Dispatcher dispatcher;
 		readonly IProgressTask task;
 		CancellationTokenSource? cancellationTokenSource;
 
@@ -95,8 +95,10 @@ namespace dnSpy.Contracts.MVVM.Dialogs {
 		/// </summary>
 		/// <param name="dispatcher">Dispatcher to use</param>
 		/// <param name="task">Task</param>
-		public ProgressVM(Dispatcher dispatcher, IProgressTask task) {
-			this.dispatcher = dispatcher;
+		public ProgressVM(
+			// Dispatcher dispatcher, 
+			IProgressTask task) {
+			// this.dispatcher = dispatcher;
 			this.task = task;
 			ProgressMinimum = task.ProgressMinimum;
 			ProgressMaximum = task.ProgressMaximum;
@@ -240,8 +242,8 @@ namespace dnSpy.Contracts.MVVM.Dialogs {
 				actions.Add(action);
 				start = actions.Count == 1;
 			}
-			if (start)
-				dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(EmptyQueue));
+			// if (start)
+			// 	dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(EmptyQueue));
 		}
 		object lockObj = new object();
 		List<MyAction> actions = new List<MyAction>();

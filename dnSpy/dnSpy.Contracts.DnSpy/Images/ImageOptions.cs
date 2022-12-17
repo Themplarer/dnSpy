@@ -20,7 +20,7 @@
 using System;
 using System.Diagnostics;
 using System.Windows;
-using System.Windows.Media;
+// using System.Windows.Media;
 using Microsoft.VisualStudio.Text.Editor;
 
 namespace dnSpy.Contracts.Images {
@@ -31,33 +31,33 @@ namespace dnSpy.Contracts.Images {
 		/// <summary>
 		/// Background color
 		/// </summary>
-		public Color? BackgroundColor { get; set; }
+		// public Color? BackgroundColor { get; set; }
 
 		/// <summary>
 		/// Background brush or null. Only <see cref="SolidColorBrush"/> and <see cref="GradientBrush"/> brushes are supported.
 		/// </summary>
-		public Brush? BackgroundBrush { get; set; }
+		// public Brush? BackgroundBrush { get; set; }
 
 		/// <summary>
 		/// Image size in logical pixels. 16x16 is used if this is 0x0
 		/// </summary>
-		public Size LogicalSize { get; set; }
+		// public Size LogicalSize { get; set; }
 
 		/// <summary>
 		/// Total zoom applied to the element containing the image or (0,0) if the property shouldn't be used.
 		/// 1.0 == 100%
 		/// </summary>
-		public Size Zoom { get; set; }
+		// public Size Zoom { get; set; }
 
 		/// <summary>
 		/// If initialized, the DPI of its containing window will be used and <see cref="Dpi"/> doesn't have to be initialized.
 		/// </summary>
-		public DependencyObject? DpiObject { get; set; }
+		// public DependencyObject? DpiObject { get; set; }
 
 		/// <summary>
 		/// DPI or (0,0) to use the default DPI (DPI of main window)
 		/// </summary>
-		public Size Dpi { get; set; }
+		// public Size Dpi { get; set; }
 
 		/// <summary>
 		/// Constructor
@@ -69,14 +69,14 @@ namespace dnSpy.Contracts.Images {
 		/// </summary>
 		/// <param name="textView">Text view with which to initialize <see cref="Zoom"/> and <see cref="DpiObject"/></param>
 		public ImageOptions(ITextView textView) {
-			if (textView is null)
-				throw new ArgumentNullException(nameof(textView));
-			var wpfTextView = textView as IWpfTextView;
-			Debug2.Assert(wpfTextView is not null);
-			if (wpfTextView is not null) {
-				Zoom = new Size(wpfTextView.ZoomLevel / 100, wpfTextView.ZoomLevel / 100);
-				DpiObject = wpfTextView.VisualElement;
-			}
+			// if (textView is null)
+			// 	throw new ArgumentNullException(nameof(textView));
+			// var wpfTextView = textView as IWpfTextView;
+			// Debug2.Assert(wpfTextView is not null);
+			// if (wpfTextView is not null) {
+			// 	Zoom = new Size(wpfTextView.ZoomLevel / 100, wpfTextView.ZoomLevel / 100);
+			// 	DpiObject = wpfTextView.VisualElement;
+			// }
 		}
 	}
 }

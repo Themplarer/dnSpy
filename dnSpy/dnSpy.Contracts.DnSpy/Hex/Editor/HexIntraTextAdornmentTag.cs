@@ -31,12 +31,12 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <summary>
 		/// Gets the adornment element
 		/// </summary>
-		public UIElement Adornment { get; }
-
-		/// <summary>
-		/// Gets the removal callback or null if none
-		/// </summary>
-		public VSTE.AdornmentRemovedCallback? RemovalCallback { get; }
+		// public UIElement Adornment { get; }
+		//
+		// /// <summary>
+		// /// Gets the removal callback or null if none
+		// /// </summary>
+		// public VSTE.AdornmentRemovedCallback? RemovalCallback { get; }
 
 		/// <summary>
 		/// Gets the top space or null to use the default value
@@ -73,9 +73,11 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <param name="textHeight">Text height or null to use the default value</param>
 		/// <param name="bottomSpace">Bottom space or null to use the default value</param>
 		/// <param name="affinity">Position affinity or null to use the default value</param>
-		public HexIntraTextAdornmentTag(UIElement adornment, VSTE.AdornmentRemovedCallback? removalCallback, double? topSpace, double? baseline, double? textHeight, double? bottomSpace, VST.PositionAffinity? affinity) {
-			Adornment = adornment ?? throw new ArgumentNullException(nameof(adornment));
-			RemovalCallback = removalCallback;
+		public HexIntraTextAdornmentTag(
+			// UIElement adornment, VSTE.AdornmentRemovedCallback? removalCallback,
+			double? topSpace, double? baseline, double? textHeight, double? bottomSpace, VST.PositionAffinity? affinity) {
+			// Adornment = adornment ?? throw new ArgumentNullException(nameof(adornment));
+			// RemovalCallback = removalCallback;
 			TopSpace = topSpace;
 			Baseline = baseline;
 			TextHeight = textHeight;
@@ -89,17 +91,17 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <param name="adornment">Adornment element</param>
 		/// <param name="removalCallback">Called when the adornment is removed, may be null</param>
 		/// <param name="affinity">Position affinity or null to use the default value</param>
-		public HexIntraTextAdornmentTag(UIElement adornment, VSTE.AdornmentRemovedCallback? removalCallback, VST.PositionAffinity? affinity)
-			: this(adornment, removalCallback, null, null, null, null, affinity) {
-		}
+		// public HexIntraTextAdornmentTag(UIElement adornment, VSTE.AdornmentRemovedCallback? removalCallback, VST.PositionAffinity? affinity)
+		// 	: this(adornment, removalCallback, null, null, null, null, affinity) {
+		// }
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="adornment">Adornment element</param>
 		/// <param name="removalCallback">Called when the adornment is removed, may be null</param>
-		public HexIntraTextAdornmentTag(UIElement adornment, VSTE.AdornmentRemovedCallback? removalCallback)
-			: this(adornment, removalCallback, null, null, null, null, null) {
-		}
+		// public HexIntraTextAdornmentTag(UIElement adornment, VSTE.AdornmentRemovedCallback? removalCallback)
+		// 	: this(adornment, removalCallback, null, null, null, null, null) {
+		// }
 	}
 }

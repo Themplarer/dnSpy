@@ -38,60 +38,60 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// Key down handler
 		/// </summary>
 		/// <param name="args">Key event args</param>
-		public virtual void KeyDown(KeyEventArgs args) { }
-
-		/// <summary>
-		/// Key up handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void KeyUp(KeyEventArgs args) { }
-
-		/// <summary>
-		/// Text input handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void TextInput(TextCompositionEventArgs args) { }
-
-		/// <summary>
-		/// Text input start handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void TextInputStart(TextCompositionEventArgs args) { }
-
-		/// <summary>
-		/// Text input update handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void TextInputUpdate(TextCompositionEventArgs args) { }
-
-		/// <summary>
-		/// Preview key down handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void PreviewKeyDown(KeyEventArgs args) { }
-
-		/// <summary>
-		/// Preview key up handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void PreviewKeyUp(KeyEventArgs args) { }
-
-		/// <summary>
-		/// Preview text input handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void PreviewTextInput(TextCompositionEventArgs args) { }
-
-		/// <summary>
-		/// Preview text input start handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void PreviewTextInputStart(TextCompositionEventArgs args) { }
-
-		/// <summary>
-		/// Preview text input update handler
-		/// </summary>
-		/// <param name="args">Key event args</param>
-		public virtual void PreviewTextInputUpdate(TextCompositionEventArgs args) { }
+		// public virtual void KeyDown(KeyEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Key up handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void KeyUp(KeyEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Text input handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void TextInput(TextCompositionEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Text input start handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void TextInputStart(TextCompositionEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Text input update handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void TextInputUpdate(TextCompositionEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Preview key down handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void PreviewKeyDown(KeyEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Preview key up handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void PreviewKeyUp(KeyEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Preview text input handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void PreviewTextInput(TextCompositionEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Preview text input start handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void PreviewTextInputStart(TextCompositionEventArgs args) { }
+		//
+		// /// <summary>
+		// /// Preview text input update handler
+		// /// </summary>
+		// /// <param name="args">Key event args</param>
+		// public virtual void PreviewTextInputUpdate(TextCompositionEventArgs args) { }
 	}
 }

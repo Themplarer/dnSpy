@@ -19,7 +19,7 @@
 
 using System;
 using System.Windows;
-using System.Windows.Controls;
+// using System.Windows.Controls;
 
 namespace dnSpy.Contracts.ToolBars {
 	/// <summary>
@@ -33,6 +33,6 @@ namespace dnSpy.Contracts.ToolBars {
 		/// <param name="toolBarGuid">Guid of toolbar, eg. <see cref="ToolBarConstants.APP_TB_GUID"/></param>
 		/// <param name="commandTarget">Command target for toolbar items, eg. the owner window, or null</param>
 		/// <returns></returns>
-		ToolBar InitializeToolBar(ToolBar? toolBar, Guid toolBarGuid, IInputElement? commandTarget);
+		// ToolBar InitializeToolBar(ToolBar? toolBar, Guid toolBarGuid, IInputElement? commandTarget);
 	}
 }

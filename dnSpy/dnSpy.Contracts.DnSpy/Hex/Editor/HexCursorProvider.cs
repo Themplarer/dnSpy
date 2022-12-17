@@ -70,7 +70,7 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <summary>
 		/// Gets the cursor or null
 		/// </summary>
-		public Cursor Cursor { get; }
+		// public Cursor Cursor { get; }
 
 		/// <summary>
 		/// Gets the priority, eg. <see cref="PredefinedHexCursorPriorities.High"/>. The highest priority cursor is used.
@@ -82,8 +82,10 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// </summary>
 		/// <param name="cursor">Cursor or null</param>
 		/// <param name="priority">Priority, eg. <see cref="PredefinedHexCursorPriorities.High"/>. The highest priority cursor is used</param>
-		public HexCursorInfo(Cursor cursor, double priority) {
-			Cursor = cursor;
+		public HexCursorInfo(
+			// Cursor cursor,
+			double priority) {
+			// Cursor = cursor;
 			Priority = priority;
 		}
 
@@ -97,7 +99,11 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// </summary>
 		/// <param name="other"></param>
 		/// <returns></returns>
-		public bool Equals(HexCursorInfo other) => Cursor == other.Cursor && Priority == other.Priority;
+		public bool Equals(HexCursorInfo other)
+		{
+			return false;
+			// return Cursor == other.Cursor && Priority == other.Priority;
+		}
 
 		/// <summary>
 		/// Equals()
@@ -110,7 +116,7 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// GetHashCode()
 		/// </summary>
 		/// <returns></returns>
-		public override int GetHashCode() => (Cursor?.GetHashCode() ?? 0) ^ Priority.GetHashCode();
+		// public override int GetHashCode() => (Cursor?.GetHashCode() ?? 0) ^ Priority.GetHashCode();
 	}
 
 	/// <summary>

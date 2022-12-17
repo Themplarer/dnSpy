@@ -19,7 +19,7 @@
 
 using System.Collections.ObjectModel;
 using System.Windows;
-using System.Windows.Media.TextFormatting;
+// using System.Windows.Media.TextFormatting;
 
 namespace dnSpy.Contracts.Hex.Formatting {
 	/// <summary>
@@ -34,18 +34,18 @@ namespace dnSpy.Contracts.Hex.Formatting {
 		/// <summary>
 		/// Gets all text lines
 		/// </summary>
-		public abstract ReadOnlyCollection<TextLine> TextLines { get; }
-
-		/// <summary>
-		/// Gets the visible area
-		/// </summary>
-		public abstract Rect VisibleArea { get; }
-
-		/// <summary>
-		/// Gets the character formatting
-		/// </summary>
-		/// <param name="linePosition">Line position</param>
-		/// <returns></returns>
-		public abstract TextRunProperties? GetCharacterFormatting(int linePosition);
+		// public abstract ReadOnlyCollection<TextLine> TextLines { get; }
+		//
+		// /// <summary>
+		// /// Gets the visible area
+		// /// </summary>
+		// public abstract Rect VisibleArea { get; }
+		//
+		// /// <summary>
+		// /// Gets the character formatting
+		// /// </summary>
+		// /// <param name="linePosition">Line position</param>
+		// /// <returns></returns>
+		// public abstract TextRunProperties? GetCharacterFormatting(int linePosition);
 	}
 }

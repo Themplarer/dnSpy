@@ -18,7 +18,7 @@
 */
 
 using System.Windows;
-using System.Windows.Controls;
+// using System.Windows.Controls;
 
 namespace dnSpy.Contracts.TreeView {
 	/// <summary>
@@ -43,12 +43,12 @@ namespace dnSpy.Contracts.TreeView {
 		/// <summary>
 		/// See <see cref="VirtualizingStackPanel.VirtualizationModeProperty"/>
 		/// </summary>
-		public VirtualizationMode VirtualizationMode { get; set; }
+		// public VirtualizationMode VirtualizationMode { get; set; }
 
 		/// <summary>
 		/// See <see cref="ListBox.SelectionMode"/>
 		/// </summary>
-		public SelectionMode SelectionMode { get; set; }
+		// public SelectionMode SelectionMode { get; set; }
 
 		/// <summary>
 		/// true if it's a grid view
@@ -77,8 +77,8 @@ namespace dnSpy.Contracts.TreeView {
 			CanDragAndDrop = true;
 			AllowDrop = false;
 			IsVirtualizing = true;
-			VirtualizationMode = VirtualizationMode.Recycling;
-			SelectionMode = SelectionMode.Extended;
+			// VirtualizationMode = VirtualizationMode.Recycling;
+			// SelectionMode = SelectionMode.Extended;
 		}
 	}
 }

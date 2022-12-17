@@ -19,7 +19,7 @@
 
 using System;
 using System.ComponentModel;
-using System.Windows.Media;
+// using System.Windows.Media;
 
 namespace dnSpy.Contracts.Settings.Fonts {
 	/// <summary>
@@ -60,7 +60,7 @@ namespace dnSpy.Contracts.Settings.Fonts {
 		/// <summary>
 		/// Gets/sets the font family
 		/// </summary>
-		public abstract FontFamily FontFamily { get; set; }
+		// public abstract FontFamily FontFamily { get; set; }
 
 		/// <summary>
 		/// Gets/sets the font size

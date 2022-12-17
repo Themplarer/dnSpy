@@ -35,13 +35,13 @@ namespace dnSpy.Contracts.Hex.Classification {
 		/// </summary>
 		/// <param name="view">Hex view</param>
 		/// <returns></returns>
-		public abstract VSTC.IEditorFormatMap GetEditorFormatMap(HexView view);
+		// public abstract VSTC.IEditorFormatMap GetEditorFormatMap(HexView view);
 
 		/// <summary>
 		/// Gets an <see cref="VSTC.IEditorFormatMap"/>
 		/// </summary>
 		/// <param name="category">Appearance category</param>
 		/// <returns></returns>
-		public abstract VSTC.IEditorFormatMap GetEditorFormatMap(string category);
+		// public abstract VSTC.IEditorFormatMap GetEditorFormatMap(string category);
 	}
 }

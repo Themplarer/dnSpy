@@ -19,7 +19,7 @@
 
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Windows.Forms;
+// using System.Windows.Forms;
 
 namespace dnSpy.Contracts.MVVM {
 	/// <summary>
@@ -44,22 +44,23 @@ namespace dnSpy.Contracts.MVVM {
 	public sealed class PickSaveFilename : IPickSaveFilename {
 		/// <inheritdoc/>
 		public string? GetFilename(string? currentFileName, string? extension, string? filter) {
-			var dialog = new SaveFileDialog() {
-				Filter = string.IsNullOrEmpty(filter) ? PickFilenameConstants.AnyFilenameFilter : filter,
-				RestoreDirectory = true,
-				DefaultExt = extension ?? string.Empty,
-				ValidateNames = true,
-			};
-			try {
-				dialog.InitialDirectory = Path.GetDirectoryName(currentFileName);
-				dialog.FileName = Path.GetFileName(currentFileName);
-			}
-			catch { }
-
-			if (dialog.ShowDialog() != DialogResult.OK)
-				return null;
-
-			return dialog.FileName;
+			// var dialog = new SaveFileDialog() {
+			// 	Filter = string.IsNullOrEmpty(filter) ? PickFilenameConstants.AnyFilenameFilter : filter,
+			// 	RestoreDirectory = true,
+			// 	DefaultExt = extension ?? string.Empty,
+			// 	ValidateNames = true,
+			// };
+			// try {
+			// 	dialog.InitialDirectory = Path.GetDirectoryName(currentFileName);
+			// 	dialog.FileName = Path.GetFileName(currentFileName);
+			// }
+			// catch { }
+			//
+			// if (dialog.ShowDialog() != DialogResult.OK)
+			// 	return null;
+			//
+			// return dialog.FileName;
+			return null;
 		}
 	}
 }

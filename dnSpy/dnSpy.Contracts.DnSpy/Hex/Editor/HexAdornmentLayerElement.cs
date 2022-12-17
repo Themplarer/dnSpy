@@ -33,17 +33,17 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <summary>
 		/// Gets the adornment
 		/// </summary>
-		public abstract UIElement Adornment { get; }
+		// public abstract UIElement Adornment { get; }
 
 		/// <summary>
 		/// Gets the positioning behavior
 		/// </summary>
-		public abstract VSTE.AdornmentPositioningBehavior Behavior { get; }
+		// public abstract VSTE.AdornmentPositioningBehavior Behavior { get; }
 
 		/// <summary>
 		/// Called when the adornment is removed
 		/// </summary>
-		public abstract VSTE.AdornmentRemovedCallback? RemovedCallback { get; }
+		// public abstract VSTE.AdornmentRemovedCallback? RemovedCallback { get; }
 
 		/// <summary>
 		/// Gets the tag

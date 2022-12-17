@@ -18,7 +18,6 @@
 */
 
 using System.ComponentModel.Composition;
-using Ookii.Dialogs.Wpf;
 
 namespace dnSpy.Contracts.MVVM {
 	/// <summary>
@@ -40,12 +39,13 @@ namespace dnSpy.Contracts.MVVM {
 	public sealed class PickDirectory : IPickDirectory {
 		/// <inheritdoc/>
 		public string? GetDirectory(string? currentDir) {
-			var dlg = new VistaFolderBrowserDialog();
-			dlg.SelectedPath = currentDir ?? string.Empty;
-			if (dlg.ShowDialog() != true)
-				return null;
-
-			return dlg.SelectedPath;
+			// var dlg = new VistaFolderBrowserDialog();
+			// dlg.SelectedPath = currentDir ?? string.Empty;
+			// if (dlg.ShowDialog() != true)
+			// 	return null;
+			//
+			// return dlg.SelectedPath;
+			return null;
 		}
 	}
 }

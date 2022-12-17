@@ -19,7 +19,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Controls;
+// using System.Windows.Controls;
 
 namespace dnSpy.Contracts.TreeView {
 	/// <summary>
@@ -47,7 +47,7 @@ namespace dnSpy.Contracts.TreeView {
 		/// <summary>
 		/// Gets the treeview UI object
 		/// </summary>
-		Control UIObject { get; }
+		// Control UIObject { get; }
 
 		/// <summary>
 		/// Select items

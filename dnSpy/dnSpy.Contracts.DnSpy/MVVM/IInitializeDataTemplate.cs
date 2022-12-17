@@ -28,6 +28,6 @@ namespace dnSpy.Contracts.MVVM {
 		/// Called to initialize <paramref name="d"/>
 		/// </summary>
 		/// <param name="d">Target object with the <see cref="InitDataTemplateAP.InitializeProperty"/> property</param>
-		void Initialize(DependencyObject d);
+		// void Initialize(DependencyObject d);
 	}
 }

@@ -23,7 +23,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
-using System.Windows.Media;
+// using System.Windows.Media;
 
 namespace dnSpy.Contracts.Controls {
 	/// <summary>
@@ -114,18 +114,18 @@ namespace dnSpy.Contracts.Controls {
 			return DefaultFontIfNoOtherFound;
 		}
 
-		static ICollection<FontFamily> SystemFontFamilies {
-			get {
-				try {
-					// This can throw if an update was installed that removed support for the current
-					// OS, see https://github.com/dnSpy/dnSpy/issues/692
-					return Fonts.SystemFontFamilies;
-				}
-				catch {
-					return Array.Empty<FontFamily>();
-				}
-			}
-		}
+		// static ICollection<FontFamily> SystemFontFamilies {
+		// 	get {
+		// 		try {
+		// 			// This can throw if an update was installed that removed support for the current
+		// 			// OS, see https://github.com/dnSpy/dnSpy/issues/692
+		// 			return Fonts.SystemFontFamilies;
+		// 		}
+		// 		catch {
+		// 			return Array.Empty<FontFamily>();
+		// 		}
+		// 	}
+		// }
 
 		/// <summary>
 		/// Checks whether a font exists
@@ -133,10 +133,10 @@ namespace dnSpy.Contracts.Controls {
 		/// <param name="name">Name</param>
 		/// <returns></returns>
 		public static bool Exists(string name) {
-			foreach (var ff in SystemFontFamilies) {
-				if (ff.Source.Equals(name, StringComparison.OrdinalIgnoreCase))
-					return true;
-			}
+			// foreach (var ff in SystemFontFamilies) {
+			// 	if (ff.Source.Equals(name, StringComparison.OrdinalIgnoreCase))
+			// 		return true;
+			// }
 			return false;
 		}
 
@@ -158,21 +158,21 @@ namespace dnSpy.Contracts.Controls {
 		/// </summary>
 		/// <param name="ff">Font</param>
 		/// <returns></returns>
-		public static bool IsSymbol(FontFamily ff) {
-			foreach (var tf in ff.GetTypefaces()) {
-				if (!tf.TryGetGlyphTypeface(out var gtf))
-					return true;
-				if (gtf.Symbol)
-					return true;
-			}
-			return false;
-		}
+		// public static bool IsSymbol(FontFamily ff) {
+		// 	foreach (var tf in ff.GetTypefaces()) {
+		// 		if (!tf.TryGetGlyphTypeface(out var gtf))
+		// 			return true;
+		// 		if (gtf.Symbol)
+		// 			return true;
+		// 	}
+		// 	return false;
+		// }
 
 		/// <summary>
 		/// Gets all monospaced fonts
 		/// </summary>
 		/// <returns></returns>
-		public static FontFamily[] GetMonospacedFonts() => SystemFontFamilies.Where(a => IsMonospacedFont(a)).OrderBy(a => a.Source.ToUpperInvariant()).ToArray();
+		// public static FontFamily[] GetMonospacedFonts() => SystemFontFamilies.Where(a => IsMonospacedFont(a)).OrderBy(a => a.Source.ToUpperInvariant()).ToArray();
 
 		/// <summary>
 		/// Checks whether <paramref name="ff"/> is a monospaced font. It currently only checks
@@ -180,49 +180,49 @@ namespace dnSpy.Contracts.Controls {
 		/// </summary>
 		/// <param name="ff">Font</param>
 		/// <returns></returns>
-		public static bool IsMonospacedFont(FontFamily ff) {
-			if (ff.Source.Equals(GLOBAL_MONOSPACE_FONT, StringComparison.OrdinalIgnoreCase))
-				return true;
+		// public static bool IsMonospacedFont(FontFamily ff) {
+		// 	if (ff.Source.Equals(GLOBAL_MONOSPACE_FONT, StringComparison.OrdinalIgnoreCase))
+		// 		return true;
+		//
+		// 	foreach (var tf in ff.GetTypefaces()) {
+		// 		if (tf.Weight != FontWeights.Normal)
+		// 			continue;
+		// 		if (tf.Style != FontStyles.Normal)
+		// 			continue;
+		//
+		// 		if (!tf.TryGetGlyphTypeface(out var gtf))
+		// 			return false;
+		// 		if (gtf.Symbol)
+		// 			return false;
+		// 		if (!CheckSameSize(gtf))
+		// 			return false;
+		//
+		// 		return true;
+		// 	}
+		//
+		// 	return false;
+		// }
 
-			foreach (var tf in ff.GetTypefaces()) {
-				if (tf.Weight != FontWeights.Normal)
-					continue;
-				if (tf.Style != FontStyles.Normal)
-					continue;
-
-				if (!tf.TryGetGlyphTypeface(out var gtf))
-					return false;
-				if (gtf.Symbol)
-					return false;
-				if (!CheckSameSize(gtf))
-					return false;
-
-				return true;
-			}
-
-			return false;
-		}
-
-		static bool CheckSameSize(GlyphTypeface gtf) {
-			double? width = null, height = null;
-			for (char c = ' '; c <= (char)0x7E; c++) {
-				if (!gtf.CharacterToGlyphMap.TryGetValue(c, out ushort glyphIndex))
-					return false;
-				if (!gtf.AdvanceWidths.TryGetValue(glyphIndex, out double w))
-					return false;
-				if (width is null)
-					width = w;
-				else if (width.Value != w)
-					return false;
-
-				if (!gtf.AdvanceHeights.TryGetValue(glyphIndex, out double h))
-					return false;
-				if (height is null)
-					height = h;
-				else if (height.Value != h)
-					return false;
-			}
-			return true;
-		}
+		// static bool CheckSameSize(GlyphTypeface gtf) {
+		// 	double? width = null, height = null;
+		// 	for (char c = ' '; c <= (char)0x7E; c++) {
+		// 		if (!gtf.CharacterToGlyphMap.TryGetValue(c, out ushort glyphIndex))
+		// 			return false;
+		// 		if (!gtf.AdvanceWidths.TryGetValue(glyphIndex, out double w))
+		// 			return false;
+		// 		if (width is null)
+		// 			width = w;
+		// 		else if (width.Value != w)
+		// 			return false;
+		//
+		// 		if (!gtf.AdvanceHeights.TryGetValue(glyphIndex, out double h))
+		// 			return false;
+		// 		if (height is null)
+		// 			height = h;
+		// 		else if (height.Value != h)
+		// 			return false;
+		// 	}
+		// 	return true;
+		// }
 	}
 }

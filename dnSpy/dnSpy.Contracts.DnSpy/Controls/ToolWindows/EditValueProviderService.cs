@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.Windows;
-using System.Windows.Controls;
+// using System.Windows.Controls;
 using dnSpy.Contracts.Command;
 using dnSpy.Contracts.Settings.AppearanceCategory;
 using dnSpy.Contracts.Text.Editor;
@@ -38,13 +38,15 @@ namespace dnSpy.Contracts.Controls.ToolWindows {
 	sealed class EditValueProviderServiceImpl : EditValueProviderService {
 		readonly IContentTypeRegistryService contentTypeRegistryService;
 		readonly ITextBufferFactoryService textBufferFactoryService;
-		readonly ITextEditorFactoryService textEditorFactoryService;
+		// readonly ITextEditorFactoryService textEditorFactoryService;
 
 		[ImportingConstructor]
-		EditValueProviderServiceImpl(IContentTypeRegistryService contentTypeRegistryService, ITextBufferFactoryService textBufferFactoryService, ITextEditorFactoryService textEditorFactoryService) {
+		EditValueProviderServiceImpl(IContentTypeRegistryService contentTypeRegistryService, ITextBufferFactoryService textBufferFactoryService
+			// , ITextEditorFactoryService textEditorFactoryService
+			) {
 			this.contentTypeRegistryService = contentTypeRegistryService;
 			this.textBufferFactoryService = textBufferFactoryService;
-			this.textEditorFactoryService = textEditorFactoryService;
+			// this.textEditorFactoryService = textEditorFactoryService;
 		}
 
 		public override IEditValueProvider Create(string contentType, string[] extraTextViewRoles) {
@@ -55,7 +57,9 @@ namespace dnSpy.Contracts.Controls.ToolWindows {
 			var ct = contentTypeRegistryService.GetContentType(contentType);
 			if (ct is null)
 				throw new ArgumentOutOfRangeException(nameof(contentType));
-			return new EditValueProviderImpl(ct, textBufferFactoryService, textEditorFactoryService, extraTextViewRoles);
+
+			return null!;
+			// return new EditValueProviderImpl(ct, textBufferFactoryService, textEditorFactoryService, extraTextViewRoles);
 		}
 	}
 
@@ -66,108 +70,113 @@ namespace dnSpy.Contracts.Controls.ToolWindows {
 	sealed class EditValueProviderImpl : IEditValueProvider {
 		readonly IContentType contentType;
 		readonly ITextBufferFactoryService textBufferFactoryService;
-		readonly ITextEditorFactoryService textEditorFactoryService;
+		// readonly ITextEditorFactoryService textEditorFactoryService;
 		readonly string[] extraTextViewRoles;
 
-		public EditValueProviderImpl(IContentType contentType, ITextBufferFactoryService textBufferFactoryService, ITextEditorFactoryService textEditorFactoryService, string[] extraTextViewRoles) {
+		public EditValueProviderImpl(IContentType contentType, ITextBufferFactoryService textBufferFactoryService,
+			// ITextEditorFactoryService textEditorFactoryService,
+			string[] extraTextViewRoles) {
 			this.contentType = contentType ?? throw new ArgumentNullException(nameof(contentType));
 			this.textBufferFactoryService = textBufferFactoryService ?? throw new ArgumentNullException(nameof(textBufferFactoryService));
-			this.textEditorFactoryService = textEditorFactoryService ?? throw new ArgumentNullException(nameof(textEditorFactoryService));
+			// this.textEditorFactoryService = textEditorFactoryService ?? throw new ArgumentNullException(nameof(textEditorFactoryService));
 			this.extraTextViewRoles = extraTextViewRoles ?? throw new ArgumentNullException(nameof(extraTextViewRoles));
 		}
 
 		public IEditValue Create(string text, EditValueFlags flags) {
 			var buffer = textBufferFactoryService.CreateTextBuffer(text, contentType);
-			var rolesHash = new HashSet<string>(textEditorFactoryService.DefaultRoles, StringComparer.OrdinalIgnoreCase) {
-				EditValueConstants.EditValueTextViewRole,
-			};
+			// var rolesHash = new HashSet<string>(textEditorFactoryService.DefaultRoles, StringComparer.OrdinalIgnoreCase) {
+			// 	EditValueConstants.EditValueTextViewRole,
+			// };
 			// This also disables: line compressor, current line highlighter
-			rolesHash.Remove(PredefinedTextViewRoles.Document);
-			rolesHash.Remove(PredefinedTextViewRoles.Zoomable);
-			foreach (var s in extraTextViewRoles)
-				rolesHash.Add(s);
-			var roles = textEditorFactoryService.CreateTextViewRoleSet(rolesHash);
-			var textView = textEditorFactoryService.CreateTextView(buffer, roles);
-			try {
-				return new EditValueImpl(textView, flags);
-			}
-			catch {
-				textView.Close();
-				throw;
-			}
+			// rolesHash.Remove(PredefinedTextViewRoles.Document);
+			// rolesHash.Remove(PredefinedTextViewRoles.Zoomable);
+			// foreach (var s in extraTextViewRoles)
+			// 	rolesHash.Add(s);
+			// var roles = textEditorFactoryService.CreateTextViewRoleSet(rolesHash);
+			// var textView = textEditorFactoryService.CreateTextView(buffer, roles);
+			// try {
+			// 	return new EditValueImpl(textView, flags);
+			// }
+			// catch {
+			// 	textView.Close();
+			// 	throw;
+			// }
+			return null!;
 		}
 	}
 
-	sealed class EditValueImpl : IEditValue {
+	sealed class EditValueImpl
+		// : IEditValue
+	{
 		public event EventHandler<EditCompletedEventArgs>? EditCompleted;
-		public object? UIObject => uiControl;
-		public bool IsKeyboardFocused => wpfTextView.HasAggregateFocus;
+		// public object? UIObject => uiControl;
+		// public bool IsKeyboardFocused => wpfTextView.HasAggregateFocus;
 
-		sealed class UIControl : ContentControl {
-			readonly IWpfTextView wpfTextView;
-			double lastHeight;
+		// sealed class UIControl : ContentControl {
+		// 	// readonly IWpfTextView wpfTextView;
+		// 	// double lastHeight;
+		// 	//
+		// 	// public UIControl(IWpfTextView wpfTextView) {
+		// 	// 	this.wpfTextView = wpfTextView ?? throw new ArgumentNullException(nameof(wpfTextView));
+		// 	// 	wpfTextView.LayoutChanged += WpfTextView_LayoutChanged;
+		// 	// 	Content = wpfTextView.VisualElement;
+		// 	// }
+		// 	//
+		// 	// void WpfTextView_LayoutChanged(object? sender, TextViewLayoutChangedEventArgs e) {
+		// 	// 	var height = wpfTextView.TextViewLines[0].Height;
+		// 	// 	if (height != lastHeight) {
+		// 	// 		lastHeight = height;
+		// 	// 		InvalidateMeasure();
+		// 	// 	}
+		// 	// }
+		// 	//
+		// 	// protected override Size MeasureOverride(Size constraint) {
+		// 	// 	var res = base.MeasureOverride(constraint);
+		// 	// 	return new Size(res.Width, Math.Max(res.Height, lastHeight));
+		// 	// }
+		//
+		// 	// internal void Dispose() => wpfTextView.LayoutChanged -= WpfTextView_LayoutChanged;
+		// }
 
-			public UIControl(IWpfTextView wpfTextView) {
-				this.wpfTextView = wpfTextView ?? throw new ArgumentNullException(nameof(wpfTextView));
-				wpfTextView.LayoutChanged += WpfTextView_LayoutChanged;
-				Content = wpfTextView.VisualElement;
-			}
-
-			void WpfTextView_LayoutChanged(object? sender, TextViewLayoutChangedEventArgs e) {
-				var height = wpfTextView.TextViewLines[0].Height;
-				if (height != lastHeight) {
-					lastHeight = height;
-					InvalidateMeasure();
-				}
-			}
-
-			protected override Size MeasureOverride(Size constraint) {
-				var res = base.MeasureOverride(constraint);
-				return new Size(res.Width, Math.Max(res.Height, lastHeight));
-			}
-
-			internal void Dispose() => wpfTextView.LayoutChanged -= WpfTextView_LayoutChanged;
-		}
-
-		readonly IWpfTextView wpfTextView;
-		readonly UIControl uiControl;
+		// readonly IWpfTextView wpfTextView;
+		// readonly UIControl uiControl;
 		readonly EditValueFlags flags;
 
-		public EditValueImpl(IWpfTextView wpfTextView, EditValueFlags flags) {
-			this.wpfTextView = wpfTextView;
-			uiControl = new UIControl(wpfTextView);
-			this.flags = flags;
-			wpfTextView.VisualElement.Loaded += VisualElement_Loaded;
-			wpfTextView.TextBuffer.Properties.AddProperty(typeof(EditValueImpl), this);
-			wpfTextView.Options.SetOptionValue(DefaultOptions.ConvertTabsToSpacesOptionId, true);
-			wpfTextView.Options.SetOptionValue(DefaultTextViewOptions.WordWrapStyleId, WordWrapStyles.None);
-			wpfTextView.Options.SetOptionValue(DefaultWpfViewOptions.EnableHighlightCurrentLineId, false);
-			wpfTextView.Options.SetOptionValue(DefaultWpfViewOptions.EnableMouseWheelZoomId, false);
-			wpfTextView.Options.SetOptionValue(DefaultWpfViewOptions.AppearanceCategory, AppearanceCategoryConstants.UIMisc);
-			wpfTextView.Options.SetOptionValue(DefaultDsTextViewOptions.CanChangeWordWrapStyleId, false);
-			wpfTextView.Options.SetOptionValue(DefaultDsTextViewOptions.CompressEmptyOrWhitespaceLinesId, false);
-			wpfTextView.Options.SetOptionValue(DefaultDsTextViewOptions.CompressNonLetterLinesId, false);
-		}
+		// public EditValueImpl(IWpfTextView wpfTextView, EditValueFlags flags) {
+		// 	this.wpfTextView = wpfTextView;
+		// 	uiControl = new UIControl(wpfTextView);
+		// 	this.flags = flags;
+		// 	wpfTextView.VisualElement.Loaded += VisualElement_Loaded;
+		// 	wpfTextView.TextBuffer.Properties.AddProperty(typeof(EditValueImpl), this);
+		// 	wpfTextView.Options.SetOptionValue(DefaultOptions.ConvertTabsToSpacesOptionId, true);
+		// 	wpfTextView.Options.SetOptionValue(DefaultTextViewOptions.WordWrapStyleId, WordWrapStyles.None);
+		// 	wpfTextView.Options.SetOptionValue(DefaultWpfViewOptions.EnableHighlightCurrentLineId, false);
+		// 	wpfTextView.Options.SetOptionValue(DefaultWpfViewOptions.EnableMouseWheelZoomId, false);
+		// 	wpfTextView.Options.SetOptionValue(DefaultWpfViewOptions.AppearanceCategory, AppearanceCategoryConstants.UIMisc);
+		// 	wpfTextView.Options.SetOptionValue(DefaultDsTextViewOptions.CanChangeWordWrapStyleId, false);
+		// 	wpfTextView.Options.SetOptionValue(DefaultDsTextViewOptions.CompressEmptyOrWhitespaceLinesId, false);
+		// 	wpfTextView.Options.SetOptionValue(DefaultDsTextViewOptions.CompressNonLetterLinesId, false);
+		// }
 
 		public static EditValueImpl TryGetInstance(ITextView textView) {
 			textView.TextBuffer.Properties.TryGetProperty<EditValueImpl>(typeof(EditValueImpl), out var instance);
 			return instance;
 		}
 
-		void VisualElement_Loaded(object? sender, RoutedEventArgs e) {
-			wpfTextView.VisualElement.Loaded -= VisualElement_Loaded;
-			wpfTextView.VisualElement.Focus();
-			var snapshot = wpfTextView.TextSnapshot;
-			if ((flags & EditValueFlags.SelectText) != 0)
-				wpfTextView.Selection.Select(new SnapshotSpan(snapshot, new Span(0, snapshot.Length)), isReversed: false);
-			wpfTextView.Caret.MoveTo(new SnapshotPoint(snapshot, snapshot.Length));
-			wpfTextView.Caret.EnsureVisible();
-			wpfTextView.LostAggregateFocus += WpfTextView_LostAggregateFocus;
-		}
+		// void VisualElement_Loaded(object? sender, RoutedEventArgs e) {
+		// 	wpfTextView.VisualElement.Loaded -= VisualElement_Loaded;
+		// 	wpfTextView.VisualElement.Focus();
+		// 	var snapshot = wpfTextView.TextSnapshot;
+		// 	if ((flags & EditValueFlags.SelectText) != 0)
+		// 		wpfTextView.Selection.Select(new SnapshotSpan(snapshot, new Span(0, snapshot.Length)), isReversed: false);
+		// 	wpfTextView.Caret.MoveTo(new SnapshotPoint(snapshot, snapshot.Length));
+		// 	wpfTextView.Caret.EnsureVisible();
+		// 	wpfTextView.LostAggregateFocus += WpfTextView_LostAggregateFocus;
+		// }
 
 		void WpfTextView_LostAggregateFocus(object? sender, EventArgs e) => Cancel();
 		public void Cancel() => OnEditCompleted(null);
-		public void Commit() => OnEditCompleted(wpfTextView.TextBuffer.CurrentSnapshot.GetText());
+		// public void Commit() => OnEditCompleted(wpfTextView.TextBuffer.CurrentSnapshot.GetText());
 
 		void OnEditCompleted(string? text) {
 			EditCompleted?.Invoke(this, new EditCompletedEventArgs(text));
@@ -175,13 +184,13 @@ namespace dnSpy.Contracts.Controls.ToolWindows {
 		}
 
 		public void Dispose() {
-			if (wpfTextView.IsClosed)
-				return;
-			uiControl.Dispose();
-			wpfTextView.Properties.RemoveProperty(typeof(EditValueImpl));
-			wpfTextView.VisualElement.Loaded -= VisualElement_Loaded;
-			wpfTextView.LostAggregateFocus -= WpfTextView_LostAggregateFocus;
-			wpfTextView.Close();
+			// if (wpfTextView.IsClosed)
+			// 	return;
+			// uiControl.Dispose();
+			// wpfTextView.Properties.RemoveProperty(typeof(EditValueImpl));
+			// wpfTextView.VisualElement.Loaded -= VisualElement_Loaded;
+			// wpfTextView.LostAggregateFocus -= WpfTextView_LostAggregateFocus;
+			// wpfTextView.Close();
 		}
 	}
 
@@ -237,7 +246,7 @@ namespace dnSpy.Contracts.Controls.ToolWindows {
 					return CommandTargetStatus.Handled;
 
 				case TextEditorIds.RETURN:
-					editValueImpl.Commit();
+					// editValueImpl.Commit();
 					return CommandTargetStatus.Handled;
 
 				default:

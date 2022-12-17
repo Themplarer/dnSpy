@@ -53,6 +53,6 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// </summary>
 		/// <param name="marginRelativePoint">Position of the mouse pointer relative to the glyph margin</param>
 		/// <returns></returns>
-		IEnumerable<GuidObject> GetContextMenuObjects(Point marginRelativePoint);
+		// IEnumerable<GuidObject> GetContextMenuObjects(Point marginRelativePoint);
 	}
 }

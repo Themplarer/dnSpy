@@ -36,7 +36,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="wpfTextViewHost">Text view host</param>
 		/// <param name="margin">Margin</param>
 		/// <returns></returns>
-		IMarginContextMenuHandler? Create(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin);
+		// IMarginContextMenuHandler? Create(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin);
 	}
 
 	/// <summary>
@@ -48,6 +48,6 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// </summary>
 		/// <param name="marginRelativePoint">Position of the mouse pointer relative to the glyph margin</param>
 		/// <returns></returns>
-		IEnumerable<GuidObject> GetContextMenuObjects(Point marginRelativePoint);
+		// IEnumerable<GuidObject> GetContextMenuObjects(Point marginRelativePoint);
 	}
 }

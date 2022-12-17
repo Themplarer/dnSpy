@@ -17,7 +17,7 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System.Windows.Controls;
+// using System.Windows.Controls;
 
 namespace dnSpy.Contracts.Menus {
 	/// <summary>
@@ -29,6 +29,6 @@ namespace dnSpy.Contracts.Menus {
 		/// </summary>
 		/// <param name="context">Context</param>
 		/// <param name="menu">Context menu</param>
-		void Initialize(IMenuItemContext context, ContextMenu menu);
+		// void Initialize(IMenuItemContext context, ContextMenu menu);
 	}
 }

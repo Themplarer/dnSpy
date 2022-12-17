@@ -32,6 +32,6 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <summary>
 		/// Gets the UI element
 		/// </summary>
-		public abstract FrameworkElement VisualElement { get; }
+		// public abstract FrameworkElement VisualElement { get; }
 	}
 }

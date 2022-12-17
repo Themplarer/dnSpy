@@ -30,7 +30,7 @@ namespace dnSpy.Contracts.Settings.Groups {
 		/// <summary>
 		/// Gets all text views in this group
 		/// </summary>
-		IEnumerable<IWpfTextView> TextViews { get; }
+		// IEnumerable<IWpfTextView> TextViews { get; }
 
 		/// <summary>
 		/// Raised when an option has changed

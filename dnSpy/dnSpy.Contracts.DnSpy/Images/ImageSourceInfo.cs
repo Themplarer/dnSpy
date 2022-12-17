@@ -27,7 +27,7 @@ namespace dnSpy.Contracts.Images {
 		/// <summary>
 		/// Any size
 		/// </summary>
-		public static readonly Size AnySize = new Size(0, 0);
+		// public static readonly Size AnySize = new Size(0, 0);
 
 		/// <summary>
 		/// URI of image
@@ -37,6 +37,6 @@ namespace dnSpy.Contracts.Images {
 		/// <summary>
 		/// Size of image in pixels or <see cref="AnySize"/>
 		/// </summary>
-		public Size Size { get; set; }
+		// public Size Size { get; set; }
 	}
 }

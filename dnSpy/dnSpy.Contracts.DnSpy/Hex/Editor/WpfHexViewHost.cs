@@ -18,7 +18,7 @@
 */
 
 using System;
-using System.Windows.Controls;
+// using System.Windows.Controls;
 
 namespace dnSpy.Contracts.Hex.Editor {
 	/// <summary>
@@ -60,6 +60,6 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <summary>
 		/// Gets the UI element
 		/// </summary>
-		public abstract Control HostControl { get; }
+		// public abstract Control HostControl { get; }
 	}
 }

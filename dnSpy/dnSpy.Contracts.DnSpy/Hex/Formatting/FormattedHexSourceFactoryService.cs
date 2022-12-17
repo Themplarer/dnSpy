@@ -38,8 +38,8 @@ namespace dnSpy.Contracts.Hex.Formatting {
 		/// <param name="sequencer">Sequencer</param>
 		/// <param name="classificationFormatMap">Classification format map</param>
 		/// <returns></returns>
-		public virtual HexFormattedLineSource Create(double baseIndent, bool useDisplayMode, HexAndAdornmentSequencer sequencer, VSTC.IClassificationFormatMap classificationFormatMap) =>
-			Create(baseIndent, useDisplayMode, NullHexClassifier.Instance, sequencer, classificationFormatMap);
+		// public virtual HexFormattedLineSource Create(double baseIndent, bool useDisplayMode, HexAndAdornmentSequencer sequencer, VSTC.IClassificationFormatMap classificationFormatMap) =>
+		// 	Create(baseIndent, useDisplayMode, NullHexClassifier.Instance, sequencer, classificationFormatMap);
 
 		/// <summary>
 		/// Creates a <see cref="HexFormattedLineSource"/>
@@ -50,6 +50,6 @@ namespace dnSpy.Contracts.Hex.Formatting {
 		/// <param name="sequencer">Sequencer</param>
 		/// <param name="classificationFormatMap">Classification format map</param>
 		/// <returns></returns>
-		public abstract HexFormattedLineSource Create(double baseIndent, bool useDisplayMode, HexClassifier aggregateClassifier, HexAndAdornmentSequencer sequencer, VSTC.IClassificationFormatMap classificationFormatMap);
+		// public abstract HexFormattedLineSource Create(double baseIndent, bool useDisplayMode, HexClassifier aggregateClassifier, HexAndAdornmentSequencer sequencer, VSTC.IClassificationFormatMap classificationFormatMap);
 	}
 }

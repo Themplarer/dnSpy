@@ -18,7 +18,7 @@
 */
 
 using System;
-using System.Windows.Media;
+// using System.Windows.Media;
 using dnSpy.Contracts.Settings.Fonts;
 
 namespace dnSpy.Contracts.Settings.FontsAndColors {
@@ -34,7 +34,7 @@ namespace dnSpy.Contracts.Settings.FontsAndColors {
 		/// <summary>
 		/// Gets/sets the font family
 		/// </summary>
-		public FontFamily FontFamily { get; set; }
+		// public FontFamily FontFamily { get; set; }
 
 		/// <summary>
 		/// Gets/sets the font size
@@ -46,9 +46,9 @@ namespace dnSpy.Contracts.Settings.FontsAndColors {
 		/// </summary>
 		/// <param name="fontType">Font type</param>
 		/// <param name="fontFamily">Font family</param>
-		public FontOption(FontType fontType, FontFamily fontFamily) {
-			FontType = fontType;
-			FontFamily = fontFamily ?? throw new ArgumentOutOfRangeException(nameof(fontFamily));
-		}
+		// public FontOption(FontType fontType, FontFamily fontFamily) {
+		// 	FontType = fontType;
+		// 	FontFamily = fontFamily ?? throw new ArgumentOutOfRangeException(nameof(fontFamily));
+		// }
 	}
 }

@@ -33,6 +33,6 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="margin">Margin</param>
 		/// <param name="marginName">Margin name</param>
 		/// <returns></returns>
-		IGuidObjectsProvider Create(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin, string marginName);
+		// IGuidObjectsProvider Create(IWpfTextViewHost wpfTextViewHost, IWpfTextViewMargin margin, string marginName);
 	}
 }

@@ -30,14 +30,14 @@ namespace dnSpy.Contracts.Controls {
 		/// </summary>
 		/// <param name="guid">Guid, eg. <see cref="ControlConstants.GUID_MAINWINDOW"/></param>
 		/// <param name="elem">Element</param>
-		void Add(Guid guid, UIElement elem);
+		// void Add(Guid guid, UIElement elem);
 
 		/// <summary>
 		/// Removes an element
 		/// </summary>
 		/// <param name="guid">Guid, eg. <see cref="ControlConstants.GUID_MAINWINDOW"/></param>
 		/// <param name="elem">Element</param>
-		void Remove(Guid guid, UIElement elem);
+		// void Remove(Guid guid, UIElement elem);
 
 		/// <summary>
 		/// Gets a <see cref="IWpfCommands"/> instance

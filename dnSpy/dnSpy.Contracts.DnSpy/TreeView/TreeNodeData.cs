@@ -149,29 +149,29 @@ namespace dnSpy.Contracts.TreeView {
 		/// </summary>
 		/// <param name="dragSource">Drag source</param>
 		/// <param name="nodes">Nodes</param>
-		public virtual void StartDrag(DependencyObject dragSource, TreeNodeData[] nodes) { }
-
-		/// <summary>
-		/// Copies nodes
-		/// </summary>
-		/// <param name="nodes">Nodes</param>
-		/// <returns></returns>
-		public virtual IDataObject Copy(TreeNodeData[] nodes) => throw new NotSupportedException();
-
-		/// <summary>
-		/// Returns true if drop can execute
-		/// </summary>
-		/// <param name="e">Event args</param>
-		/// <param name="index">Index</param>
-		/// <returns></returns>
-		public virtual bool CanDrop(DragEventArgs e, int index) => false;
-
-		/// <summary>
-		/// Drops data
-		/// </summary>
-		/// <param name="e">Event args</param>
-		/// <param name="index">Index</param>
-		public virtual void Drop(DragEventArgs e, int index) => throw new NotSupportedException();
+		// public virtual void StartDrag(DependencyObject dragSource, TreeNodeData[] nodes) { }
+		//
+		// /// <summary>
+		// /// Copies nodes
+		// /// </summary>
+		// /// <param name="nodes">Nodes</param>
+		// /// <returns></returns>
+		// public virtual IDataObject Copy(TreeNodeData[] nodes) => throw new NotSupportedException();
+		//
+		// /// <summary>
+		// /// Returns true if drop can execute
+		// /// </summary>
+		// /// <param name="e">Event args</param>
+		// /// <param name="index">Index</param>
+		// /// <returns></returns>
+		// public virtual bool CanDrop(DragEventArgs e, int index) => false;
+		//
+		// /// <summary>
+		// /// Drops data
+		// /// </summary>
+		// /// <param name="e">Event args</param>
+		// /// <param name="index">Index</param>
+		// public virtual void Drop(DragEventArgs e, int index) => throw new NotSupportedException();
 	}
 
 	/// <summary>

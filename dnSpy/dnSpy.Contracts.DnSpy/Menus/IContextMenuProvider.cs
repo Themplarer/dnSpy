@@ -28,6 +28,6 @@ namespace dnSpy.Contracts.Menus {
 		/// Shows the context menu
 		/// </summary>
 		/// <param name="elem">Element</param>
-		void Show(FrameworkElement elem);
+		// void Show(FrameworkElement elem);
 	}
 }

@@ -18,7 +18,7 @@
 */
 
 using System.Windows;
-using System.Windows.Media;
+// using System.Windows.Media;
 
 namespace dnSpy.Contracts.Themes {
 	/// <summary>
@@ -33,31 +33,31 @@ namespace dnSpy.Contracts.Themes {
 		/// <summary>
 		/// Font weight or null
 		/// </summary>
-		FontWeight? FontWeight { get; }
-
-		/// <summary>
-		/// Font style or null
-		/// </summary>
-		FontStyle? FontStyle { get; }
-
-		/// <summary>
-		/// Foreground (first) color or null
-		/// </summary>
-		Brush? Foreground { get; }
-
-		/// <summary>
-		/// Background (second) color null
-		/// </summary>
-		Brush? Background { get; }
-
-		/// <summary>
-		/// Third color or null
-		/// </summary>
-		Brush? Color3 { get; }
-
-		/// <summary>
-		/// Fourth color or null
-		/// </summary>
-		Brush? Color4 { get; }
+		// FontWeight? FontWeight { get; }
+		//
+		// /// <summary>
+		// /// Font style or null
+		// /// </summary>
+		// FontStyle? FontStyle { get; }
+		//
+		// /// <summary>
+		// /// Foreground (first) color or null
+		// /// </summary>
+		// Brush? Foreground { get; }
+		//
+		// /// <summary>
+		// /// Background (second) color null
+		// /// </summary>
+		// Brush? Background { get; }
+		//
+		// /// <summary>
+		// /// Third color or null
+		// /// </summary>
+		// Brush? Color3 { get; }
+		//
+		// /// <summary>
+		// /// Fourth color or null
+		// /// </summary>
+		// Brush? Color4 { get; }
 	}
 }

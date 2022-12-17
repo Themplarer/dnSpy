@@ -18,7 +18,7 @@
 */
 
 using System;
-using System.Windows.Media;
+// using System.Windows.Media;
 
 namespace dnSpy.Contracts.Hex.Editor {
 	/// <summary>
@@ -60,6 +60,6 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// </summary>
 		/// <param name="reservedSpace">Reserved space</param>
 		/// <returns></returns>
-		public abstract Geometry? PositionAndDisplay(Geometry reservedSpace);
+		// public abstract Geometry? PositionAndDisplay(Geometry reservedSpace);
 	}
 }

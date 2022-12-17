@@ -344,40 +344,40 @@ namespace dnSpy.Contracts.Text.Editor {
 	/// <summary>
 	/// <see cref="IGlyphTextMarkerService"/> glyph tag
 	/// </summary>
-	public interface IGlyphTextMarkerGlyphTag : IGlyphTag {
-		/// <summary>
-		/// Gets the image reference (<see cref="IGlyphTextMarker.GlyphImageReference"/>)
-		/// </summary>
-		ImageReference ImageReference { get; }
+	// public interface IGlyphTextMarkerGlyphTag : IGlyphTag {
+	// 	/// <summary>
+	// 	/// Gets the image reference (<see cref="IGlyphTextMarker.GlyphImageReference"/>)
+	// 	/// </summary>
+	// 	ImageReference ImageReference { get; }
+	//
+	// 	/// <summary>
+	// 	/// Gets the Z-index (<see cref="IGlyphTextMarker.ZIndex"/>)
+	// 	/// </summary>
+	// 	int ZIndex { get; }
+	// }
 
-		/// <summary>
-		/// Gets the Z-index (<see cref="IGlyphTextMarker.ZIndex"/>)
-		/// </summary>
-		int ZIndex { get; }
-	}
-
-	/// <summary>
-	/// <see cref="IGlyphTextMarkerService"/> glyph tag
-	/// </summary>
-	public sealed class GlyphTextMarkerGlyphTag : IGlyphTag {
-		/// <summary>
-		/// Image reference (<see cref="IGlyphTextMarker.GlyphImageReference"/>)
-		/// </summary>
-		public ImageReference ImageReference { get; }
-
-		/// <summary>
-		/// Z-index (<see cref="IGlyphTextMarker.ZIndex"/>)
-		/// </summary>
-		public int ZIndex { get; }
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="imageReference">Image reference (<see cref="IGlyphTextMarker.GlyphImageReference"/>)</param>
-		/// <param name="zIndex">Z-index (<see cref="IGlyphTextMarker.ZIndex"/>)</param>
-		public GlyphTextMarkerGlyphTag(ImageReference imageReference, int zIndex) {
-			ImageReference = imageReference;
-			ZIndex = zIndex;
-		}
-	}
+	// /// <summary>
+	// /// <see cref="IGlyphTextMarkerService"/> glyph tag
+	// /// </summary>
+	// public sealed class GlyphTextMarkerGlyphTag : IGlyphTag {
+	// 	/// <summary>
+	// 	/// Image reference (<see cref="IGlyphTextMarker.GlyphImageReference"/>)
+	// 	/// </summary>
+	// 	public ImageReference ImageReference { get; }
+	//
+	// 	/// <summary>
+	// 	/// Z-index (<see cref="IGlyphTextMarker.ZIndex"/>)
+	// 	/// </summary>
+	// 	public int ZIndex { get; }
+	//
+	// 	/// <summary>
+	// 	/// Constructor
+	// 	/// </summary>
+	// 	/// <param name="imageReference">Image reference (<see cref="IGlyphTextMarker.GlyphImageReference"/>)</param>
+	// 	/// <param name="zIndex">Z-index (<see cref="IGlyphTextMarker.ZIndex"/>)</param>
+	// 	public GlyphTextMarkerGlyphTag(ImageReference imageReference, int zIndex) {
+	// 		ImageReference = imageReference;
+	// 		ZIndex = zIndex;
+	// 	}
+	// }
 }

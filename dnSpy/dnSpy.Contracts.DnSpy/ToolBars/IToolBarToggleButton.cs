@@ -17,7 +17,7 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System.Windows.Data;
+// using System.Windows.Data;
 
 namespace dnSpy.Contracts.ToolBars {
 	/// <summary>
@@ -29,6 +29,6 @@ namespace dnSpy.Contracts.ToolBars {
 		/// </summary>
 		/// <param name="context">Context</param>
 		/// <returns></returns>
-		Binding GetBinding(IToolBarItemContext context);
+		// Binding GetBinding(IToolBarItemContext context);
 	}
 }

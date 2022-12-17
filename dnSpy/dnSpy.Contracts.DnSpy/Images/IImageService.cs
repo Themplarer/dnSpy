@@ -17,7 +17,7 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System.Windows.Media.Imaging;
+// using System.Windows.Media.Imaging;
 
 namespace dnSpy.Contracts.Images {
 	/// <summary>
@@ -30,6 +30,6 @@ namespace dnSpy.Contracts.Images {
 		/// <param name="imageReference">Image reference</param>
 		/// <param name="options">Image options</param>
 		/// <returns></returns>
-		BitmapSource? GetImage(ImageReference imageReference, ImageOptions options);
+		// BitmapSource? GetImage(ImageReference imageReference, ImageOptions options);
 	}
 }

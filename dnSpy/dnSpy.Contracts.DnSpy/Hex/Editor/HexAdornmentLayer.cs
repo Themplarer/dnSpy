@@ -35,7 +35,7 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <summary>
 		/// Gets the UI element
 		/// </summary>
-		public abstract FrameworkElement VisualElement { get; }
+		// public abstract FrameworkElement VisualElement { get; }
 
 		/// <summary>
 		/// true if the layer is empty
@@ -45,9 +45,17 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <summary>
 		/// Gets/sets the layer opacity
 		/// </summary>
-		public virtual double Opacity {
-			get => VisualElement.Opacity;
-			set => VisualElement.Opacity = value;
+		public virtual double Opacity
+		{
+			get
+			{
+				return 0;
+				// return VisualElement.Opacity;
+			}
+			set
+			{
+				// VisualElement.Opacity = value;
+			}
 		}
 
 		/// <summary>
@@ -67,8 +75,8 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <param name="tag">Tag</param>
 		/// <param name="adornment">Adornment</param>
 		/// <returns></returns>
-		public bool AddAdornment(HexBufferLine line, object? tag, UIElement adornment) =>
-			AddAdornment(VSTE.AdornmentPositioningBehavior.TextRelative, line, tag, adornment, null);
+		// public bool AddAdornment(HexBufferLine line, object? tag, UIElement adornment) =>
+		// 	AddAdornment(VSTE.AdornmentPositioningBehavior.TextRelative, line, tag, adornment, null);
 
 		/// <summary>
 		/// Adds an adornment. Returns true if the adornment was added.
@@ -79,11 +87,11 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <param name="adornment">Adornment</param>
 		/// <param name="removedCallback">Called when the adornment is removed</param>
 		/// <returns></returns>
-		public bool AddAdornment(VSTE.AdornmentPositioningBehavior behavior, HexBufferLine line, object? tag, UIElement adornment, VSTE.AdornmentRemovedCallback? removedCallback) {
-			if (line is null)
-				throw new ArgumentNullException(nameof(line));
-			return AddAdornment(behavior, line.BufferSpan, tag, adornment, removedCallback);
-		}
+		// public bool AddAdornment(VSTE.AdornmentPositioningBehavior behavior, HexBufferLine line, object? tag, UIElement adornment, VSTE.AdornmentRemovedCallback? removedCallback) {
+		// 	if (line is null)
+		// 		throw new ArgumentNullException(nameof(line));
+		// 	return AddAdornment(behavior, line.BufferSpan, tag, adornment, removedCallback);
+		// }
 
 		/// <summary>
 		/// Adds an adornment. Returns true if the adornment was added.
@@ -92,8 +100,8 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <param name="tag">Tag</param>
 		/// <param name="adornment">Adornment</param>
 		/// <returns></returns>
-		public bool AddAdornment(HexBufferSpan visualSpan, object? tag, UIElement adornment) =>
-			AddAdornment(VSTE.AdornmentPositioningBehavior.TextRelative, visualSpan, tag, adornment, null);
+		// public bool AddAdornment(HexBufferSpan visualSpan, object? tag, UIElement adornment) =>
+		// 	AddAdornment(VSTE.AdornmentPositioningBehavior.TextRelative, visualSpan, tag, adornment, null);
 
 		/// <summary>
 		/// Adds an adornment. Returns true if the adornment was added.
@@ -104,13 +112,13 @@ namespace dnSpy.Contracts.Hex.Editor {
 		/// <param name="adornment">Adornment</param>
 		/// <param name="removedCallback">Called when the adornment is removed</param>
 		/// <returns></returns>
-		public abstract bool AddAdornment(VSTE.AdornmentPositioningBehavior behavior, HexBufferSpan? visualSpan, object? tag, UIElement adornment, VSTE.AdornmentRemovedCallback? removedCallback);
+		// public abstract bool AddAdornment(VSTE.AdornmentPositioningBehavior behavior, HexBufferSpan? visualSpan, object? tag, UIElement adornment, VSTE.AdornmentRemovedCallback? removedCallback);
 
 		/// <summary>
 		/// Removes an adornment
 		/// </summary>
 		/// <param name="adornment">Adornment to remove</param>
-		public abstract void RemoveAdornment(UIElement adornment);
+		// public abstract void RemoveAdornment(UIElement adornment);
 
 		/// <summary>
 		/// Removes all adornments with the specified tag

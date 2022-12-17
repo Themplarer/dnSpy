@@ -20,7 +20,7 @@
 using System;
 using System.ComponentModel.Composition;
 using System.IO;
-using System.Windows.Forms;
+// using System.Windows.Forms;
 
 namespace dnSpy.Contracts.MVVM {
 	/// <summary>
@@ -55,37 +55,39 @@ namespace dnSpy.Contracts.MVVM {
 	public sealed class PickFilename : IPickFilename {
 		/// <inheritdoc/>
 		public string? GetFilename(string? currentFileName, string? defaultExtension, string? filter) {
-			var dialog = new OpenFileDialog() {
-				Filter = string.IsNullOrEmpty(filter) ? PickFilenameConstants.AnyFilenameFilter : filter,
-				RestoreDirectory = true,
-				DefaultExt = defaultExtension,
-				ValidateNames = true,
-			};
-			if (File.Exists(currentFileName))
-				dialog.InitialDirectory = Path.GetDirectoryName(currentFileName)!;
-
-			if (dialog.ShowDialog() != DialogResult.OK)
-				return null;
-
-			return dialog.FileName;
+			// var dialog = new OpenFileDialog() {
+			// 	Filter = string.IsNullOrEmpty(filter) ? PickFilenameConstants.AnyFilenameFilter : filter,
+			// 	RestoreDirectory = true,
+			// 	DefaultExt = defaultExtension,
+			// 	ValidateNames = true,
+			// };
+			// if (File.Exists(currentFileName))
+			// 	dialog.InitialDirectory = Path.GetDirectoryName(currentFileName)!;
+			//
+			// if (dialog.ShowDialog() != DialogResult.OK)
+			// 	return null;
+			//
+			// return dialog.FileName;
+			return null;
 		}
 
 		/// <inheritdoc/>
 		public string[] GetFilenames(string? currentFileName, string? defaultExtension, string? filter = null) {
-			var dialog = new OpenFileDialog() {
-				Filter = string.IsNullOrEmpty(filter) ? PickFilenameConstants.AnyFilenameFilter : filter,
-				RestoreDirectory = true,
-				DefaultExt = defaultExtension,
-				ValidateNames = true,
-				Multiselect = true,
-			};
-			if (File.Exists(currentFileName))
-				dialog.InitialDirectory = Path.GetDirectoryName(currentFileName)!;
-
-			if (dialog.ShowDialog() != DialogResult.OK)
-				return Array.Empty<string>();
-
-			return dialog.FileNames;
+			// var dialog = new OpenFileDialog() {
+			// 	Filter = string.IsNullOrEmpty(filter) ? PickFilenameConstants.AnyFilenameFilter : filter,
+			// 	RestoreDirectory = true,
+			// 	DefaultExt = defaultExtension,
+			// 	ValidateNames = true,
+			// 	Multiselect = true,
+			// };
+			// if (File.Exists(currentFileName))
+			// 	dialog.InitialDirectory = Path.GetDirectoryName(currentFileName)!;
+			//
+			// if (dialog.ShowDialog() != DialogResult.OK)
+			// 	return Array.Empty<string>();
+			//
+			// return dialog.FileNames;
+			return Array.Empty<string>();
 		}
 	}
 }
