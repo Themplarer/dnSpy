@@ -1,24 +1,23 @@
 [submodule "Plugins/ILSpy.Decompiler/NRefactory"]
 	path = Extensions/ILSpy.Decompiler/NRefactory
-	url = https://github.com/Themplarer/nrefactory.git
-[submodule "Libraries/ICSharpCode.TreeView"]
-	path = Libraries/ICSharpCode.TreeView
-	url = https://github.com/Themplarer/ICSharpCode.TreeView.git
+	url = git@github.com:Themplarer/NRefactory.git
+	branch = bump-runtime
 [submodule "Plugins/ILSpy.Decompiler/ICSharpCode.Decompiler"]
 	path = Extensions/ILSpy.Decompiler/ICSharpCode.Decompiler
 	url = git@github.com:Themplarer/ILSpy.git
 	branch = bump-runtime
 [submodule "dnSpy/dnSpy.Images"]
 	path = dnSpy/dnSpy.Images
-	url = https://github.com/Themplarer/dnSpy.Images.git
+	url = git@github.com:Themplarer/dnSpy.Images.git
 [submodule "Extensions/dnSpy.Debugger/netcorefiles"]
 	path = Extensions/dnSpy.Debugger/netcorefiles
-	url = https://github.com/Themplarer/netcorefiles.git
+	url = git@github.com:Themplarer/netcorefiles.git
+	branch = bump-runtime
 [submodule "dnSpy/Roslyn/Roslyn.ExpressionCompiler"]
 	path = dnSpy/Roslyn/Roslyn.ExpressionCompiler
-	url = https://github.com/Themplarer/Roslyn.ExpressionCompiler.git
-	branch = dnSpy
+	url = git@github.com:Themplarer/Roslyn.ExpressionCompiler.git
+	branch = bump-runtime
 [submodule "Extensions/dnSpy.Debugger/Mono.Debugger.Soft"]
 	path = Extensions/dnSpy.Debugger/Mono.Debugger.Soft
-	url = https://github.com/Themplarer/Mono.Debugger.Soft.git
-	branch = dnSpy
+	url = git@github.com:Themplarer/Mono.Debugger.Soft.git
+	branch = bump-runtime
