@@ -23,6 +23,7 @@ using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Resources;
+using System.Resources.NetStandard;
 using dnlib.DotNet;
 using dnSpy.Decompiler.Properties;
 
