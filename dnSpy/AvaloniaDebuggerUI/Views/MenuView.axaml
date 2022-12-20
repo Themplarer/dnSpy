@@ -1,0 +1,147 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:viewModels="clr-namespace:AvaloniaDebuggerUI.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AvaloniaDebuggerUI.Views.MenuView"
+             x:CompileBindings="True" x:DataType="viewModels:MainWindowViewModel">
+
+    <Menu>
+        <MenuItem Header="_File">
+            <MenuItem Header="Export to Pro_ject..." />
+            <MenuItem Header="_Save..." InputGesture="Ctrl+S" Command="{Binding Save}" />
+            <MenuItem Header="Save _Module..." />
+            <MenuItem Header="Save A_ll..." InputGesture="Ctrl+Shift+S" />
+            <Separator />
+            <MenuItem Header="_Open..." InputGesture="Ctrl+O" />
+            <MenuItem Header="Open from _GAC..." InputGesture="Ctrl+Shift+O" />
+            <MenuItem Header="Open L_ist..." />
+            <MenuItem Header="Recent _Files" />
+            <MenuItem Header="_Reload All Assemblies" />
+            <MenuItem Header="Close All" />
+            <MenuItem Header="Close Old In-Memory Modules" />
+            <MenuItem Header="Close All Framework Assemblies" />
+            <MenuItem Header="Close All Missing Files" />
+            <MenuItem Header="Sor_t Assemblies" />
+            <Separator />
+            <MenuItem Header="E_xit" InputGesture="Alt+F4" />
+        </MenuItem>
+
+        <MenuItem Header="_Edit">
+            <MenuItem Header="Undo" InputGesture="Ctrl+Z" />
+            <MenuItem Header="Redo" InputGesture="Ctrl+Y" />
+            <Separator />
+            <MenuItem Header="_Find" InputGesture="Ctrl+F" />
+            <MenuItem Header="_Search Assemblies" InputGesture="Ctrl+Shift+K" />
+            <Separator />
+            <MenuItem Header="Create Assembly..." />
+            <MenuItem Header="Create NetModule..." />
+        </MenuItem>
+
+        <MenuItem Header="_View">
+            <MenuItem Header="_Word Wrap" InputGesture="Ctrl+E" />
+            <MenuItem Header="_Highlight Current Line" />
+            <MenuItem Header="F_ull Screen" InputGesture="Shift+Alt+Enter" />
+            <MenuItem Header="Collapse Tree_View Nodes" InputGesture="Ctrl+Shift+P" />
+            <MenuItem Header="_Theme">
+                <MenuItem Header="Blue" />
+                <MenuItem Header="Dark" />
+                <MenuItem Header="Light" />
+            </MenuItem>
+            <MenuItem Header="Language">
+                <MenuItem Header="no." />
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="_Code" InputGesture="Ctrl+Alt+0" />
+            <MenuItem Header="Assembly Ex_plorer" InputGesture="Ctrl+Alt+L" />
+            <MenuItem Header="_Output" InputGesture="Alt+2" />
+            <MenuItem Header="C# Interactive" InputGesture="Ctrl+Alt+N" />
+            <MenuItem Header="Boo_kmarks" />
+            <Separator />
+            <MenuItem Header="_Options" />
+        </MenuItem>
+
+        <MenuItem Header="_Debug">
+            <MenuItem Header="_Windows">
+                <MenuItem Header="Breakpoints" InputGesture="Ctrl+Alt+B" />
+                <MenuItem Header="Mod_ule Breakpoints" />
+                <MenuItem Header="E_xception Settings" InputGesture="Ctrl+Alt+E" />
+                <MenuItem Header="_Output" />
+            </MenuItem>
+            <Separator />
+            <MenuItem Header="_Start Debugging..." InputGesture="F5" />
+            <MenuItem Header="Start Wit_hout Debugging" InputGesture="Ctrl+F5" />
+            <MenuItem Header="Attach to _Process..." InputGesture="Ctrl+Alt+P" />
+            <MenuItem Header="Attach to _Process (Unity)..." />
+            <Separator />
+            <MenuItem Header="To_ggle Breakpoint" InputGesture="F9" />
+            <Separator />
+            <MenuItem Header="_Options" />
+        </MenuItem>
+
+        <MenuItem Header="_Window">
+            <MenuItem Header="_New Window" />
+            <Separator />
+            <MenuItem Header="C_lose All Tabs" />
+            <Separator />
+            <MenuItem Header="_Windows..." />
+        </MenuItem>
+
+        <MenuItem Header="_Help">
+            <MenuItem Header="_Latest Release" />
+            <MenuItem Header="_Issues" />
+            <MenuItem Header="_Wiki" />
+            <MenuItem Header="_Source Code" />
+            <Separator />
+            <MenuItem Header="_About" />
+        </MenuItem>
+
+        <Separator Background="Red" Focusable="False" />
+
+        <Button Background="Red">
+            <ToolTip.Tip>Navigate Backward</ToolTip.Tip>
+        </Button>
+        <Button Background="Red">
+            <ToolTip.Tip>Navigate Forward</ToolTip.Tip>
+        </Button>
+
+        <Separator Background="Red" Focusable="False" />
+
+        <Button Background="Red">
+            <ToolTip.Tip>Open</ToolTip.Tip>
+        </Button>
+        <Button Background="Red">
+            <ToolTip.Tip>Save All</ToolTip.Tip>
+        </Button>
+
+        <Separator Background="Red" Focusable="False" />
+
+        <ComboBox SelectedIndex="0">
+            <ComboBoxItem>C#</ComboBoxItem>
+            <ComboBoxItem>Visual Basic</ComboBoxItem>
+            <ComboBoxItem>IL</ComboBoxItem>
+        </ComboBox>
+
+        <Separator Background="Red" Focusable="False" />
+
+        <Button Background="Red">
+            <ToolTip.Tip>Undo</ToolTip.Tip>
+        </Button>
+        <Button Background="Red">
+            <ToolTip.Tip>Redo</ToolTip.Tip>
+        </Button>
+
+        <Separator Background="Red" Focusable="False" />
+
+        <Button>Debug</Button>
+
+        <Separator Background="Red" Focusable="False" />
+
+        <Button Background="Red">
+            <ToolTip.Tip>Search Assemblies</ToolTip.Tip>
+        </Button>
+
+    </Menu>
+
+</UserControl>
