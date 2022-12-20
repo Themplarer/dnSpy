@@ -23,6 +23,6 @@ using Microsoft.VisualStudio.Text.Classification;
 
 namespace dnSpy.Contracts.Text.Classification {
 	interface ITextElementFactory {
-		FrameworkElement Create(IClassificationFormatMap classificationFormatMap, string text, IList<TextClassificationTag> tags, TextElementFlags flags);
+		// FrameworkElement Create(IClassificationFormatMap classificationFormatMap, string text, IList<TextClassificationTag> tags, TextElementFlags flags);
 	}
 }

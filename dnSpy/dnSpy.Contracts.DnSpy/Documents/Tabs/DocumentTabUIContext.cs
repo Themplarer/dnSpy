@@ -38,12 +38,12 @@ namespace dnSpy.Contracts.Documents.Tabs {
 		/// <summary>
 		/// Gets the element that gets focused or null
 		/// </summary>
-		public abstract IInputElement? FocusedElement { get; }
+		// public abstract IInputElement? FocusedElement { get; }
 
 		/// <summary>
 		/// Gets the element that gets zoomed or null
 		/// </summary>
-		public abstract FrameworkElement? ZoomElement { get; }
+		// public abstract FrameworkElement? ZoomElement { get; }
 
 		/// <summary>
 		/// Saves UI state, eg. line number, caret position, etc

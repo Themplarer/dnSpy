@@ -108,19 +108,19 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="lineNumber">Line number returned by <see cref="GetLineNumber(ITextViewLine, ITextSnapshotLine, ref object)"/></param>
 		/// <param name="state">State, initialized by <see cref="GetLineNumber(ITextViewLine, ITextSnapshotLine, ref object)"/></param>
 		/// <returns></returns>
-		TextFormattingRunProperties GetLineNumberTextFormattingRunProperties(ITextViewLine viewLine, ITextSnapshotLine snapshotLine, int lineNumber, object? state);
-
-		/// <summary>
-		/// Gets the default text formatting properties
-		/// </summary>
-		/// <returns></returns>
-		TextFormattingRunProperties? GetDefaultTextFormattingRunProperties();
-
-		/// <summary>
-		/// Gets called when text formatting properties have changed
-		/// </summary>
-		/// <param name="classificationFormatMap">Classification format map</param>
-		void OnTextPropertiesChanged(IClassificationFormatMap classificationFormatMap);
+		// TextFormattingRunProperties GetLineNumberTextFormattingRunProperties(ITextViewLine viewLine, ITextSnapshotLine snapshotLine, int lineNumber, object? state);
+		//
+		// /// <summary>
+		// /// Gets the default text formatting properties
+		// /// </summary>
+		// /// <returns></returns>
+		// TextFormattingRunProperties? GetDefaultTextFormattingRunProperties();
+		//
+		// /// <summary>
+		// /// Gets called when text formatting properties have changed
+		// /// </summary>
+		// /// <param name="classificationFormatMap">Classification format map</param>
+		// void OnTextPropertiesChanged(IClassificationFormatMap classificationFormatMap);
 
 		/// <summary>
 		/// Called when the margin is visible

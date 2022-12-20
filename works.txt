@@ -1,0 +1,6 @@
+Проекты, которые собираются и пока не требуют редактирования
+
+- всё, что в Build
+- dnSpy.Debugger.DotNet.Metadata
+- ICSharpCode.NRefactory
+- Mono.Debugger.Soft

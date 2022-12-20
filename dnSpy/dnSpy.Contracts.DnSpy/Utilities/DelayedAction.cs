@@ -18,7 +18,8 @@
 */
 
 using System;
-using System.Windows.Threading;
+using System.Timers;
+// using System.Windows.Threading;
 
 namespace dnSpy.Contracts.Utilities {
 	/// <summary>
@@ -27,7 +28,8 @@ namespace dnSpy.Contracts.Utilities {
 	sealed class DelayedAction {
 		readonly int milliseconds;
 		readonly Action action;
-		readonly DispatcherTimer dispatcherTimer;
+		private readonly Timer _timer;
+		// readonly DispatcherTimer dispatcherTimer;
 
 		/// <summary>
 		/// Constructor
@@ -37,25 +39,29 @@ namespace dnSpy.Contracts.Utilities {
 		public DelayedAction(int milliseconds, Action action) {
 			this.milliseconds = milliseconds;
 			this.action = action ?? throw new ArgumentNullException(nameof(action));
-			dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(milliseconds), DispatcherPriority.Send, StartIt, Dispatcher.CurrentDispatcher);
+			// _timer = new System.Threading.Timer(() => action(), null, );
+			// dispatcherTimer = new DispatcherTimer(TimeSpan.FromMilliseconds(milliseconds), DispatcherPriority.Send, StartIt, Dispatcher.CurrentDispatcher);
 		}
 
 		void StartIt(object? sender, EventArgs e) {
-			dispatcherTimer.Stop();
+			// dispatcherTimer.Stop();
 			action();
 		}
 
 		/// <summary>
 		/// Cancels the timer
 		/// </summary>
-		public void Cancel() => dispatcherTimer.Stop();
+		public void Cancel()
+		{
+			// dispatcherTimer.Stop();
+		}
 
 		/// <summary>
 		/// Starts the timer
 		/// </summary>
 		public void Start() {
-			dispatcherTimer.Stop();
-			dispatcherTimer.Start();
+			// dispatcherTimer.Stop();
+			// dispatcherTimer.Start();
 		}
 	}
 }

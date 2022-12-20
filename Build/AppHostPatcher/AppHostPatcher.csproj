@@ -1,18 +1,20 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\..\DnSpyCommon.props" />
+    <!--  <Import Project="..\..\DnSpyCommon.props" />-->
 
-  <PropertyGroup>
-    <Copyright>$(DnSpyAssemblyCopyright)</Copyright>
-    <Version>$(DnSpyAssemblyVersion)</Version>
-    <InformationalVersion>$(DnSpyAssemblyInformationalVersion)</InformationalVersion>
+    <PropertyGroup>
+        <!--    <Copyright>$(DnSpyAssemblyCopyright)</Copyright>-->
+        <!--    <Version>$(DnSpyAssemblyVersion)</Version>-->
+        <!--    <InformationalVersion>$(DnSpyAssemblyInformationalVersion)</InformationalVersion>-->
 
-    <SignAssembly>True</SignAssembly>
-    <AssemblyOriginatorKeyFile>..\..\dnSpy.snk</AssemblyOriginatorKeyFile>
-    <Nullable>enable</Nullable>
+        <!--    <SignAssembly>True</SignAssembly>-->
+        <!--    <AssemblyOriginatorKeyFile>..\..\dnSpy.snk</AssemblyOriginatorKeyFile>-->
 
-    <RuntimeIdentifiers>$(DnSpyRuntimeIdentifiers)</RuntimeIdentifiers>
-    <OutputType>Exe</OutputType>
-  </PropertyGroup>
+        <!--    <RuntimeIdentifiers>$(DnSpyRuntimeIdentifiers)</RuntimeIdentifiers>-->
+        <Nullable>enable</Nullable>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net7.0</TargetFramework>
+<!--        <LangVersion>9</LangVersion>-->
+    </PropertyGroup>
 
 </Project>

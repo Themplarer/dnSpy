@@ -23,8 +23,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Windows.Forms;
-using System.Windows.Media.Imaging;
+// using System.Windows.Forms;
+// using System.Windows.Media.Imaging;
 using dnlib.DotNet;
 using dnlib.DotNet.Resources;
 using dnSpy.Contracts.DnSpy.Properties;
@@ -71,30 +71,31 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 		/// <param name="opts">Options</param>
 		/// <returns></returns>
 		public static ResourceElement Serialize(ImageListOptions opts) {
-			var imgList = new ImageList();
-			imgList.ColorDepth = opts.ColorDepth;
-			imgList.ImageSize = opts.ImageSize;
-			imgList.TransparentColor = opts.TransparentColor;
-
-			foreach (var imageSource in opts.ImageSources) {
-				var bitmapSource = imageSource as BitmapSource;
-				if (bitmapSource is null)
-					throw new InvalidOperationException("Only BitmapSources can be used");
-				var encoder = new BmpBitmapEncoder();
-				encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-				var outStream = new MemoryStream();
-				encoder.Save(outStream);
-				outStream.Position = 0;
-				var wfBmp = new System.Drawing.Bitmap(outStream);
-				imgList.Images.Add(wfBmp);
-			}
-
-			var obj = imgList.ImageStream;
-			var typeName = SystemWindowsFormsImageListStreamer.AssemblyQualifiedName;
-			return new ResourceElement {
-				Name = opts.Name,
-				ResourceData = new BinaryResourceData(new UserResourceType(typeName, ResourceTypeCode.UserTypes), SerializationUtilities.Serialize(obj)),
-			};
+			// var imgList = new ImageList();
+			// imgList.ColorDepth = opts.ColorDepth;
+			// imgList.ImageSize = opts.ImageSize;
+			// imgList.TransparentColor = opts.TransparentColor;
+			//
+			// foreach (var imageSource in opts.ImageSources) {
+			// 	var bitmapSource = imageSource as BitmapSource;
+			// 	if (bitmapSource is null)
+			// 		throw new InvalidOperationException("Only BitmapSources can be used");
+			// 	var encoder = new BmpBitmapEncoder();
+			// 	encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+			// 	var outStream = new MemoryStream();
+			// 	encoder.Save(outStream);
+			// 	outStream.Position = 0;
+			// 	var wfBmp = new System.Drawing.Bitmap(outStream);
+			// 	imgList.Images.Add(wfBmp);
+			// }
+			//
+			// var obj = imgList.ImageStream;
+			// var typeName = SystemWindowsFormsImageListStreamer.AssemblyQualifiedName;
+			// return new ResourceElement {
+			// 	Name = opts.Name,
+			// 	ResourceData = new BinaryResourceData(new UserResourceType(typeName, ResourceTypeCode.UserTypes), SerializationUtilities.Serialize(obj)),
+			// };
+			return null!;
 		}
 
 		/// <summary>
@@ -124,28 +125,29 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 		/// <param name="imageData">Serialized image list</param>
 		/// <returns></returns>
 		public static ImageListOptions ReadImageData(byte[] imageData) {
-			var imageList = new ImageList();
-			var info = new SerializationInfo(typeof(ImageListStreamer), new FormatterConverter());
-			info.AddValue("Data", imageData);
-			var ctor = typeof(ImageListStreamer).GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(SerializationInfo), typeof(StreamingContext) }, null);
-			if (ctor is null)
-				throw new InvalidOperationException();
-			var streamer = (ImageListStreamer)ctor.Invoke(new object[] { info, new StreamingContext(StreamingContextStates.All) });
-			imageList.ImageStream = streamer;
-
-			var opts = new ImageListOptions();
-			opts.ColorDepth = imageList.ColorDepth;
-			opts.ImageSize = imageList.ImageSize;
-			opts.TransparentColor = imageList.TransparentColor;
-
-			for (int i = 0; i < imageList.Images.Count; i++) {
-				var bitmap = imageList.Images[i];
-				var stream = new MemoryStream();
-				bitmap.Save(stream, ImageFormat.Bmp);
-				opts.ImageSources.Add(ImageResourceUtilities.CreateImageSource(stream.ToArray()));
-			}
-
-			return opts;
+			// var imageList = new ImageList();
+			// var info = new SerializationInfo(typeof(ImageListStreamer), new FormatterConverter());
+			// info.AddValue("Data", imageData);
+			// var ctor = typeof(ImageListStreamer).GetConstructor(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance, null, new Type[] { typeof(SerializationInfo), typeof(StreamingContext) }, null);
+			// if (ctor is null)
+			// 	throw new InvalidOperationException();
+			// var streamer = (ImageListStreamer)ctor.Invoke(new object[] { info, new StreamingContext(StreamingContextStates.All) });
+			// imageList.ImageStream = streamer;
+			//
+			// var opts = new ImageListOptions();
+			// opts.ColorDepth = imageList.ColorDepth;
+			// opts.ImageSize = imageList.ImageSize;
+			// opts.TransparentColor = imageList.TransparentColor;
+			//
+			// for (int i = 0; i < imageList.Images.Count; i++) {
+			// 	var bitmap = imageList.Images[i];
+			// 	var stream = new MemoryStream();
+			// 	bitmap.Save(stream, ImageFormat.Bmp);
+			// 	opts.ImageSources.Add(ImageResourceUtilities.CreateImageSource(stream.ToArray()));
+			// }
+			//
+			// return opts;
+			return null;
 		}
 	}
 }

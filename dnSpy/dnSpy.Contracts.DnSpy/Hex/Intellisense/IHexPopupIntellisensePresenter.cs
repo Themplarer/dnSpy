@@ -31,7 +31,7 @@ namespace dnSpy.Contracts.Hex.Intellisense {
 		/// <summary>
 		/// Gets the UI element
 		/// </summary>
-		UIElement SurfaceElement { get; }
+		// UIElement SurfaceElement { get; }
 
 		/// <summary>
 		/// Raised after <see cref="SurfaceElement"/> is changed

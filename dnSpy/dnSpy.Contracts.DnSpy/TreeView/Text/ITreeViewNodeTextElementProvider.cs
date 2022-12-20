@@ -32,6 +32,6 @@ namespace dnSpy.Contracts.TreeView.Text {
 		/// <param name="contentType">Treeview node content type, eg. <see cref="TreeViewContentTypes.TreeViewNodeAssemblyExplorer"/></param>
 		/// <param name="flags">Flags</param>
 		/// <returns></returns>
-		FrameworkElement CreateTextElement(TreeViewNodeClassifierContext context, string contentType, TextElementFlags flags);
+		// FrameworkElement CreateTextElement(TreeViewNodeClassifierContext context, string contentType, TextElementFlags flags);
 	}
 }

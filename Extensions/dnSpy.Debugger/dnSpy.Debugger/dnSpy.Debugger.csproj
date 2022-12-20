@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\..\DnSpyCommon.props" />
 
@@ -8,19 +8,16 @@
     <InformationalVersion>$(DnSpyAssemblyInformationalVersion)</InformationalVersion>
 
     <AssemblyName>dnSpy.Debugger.x</AssemblyName>
-    <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\dnSpy.snk</AssemblyOriginatorKeyFile>
     <OutputPath>..\..\..\dnSpy\dnSpy\bin\$(Configuration)\</OutputPath>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\dnSpy\dnSpy.Contracts.Debugger\dnSpy.Contracts.Debugger.csproj" />
     <ProjectReference Include="..\..\..\dnSpy\dnSpy.Contracts.DnSpy\dnSpy.Contracts.DnSpy.csproj" />
     <ProjectReference Include="..\..\..\dnSpy\dnSpy.Contracts.Logic\dnSpy.Contracts.Logic.csproj" />
-    <ProjectReference Include="..\..\..\Libraries\ICSharpCode.TreeView\ICSharpCode.TreeView.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -45,7 +42,6 @@
 
   <ItemGroup>
     <PackageReference Include="Iced" Version="$(IcedVersion)" />
-    <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf" Version="$(MSVSTextVersion)" />
   </ItemGroup>
 
 </Project>

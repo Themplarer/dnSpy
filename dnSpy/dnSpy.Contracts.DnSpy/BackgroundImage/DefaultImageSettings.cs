@@ -18,8 +18,8 @@
 */
 
 using System;
-using System.Windows.Controls;
-using System.Windows.Media;
+// using System.Windows.Controls;
+// using System.Windows.Media;
 
 namespace dnSpy.Contracts.BackgroundImage {
 	/// <summary>
@@ -31,15 +31,15 @@ namespace dnSpy.Contracts.BackgroundImage {
 		/// </summary>
 		public string[]? Images { get; set; }
 
-		/// <summary>
-		/// Stretch value or null to use the default value
-		/// </summary>
-		public Stretch? Stretch { get; set; }
-
-		/// <summary>
-		/// Stretch direction value or null to use the default value
-		/// </summary>
-		public StretchDirection? StretchDirection { get; set; }
+		// /// <summary>
+		// /// Stretch value or null to use the default value
+		// /// </summary>
+		// public Stretch? Stretch { get; set; }
+		//
+		// /// <summary>
+		// /// Stretch direction value or null to use the default value
+		// /// </summary>
+		// public StretchDirection? StretchDirection { get; set; }
 
 		/// <summary>
 		/// Opacity or null to use the default value

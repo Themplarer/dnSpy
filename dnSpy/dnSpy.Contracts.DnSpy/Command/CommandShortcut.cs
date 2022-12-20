@@ -28,15 +28,15 @@ namespace dnSpy.Contracts.Command {
 		public KeyShortcut KeyShortcut { get; }
 		public CommandInfo CommandInfo { get; }
 
-		public static CommandShortcut Create(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.None), cmd);
-		public static CommandShortcut Control(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Control), cmd);
-		public static CommandShortcut Shift(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Shift), cmd);
-		public static CommandShortcut Alt(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Alt), cmd);
-		public static CommandShortcut ShiftAlt(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Alt | ModifierKeys.Shift), cmd);
-		public static CommandShortcut CtrlShift(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Control | ModifierKeys.Shift), cmd);
-		public static CommandShortcut CtrlAlt(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Control | ModifierKeys.Alt), cmd);
-		public static CommandShortcut CtrlShiftAlt(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt), cmd);
-		public static CommandShortcut Create(KeyInput key1, KeyInput key2, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key1, key2), cmd);
+		// public static CommandShortcut Create(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.None), cmd);
+		// public static CommandShortcut Control(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Control), cmd);
+		// public static CommandShortcut Shift(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Shift), cmd);
+		// public static CommandShortcut Alt(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Alt), cmd);
+		// public static CommandShortcut ShiftAlt(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Alt | ModifierKeys.Shift), cmd);
+		// public static CommandShortcut CtrlShift(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Control | ModifierKeys.Shift), cmd);
+		// public static CommandShortcut CtrlAlt(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Control | ModifierKeys.Alt), cmd);
+		// public static CommandShortcut CtrlShiftAlt(Key key, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key, ModifierKeys.Control | ModifierKeys.Shift | ModifierKeys.Alt), cmd);
+		// public static CommandShortcut Create(KeyInput key1, KeyInput key2, CommandInfo cmd) => new CommandShortcut(new KeyShortcut(key1, key2), cmd);
 
 		public CommandShortcut(KeyShortcut shortcut, CommandInfo cmd) {
 			KeyShortcut = shortcut;

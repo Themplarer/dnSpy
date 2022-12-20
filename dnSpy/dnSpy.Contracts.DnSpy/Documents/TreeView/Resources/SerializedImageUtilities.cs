@@ -103,16 +103,16 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 			var data = (byte[])((BuiltInResourceData)resElem.ResourceData).Data;
 			bool isIcon = BitConverter.ToUInt32(data, 0) == 0x00010000;
 
-			object obj;
-			string typeName;
-			if (isIcon) {
-				obj = new System.Drawing.Icon(new MemoryStream(data));
-				typeName = SystemDrawingIcon.AssemblyQualifiedName;
-			}
-			else {
-				obj = new System.Drawing.Bitmap(new MemoryStream(data));
-				typeName = SystemDrawingBitmap.AssemblyQualifiedName;
-			}
+			object obj = null;
+			string typeName = "";
+			// if (isIcon) {
+			// 	obj = new System.Drawing.Icon(new MemoryStream(data));
+			// 	typeName = SystemDrawingIcon.AssemblyQualifiedName;
+			// }
+			// else {
+			// 	obj = new System.Drawing.Bitmap(new MemoryStream(data));
+			// 	typeName = SystemDrawingBitmap.AssemblyQualifiedName;
+			// }
 
 			return new ResourceElement {
 				Name = resElem.Name,

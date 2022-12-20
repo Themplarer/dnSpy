@@ -20,7 +20,7 @@
 using System;
 using System.ComponentModel;
 using System.Reflection;
-using System.Windows;
+// using System.Windows;
 using dnSpy.Contracts.Controls;
 
 namespace dnSpy.Contracts.App {
@@ -41,7 +41,7 @@ namespace dnSpy.Contracts.App {
 		/// <summary>
 		/// Gets the main window
 		/// </summary>
-		Window MainWindow { get; }
+		// Window MainWindow { get; }
 
 		/// <summary>
 		/// Gets the <see cref="IWpfCommands"/> instance

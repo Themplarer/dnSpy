@@ -17,7 +17,6 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System.Windows.Forms;
 using dnlib.DotNet.Resources;
 using dnSpy.Contracts.TreeView;
 

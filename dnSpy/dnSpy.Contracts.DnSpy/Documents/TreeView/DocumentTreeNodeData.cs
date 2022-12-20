@@ -94,9 +94,10 @@ namespace dnSpy.Contracts.Documents.TreeView {
 				try {
 					WriteCore(writer, Context.Decompiler, DocumentNodeWriteOptions.None);
 					var classifierContext = new TreeViewNodeClassifierContext(writer.Text, Context.DocumentTreeView.TreeView, this, isToolTip: false, colorize: Context.SyntaxHighlight, colors: writer.Colors);
-					var elem = Context.TreeViewNodeTextElementProvider.CreateTextElement(classifierContext, TreeViewContentTypes.TreeViewNodeAssemblyExplorer, TextElementFlags.FilterOutNewLines);
-					cachedText = new WeakReference(elem);
-					return elem;
+					// var elem = Context.TreeViewNodeTextElementProvider.CreateTextElement(classifierContext, TreeViewContentTypes.TreeViewNodeAssemblyExplorer, TextElementFlags.FilterOutNewLines);
+					// cachedText = new WeakReference(elem);
+					// return elem;
+					return null;
 				}
 				finally {
 					Cache.FreeWriter(writer);
@@ -138,9 +139,10 @@ namespace dnSpy.Contracts.Documents.TreeView {
 				var writer = Cache.GetWriter();
 				WriteCore(writer, Context.Decompiler, DocumentNodeWriteOptions.ToolTip);
 				var classifierContext = new TreeViewNodeClassifierContext(writer.Text, Context.DocumentTreeView.TreeView, this, isToolTip: true, colorize: Context.SyntaxHighlight, colors: writer.Colors);
-				var elem = Context.TreeViewNodeTextElementProvider.CreateTextElement(classifierContext, TreeViewContentTypes.TreeViewNodeAssemblyExplorer, TextElementFlags.None);
-				Cache.FreeWriter(writer);
-				return elem;
+				// var elem = Context.TreeViewNodeTextElementProvider.CreateTextElement(classifierContext, TreeViewContentTypes.TreeViewNodeAssemblyExplorer, TextElementFlags.None);
+				// Cache.FreeWriter(writer);
+				// return elem;
+				return null;
 			}
 		}
 
@@ -314,36 +316,36 @@ namespace dnSpy.Contracts.Documents.TreeView {
 		/// </summary>
 		/// <param name="dragSource">Drag source</param>
 		/// <param name="nodes">Nodes</param>
-		public sealed override void StartDrag(DependencyObject dragSource, TreeNodeData[] nodes) {
-			bool b = CanDrag(nodes);
-			Debug.Assert(b);
-			if (!b)
-				return;
-			try {
-				DragDrop.DoDragDrop(dragSource, Copy(nodes), DragDropEffects.All);
-			}
-			catch (COMException) {
-			}
-		}
+		// public sealed override void StartDrag(DependencyObject dragSource, TreeNodeData[] nodes) {
+		// 	bool b = CanDrag(nodes);
+		// 	Debug.Assert(b);
+		// 	if (!b)
+		// 		return;
+		// 	try {
+		// 		DragDrop.DoDragDrop(dragSource, Copy(nodes), DragDropEffects.All);
+		// 	}
+		// 	catch (COMException) {
+		// 	}
+		// }
 
 		/// <summary>
 		/// Copies nodes
 		/// </summary>
 		/// <param name="nodes">Nodes</param>
 		/// <returns></returns>
-		public sealed override IDataObject Copy(TreeNodeData[] nodes) {
-			var dataObject = new DataObject();
-			if (!Context.CanDragAndDrop)
-				return dataObject;
-			var rootNode = Context.DocumentTreeView.TreeView.Root;
-			var dict = new Dictionary<TreeNodeData, int>();
-			for (int i = 0; i < rootNode.Children.Count; i++)
-				dict.Add(rootNode.Children[i].Data, i);
-			var data = nodes.Where(a => dict.ContainsKey(a)).Select(a => dict[a]).ToArray();
-			if (data.Length != 0)
-				dataObject.SetData(DocumentTreeViewConstants.DATAFORMAT_COPIED_ROOT_NODES, data);
-			return dataObject;
-		}
+		// public sealed override IDataObject Copy(TreeNodeData[] nodes) {
+		// 	var dataObject = new DataObject();
+		// 	if (!Context.CanDragAndDrop)
+		// 		return dataObject;
+		// 	var rootNode = Context.DocumentTreeView.TreeView.Root;
+		// 	var dict = new Dictionary<TreeNodeData, int>();
+		// 	for (int i = 0; i < rootNode.Children.Count; i++)
+		// 		dict.Add(rootNode.Children[i].Data, i);
+		// 	var data = nodes.Where(a => dict.ContainsKey(a)).Select(a => dict[a]).ToArray();
+		// 	if (data.Length != 0)
+		// 		dataObject.SetData(DocumentTreeViewConstants.DATAFORMAT_COPIED_ROOT_NODES, data);
+		// 	return dataObject;
+		// }
 
 		/// <summary>
 		/// Writes the filename of the module

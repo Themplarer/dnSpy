@@ -11,8 +11,6 @@
     <AssemblyOriginatorKeyFile>..\..\..\dnSpy.snk</AssemblyOriginatorKeyFile>
     <Nullable>enable</Nullable>
     <OutputType>Exe</OutputType>
-
-    <DefineConstants>$(DefineConstants);APPHOSTINFO_STRINGS;APPHOSTINFO_DUPES;APPHOSTINFO_ERROR_STRINGS</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,11 +22,6 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="$(NewtonsoftJsonVersion)" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(IsDotNetFramework)' == 'true' ">
-    <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Net.Http" />
   </ItemGroup>
 
 </Project>

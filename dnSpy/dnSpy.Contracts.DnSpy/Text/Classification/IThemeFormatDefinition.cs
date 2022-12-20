@@ -31,6 +31,6 @@ namespace dnSpy.Contracts.Text.Classification {
 		/// </summary>
 		/// <param name="theme">Theme</param>
 		/// <returns></returns>
-		ResourceDictionary CreateResourceDictionary(ITheme theme);
+		// ResourceDictionary CreateResourceDictionary(ITheme theme);
 	}
 }

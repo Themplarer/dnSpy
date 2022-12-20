@@ -23,7 +23,9 @@ namespace dnSpy.Contracts.Text.Editor {
 	/// <summary>
 	/// dnSpy <see cref="IWpfTextViewHost"/>
 	/// </summary>
-	public interface IDsWpfTextViewHost : IWpfTextViewHost {
+	public interface IDsWpfTextViewHost 
+		// : IWpfTextViewHost
+	{
 		/// <summary>
 		/// Gets the text view
 		/// </summary>

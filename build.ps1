@@ -5,8 +5,8 @@ param(
 	)
 $ErrorActionPreference = 'Stop'
 
-$netframework_tfm = 'net48'
-$net_tfm = 'net6.0-windows'
+$netframework_tfm = 'net7.0'
+$net_tfm = 'net7.0'
 $configuration = 'Release'
 $net_baseoutput = "dnSpy\dnSpy\bin\$configuration"
 $apphostpatcher_dir = "Build\AppHostPatcher"

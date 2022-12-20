@@ -19,7 +19,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.Features" Version="$(RoslynVersion)" />
-    <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf" Version="$(MSVSTextVersion)" />
   </ItemGroup>
 
 </Project>

@@ -17,8 +17,8 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-using System.Windows;
-using System.Windows.Media;
+// using System.Windows;
+// using System.Windows.Media;
 
 namespace dnSpy.Contracts.Controls {
 	/// <summary>
@@ -33,12 +33,12 @@ namespace dnSpy.Contracts.Controls {
 		/// <summary>
 		/// Focused element
 		/// </summary>
-		IInputElement? FocusedElement { get; }
+		// IInputElement? FocusedElement { get; }
 
 		/// <summary>
 		/// Gets the element that gets the <see cref="ScaleTransform"/> or null if none
 		/// </summary>
-		FrameworkElement? ZoomElement { get; }
+		// FrameworkElement? ZoomElement { get; }
 	}
 
 	/// <summary>

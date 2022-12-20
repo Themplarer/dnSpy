@@ -29,6 +29,6 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// </summary>
 		/// <param name="wpfTextView">Text view</param>
 		/// <returns></returns>
-		IBlockStructureService GetService(IWpfTextView wpfTextView);
+		// IBlockStructureService GetService(IWpfTextView wpfTextView);
 	}
 }

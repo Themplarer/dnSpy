@@ -24,7 +24,9 @@ namespace dnSpy.Contracts.Text.Editor {
 	/// <summary>
 	/// dnSpy <see cref="IWpfTextView"/>
 	/// </summary>
-	public interface IDsWpfTextView : IWpfTextView, IDsTextView {
+	public interface IDsWpfTextView : 
+		// IWpfTextView,
+		IDsTextView {
 		/// <summary>
 		/// Invalidates classifications
 		/// </summary>

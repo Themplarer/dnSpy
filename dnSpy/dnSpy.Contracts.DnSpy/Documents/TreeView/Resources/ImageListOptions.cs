@@ -19,8 +19,6 @@
 
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
-using System.Windows.Media;
 
 namespace dnSpy.Contracts.Documents.TreeView.Resources {
 	/// <summary>
@@ -35,7 +33,7 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 		/// <summary>
 		/// Gets/sets the color depth
 		/// </summary>
-		public ColorDepth ColorDepth { get; set; }
+		// public ColorDepth ColorDepth { get; set; }
 
 		/// <summary>
 		/// Gets/sets the image size
@@ -50,29 +48,29 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 		/// <summary>
 		/// Gets the images
 		/// </summary>
-		public List<ImageSource> ImageSources => imageSources;
-		readonly List<ImageSource> imageSources = new List<ImageSource>();
-
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		public ImageListOptions() {
-			Name = string.Empty;
-			ColorDepth = ColorDepth.Depth32Bit;
-			ImageSize = new Size(16, 16);
-			TransparentColor = System.Drawing.Color.Transparent;
-		}
+		// public List<ImageSource> ImageSources => imageSources;
+		// readonly List<ImageSource> imageSources = new List<ImageSource>();
+		//
+		// /// <summary>
+		// /// Constructor
+		// /// </summary>
+		// public ImageListOptions() {
+		// 	Name = string.Empty;
+		// 	ColorDepth = ColorDepth.Depth32Bit;
+		// 	ImageSize = new Size(16, 16);
+		// 	TransparentColor = System.Drawing.Color.Transparent;
+		// }
 
 		/// <summary>
 		/// Constructor
 		/// </summary>
 		/// <param name="other">Other instance</param>
-		public ImageListOptions(ImageListOptions other) {
-			Name = other.Name ?? string.Empty;
-			ColorDepth = other.ColorDepth;
-			ImageSize = other.ImageSize;
-			TransparentColor = other.TransparentColor;
-			ImageSources.AddRange(other.ImageSources);
-		}
+		// public ImageListOptions(ImageListOptions other) {
+		// 	Name = other.Name ?? string.Empty;
+		// 	ColorDepth = other.ColorDepth;
+		// 	ImageSize = other.ImageSize;
+		// 	TransparentColor = other.TransparentColor;
+		// 	ImageSources.AddRange(other.ImageSources);
+		// }
 	}
 }

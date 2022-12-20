@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <Import Project="..\..\..\DnSpyCommon.props" />
 
@@ -8,12 +8,10 @@
     <InformationalVersion>$(DnSpyAssemblyInformationalVersion)</InformationalVersion>
 
     <AssemblyName>dnSpy.Debugger.DotNet.x</AssemblyName>
-    <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\..\dnSpy.snk</AssemblyOriginatorKeyFile>
     <OutputPath>..\..\..\dnSpy\dnSpy\bin\$(Configuration)\</OutputPath>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <UseWPF>true</UseWPF>
   </PropertyGroup>
 
   <ItemGroup>
@@ -45,10 +43,6 @@
     <None Include="debug\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Text.UI.Wpf" Version="$(MSVSTextVersion)" />
   </ItemGroup>
 
 </Project>

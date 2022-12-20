@@ -33,6 +33,6 @@ namespace dnSpy.Contracts.Text.Classification {
 		/// <param name="contentType">Content type</param>
 		/// <param name="flags">Flags</param>
 		/// <returns></returns>
-		FrameworkElement CreateTextElement(IClassificationFormatMap classificationFormatMap, TextClassifierContext context, string contentType, TextElementFlags flags);
+		// FrameworkElement CreateTextElement(IClassificationFormatMap classificationFormatMap, TextClassifierContext context, string contentType, TextElementFlags flags);
 	}
 }

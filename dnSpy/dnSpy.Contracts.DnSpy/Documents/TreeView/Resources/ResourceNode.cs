@@ -142,8 +142,8 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 		/// <summary>
 		/// Saves the resource
 		/// </summary>
-		protected void Save() =>
-			SaveResources.Save(new IResourceDataProvider[] { this }, false, ResourceDataType.Deserialized);
+		// protected void Save() =>
+		// 	SaveResources.Save(new IResourceDataProvider[] { this }, false, ResourceDataType.Deserialized);
 
 		/// <inheritdoc/>
 		public virtual void WriteShort(IDecompilerOutput output, IDecompiler decompiler, bool showOffset) {

@@ -23,13 +23,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using System.Windows.Threading;
 using dnSpy.Contracts.App;
 using dnSpy.Contracts.DnSpy.Properties;
 using dnSpy.Contracts.MVVM;
 using dnSpy.Contracts.MVVM.Dialogs;
-using Ookii.Dialogs.Wpf;
-using WF = System.Windows.Forms;
+// using Ookii.Dialogs.Wpf;
+// using WF = System.Windows.Forms;
 
 namespace dnSpy.Contracts.Documents.TreeView.Resources {
 	/// <summary>
@@ -63,61 +62,62 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 		/// <param name="useSubDirs">true to create sub directories, false to dump everything in the same folder</param>
 		/// <param name="resourceDataType">Type of data to save</param>
 		/// <param name="ownerWindow">Owner window</param>
-		public static void Save(IResourceDataProvider[]? nodes, bool useSubDirs, ResourceDataType resourceDataType, Window? ownerWindow = null) {
-			if (nodes is null)
-				return;
-
-			(ResourceData data, string filename)[] files;
-			try {
-				files = GetFiles(GetResourceData(nodes, resourceDataType), useSubDirs).ToArray();
-			}
-			catch (Exception ex) {
-				MsgBox.Instance.Show(ex);
-				return;
-			}
-			if (files.Length == 0)
-				return;
-
-			var data = new ProgressVM(Dispatcher.CurrentDispatcher, new ResourceSaver(files));
-			var win = new ProgressDlg();
-			win.DataContext = data;
-			win.Owner = ownerWindow ?? Application.Current.MainWindow;
-			win.Title = files.Length == 1 ? dnSpy_Contracts_DnSpy_Resources.SaveResource : dnSpy_Contracts_DnSpy_Resources.SaveResources;
-			var res = win.ShowDialog();
-			if (res != true)
-				return;
-			if (!data.WasError)
-				return;
-			MsgBox.Instance.Show(string.Format(dnSpy_Contracts_DnSpy_Resources.AnErrorOccurred, data.ErrorMessage));
-		}
+		// public static void Save(IResourceDataProvider[]? nodes, bool useSubDirs, ResourceDataType resourceDataType, Window? ownerWindow = null) {
+		// 	if (nodes is null)
+		// 		return;
+		//
+		// 	(ResourceData data, string filename)[] files;
+		// 	try {
+		// 		files = GetFiles(GetResourceData(nodes, resourceDataType), useSubDirs).ToArray();
+		// 	}
+		// 	catch (Exception ex) {
+		// 		MsgBox.Instance.Show(ex);
+		// 		return;
+		// 	}
+		// 	if (files.Length == 0)
+		// 		return;
+		//
+		// 	var data = new ProgressVM(Dispatcher.CurrentDispatcher, new ResourceSaver(files));
+		// 	var win = new ProgressDlg();
+		// 	win.DataContext = data;
+		// 	win.Owner = ownerWindow ?? Application.Current.MainWindow;
+		// 	win.Title = files.Length == 1 ? dnSpy_Contracts_DnSpy_Resources.SaveResource : dnSpy_Contracts_DnSpy_Resources.SaveResources;
+		// 	var res = win.ShowDialog();
+		// 	if (res != true)
+		// 		return;
+		// 	if (!data.WasError)
+		// 		return;
+		// 	MsgBox.Instance.Show(string.Format(dnSpy_Contracts_DnSpy_Resources.AnErrorOccurred, data.ErrorMessage));
+		// }
 
 		static IEnumerable<(ResourceData data, string filename)> GetFiles(ResourceData[] infos, bool useSubDirs) {
-			if (infos.Length == 1) {
-				var info = infos[0];
-				var name = FixFileNamePart(GetFileName(info.Name));
-				var dlg = new WF.SaveFileDialog {
-					Filter = PickFilenameConstants.AnyFilenameFilter,
-					RestoreDirectory = true,
-					ValidateNames = true,
-					FileName = name,
-				};
-				var ext = Path.GetExtension(name);
-				dlg.DefaultExt = string.IsNullOrEmpty(ext) ? string.Empty : ext.Substring(1);
-				if (dlg.ShowDialog() != WF.DialogResult.OK)
-					yield break;
-				yield return (info, dlg.FileName);
-			}
-			else {
-				var dlg = new VistaFolderBrowserDialog();
-				if (dlg.ShowDialog() != true)
-					yield break;
-				string baseDir = dlg.SelectedPath;
-				foreach (var info in infos) {
-					var name = GetCleanedPath(info.Name, useSubDirs);
-					var pathName = Path.Combine(baseDir, name);
-					yield return (info, pathName);
-				}
-			}
+			yield break;
+			// if (infos.Length == 1) {
+			// 	var info = infos[0];
+			// 	var name = FixFileNamePart(GetFileName(info.Name));
+			// 	var dlg = new WF.SaveFileDialog {
+			// 		Filter = PickFilenameConstants.AnyFilenameFilter,
+			// 		RestoreDirectory = true,
+			// 		ValidateNames = true,
+			// 		FileName = name,
+			// 	};
+			// 	var ext = Path.GetExtension(name);
+			// 	dlg.DefaultExt = string.IsNullOrEmpty(ext) ? string.Empty : ext.Substring(1);
+			// 	if (dlg.ShowDialog() != WF.DialogResult.OK)
+			// 		yield break;
+			// 	yield return (info, dlg.FileName);
+			// }
+			// else {
+			// 	var dlg = new VistaFolderBrowserDialog();
+			// 	if (dlg.ShowDialog() != true)
+			// 		yield break;
+			// 	string baseDir = dlg.SelectedPath;
+			// 	foreach (var info in infos) {
+			// 		var name = GetCleanedPath(info.Name, useSubDirs);
+			// 		var pathName = Path.Combine(baseDir, name);
+			// 		yield return (info, pathName);
+			// 	}
+			// }
 		}
 
 		static string GetFileName(string s) {

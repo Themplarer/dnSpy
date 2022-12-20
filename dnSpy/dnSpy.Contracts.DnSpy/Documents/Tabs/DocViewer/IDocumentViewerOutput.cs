@@ -40,7 +40,7 @@ namespace dnSpy.Contracts.Documents.Tabs.DocViewer {
 		/// Adds a UI element
 		/// </summary>
 		/// <param name="createElement">Creates the UI element. Only called on the UI thread</param>
-		void AddUIElement(Func<UIElement> createElement);
+		// void AddUIElement(Func<UIElement> createElement);
 
 		/// <summary>
 		/// Adds a button

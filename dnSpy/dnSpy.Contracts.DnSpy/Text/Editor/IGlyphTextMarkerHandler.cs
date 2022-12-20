@@ -42,7 +42,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="marker">Marker</param>
 		/// <param name="marginRelativePoint">Position of the mouse pointer relative to the glyph margin</param>
 		/// <returns></returns>
-		IEnumerable<GuidObject> GetContextMenuObjects(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, Point marginRelativePoint);
+		// IEnumerable<GuidObject> GetContextMenuObjects(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, Point marginRelativePoint);
 
 		/// <summary>
 		/// Gets the tool tip content or null if the next handler should be checked
@@ -59,7 +59,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <returns></returns>
-		FrameworkElement? GetPopupContent(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker);
+		// FrameworkElement? GetPopupContent(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker);
 	}
 
 	/// <summary>
@@ -116,22 +116,22 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <summary>
 		/// Gets the glyph margin
 		/// </summary>
-		IWpfTextViewMargin Margin { get; }
-
-		/// <summary>
-		/// Gets the text view host
-		/// </summary>
-		IWpfTextViewHost Host { get; }
-
-		/// <summary>
-		/// Gets the text view
-		/// </summary>
-		IWpfTextView TextView { get; }
-
-		/// <summary>
-		/// Gets the line
-		/// </summary>
-		IWpfTextViewLine Line { get; }
+		// IWpfTextViewMargin Margin { get; }
+		//
+		// /// <summary>
+		// /// Gets the text view host
+		// /// </summary>
+		// IWpfTextViewHost Host { get; }
+		//
+		// /// <summary>
+		// /// Gets the text view
+		// /// </summary>
+		// IWpfTextView TextView { get; }
+		//
+		// /// <summary>
+		// /// Gets the line
+		// /// </summary>
+		// IWpfTextViewLine Line { get; }
 
 		/// <summary>
 		/// Gets the span provider
@@ -149,7 +149,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		void OnMouseDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
+		// void OnMouseDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
 
 		/// <summary>
 		/// Mouse up handler
@@ -157,7 +157,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		void OnMouseUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
+		// void OnMouseUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
 
 		/// <summary>
 		/// Mouse left button down handler
@@ -165,7 +165,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		void OnMouseLeftButtonDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
+		// void OnMouseLeftButtonDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
 
 		/// <summary>
 		/// Mouse left button up handler
@@ -173,7 +173,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		void OnMouseLeftButtonUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
+		// void OnMouseLeftButtonUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
 
 		/// <summary>
 		/// Mouse right button down handler
@@ -181,7 +181,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		void OnMouseRightButtonDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
+		// void OnMouseRightButtonDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
 
 		/// <summary>
 		/// Mouse right button up handler
@@ -189,7 +189,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		void OnMouseRightButtonUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
+		// void OnMouseRightButtonUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e);
 
 		/// <summary>
 		/// Mouse move handler
@@ -197,7 +197,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		void OnMouseMove(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseEventArgs e);
+		// void OnMouseMove(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseEventArgs e);
 	}
 
 	/// <summary>
@@ -215,7 +215,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		public virtual void OnMouseDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
+		// public virtual void OnMouseDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
 
 		/// <summary>
 		/// Default mouse up handler
@@ -223,7 +223,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		public virtual void OnMouseUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
+		// public virtual void OnMouseUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
 
 		/// <summary>
 		/// Default mouse left button down handler
@@ -231,7 +231,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		public virtual void OnMouseLeftButtonDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
+		// public virtual void OnMouseLeftButtonDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
 
 		/// <summary>
 		/// Default mouse left button up handler
@@ -239,7 +239,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		public virtual void OnMouseLeftButtonUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
+		// public virtual void OnMouseLeftButtonUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
 
 		/// <summary>
 		/// Default mouse right button down handler
@@ -247,7 +247,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		public virtual void OnMouseRightButtonDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
+		// public virtual void OnMouseRightButtonDown(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
 
 		/// <summary>
 		/// Default mouse right button up handler
@@ -255,7 +255,7 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		public virtual void OnMouseRightButtonUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
+		// public virtual void OnMouseRightButtonUp(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseButtonEventArgs e) { }
 
 		/// <summary>
 		/// Default mouse move handler
@@ -263,6 +263,6 @@ namespace dnSpy.Contracts.Text.Editor {
 		/// <param name="context">Context</param>
 		/// <param name="marker">Marker</param>
 		/// <param name="e">Mouse event args</param>
-		public virtual void OnMouseMove(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseEventArgs e) { }
+		// public virtual void OnMouseMove(IGlyphTextMarkerHandlerContext context, IGlyphTextMarker marker, MouseEventArgs e) { }
 	}
 }

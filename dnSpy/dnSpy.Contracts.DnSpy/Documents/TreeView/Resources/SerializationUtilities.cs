@@ -41,14 +41,14 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 		}
 
 		static ResourceElement CreateSerializedImage(Stream stream, string filename) {
-			object obj;
+			object obj = null;
 			string typeName;
 			if (filename.EndsWith(".ico", StringComparison.OrdinalIgnoreCase)) {
-				obj = new System.Drawing.Icon(stream);
+				// obj = new System.Drawing.Icon(stream);
 				typeName = SerializedImageUtilities.SystemDrawingIcon.AssemblyQualifiedName;
 			}
 			else {
-				obj = new System.Drawing.Bitmap(stream);
+				// obj = new System.Drawing.Bitmap(stream);
 				typeName = SerializedImageUtilities.SystemDrawingBitmap.AssemblyQualifiedName;
 			}
 			var serializedData = Serialize(obj);

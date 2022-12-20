@@ -40,7 +40,7 @@ namespace dnSpy.Contracts.Documents.Tabs.DocViewer {
 		/// <summary>
 		/// Gets the document viewer control
 		/// </summary>
-		FrameworkElement UIObject { get; }
+		// FrameworkElement UIObject { get; }
 
 		/// <summary>
 		/// Sets new content. Returns true if the content got updated, false if the input was identical

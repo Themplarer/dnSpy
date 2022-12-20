@@ -19,8 +19,8 @@
 
 using System;
 using System.IO;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
+// using System.Windows.Media;
+// using System.Windows.Media.Imaging;
 
 namespace dnSpy.Contracts.Documents.TreeView.Resources {
 	/// <summary>
@@ -32,27 +32,27 @@ namespace dnSpy.Contracts.Documents.TreeView.Resources {
 		/// </summary>
 		/// <param name="data">Data</param>
 		/// <returns></returns>
-		public static ImageSource CreateImageSource(byte[] data) {
-			// Check if CUR
-			if (data.Length >= 4 && BitConverter.ToUInt32(data, 0) == 0x00020000) {
-				try {
-					data[2] = 1;
-					return CreateImageSource2(data);
-				}
-				finally {
-					data[2] = 2;
-				}
-			}
-
-			return CreateImageSource2(data);
-		}
-
-		static ImageSource CreateImageSource2(byte[] data) {
-			var bimg = new BitmapImage();
-			bimg.BeginInit();
-			bimg.StreamSource = new MemoryStream(data);
-			bimg.EndInit();
-			return bimg;
-		}
+		// public static ImageSource CreateImageSource(byte[] data) {
+		// 	// Check if CUR
+		// 	if (data.Length >= 4 && BitConverter.ToUInt32(data, 0) == 0x00020000) {
+		// 		try {
+		// 			data[2] = 1;
+		// 			return CreateImageSource2(data);
+		// 		}
+		// 		finally {
+		// 			data[2] = 2;
+		// 		}
+		// 	}
+		//
+		// 	return CreateImageSource2(data);
+		// }
+		//
+		// static ImageSource CreateImageSource2(byte[] data) {
+		// 	var bimg = new BitmapImage();
+		// 	bimg.BeginInit();
+		// 	bimg.StreamSource = new MemoryStream(data);
+		// 	bimg.EndInit();
+		// 	return bimg;
+		// }
 	}
 }
