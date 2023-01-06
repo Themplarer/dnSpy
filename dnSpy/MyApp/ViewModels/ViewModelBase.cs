@@ -1,6 +1,6 @@
 ﻿using ReactiveUI;
 
-namespace AvaloniaDebuggerUI.ViewModels;
+namespace MyApp.ViewModels;
 
 public class ViewModelBase : ReactiveObject
 {

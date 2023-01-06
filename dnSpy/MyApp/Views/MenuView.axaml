@@ -2,19 +2,20 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:viewModels="clr-namespace:AvaloniaDebuggerUI.ViewModels"
+             xmlns:viewModels="clr-namespace:MyApp.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaDebuggerUI.Views.MenuView"
-             x:CompileBindings="True" x:DataType="viewModels:MainWindowViewModel">
+             x:Class="MyApp.Views.MenuView"
+             x:CompileBindings="True"
+             x:DataType="viewModels:MainWindowViewModel">
 
     <Menu>
         <MenuItem Header="_File">
             <MenuItem Header="Export to Pro_ject..." />
-            <MenuItem Header="_Save..." InputGesture="Ctrl+S" Command="{Binding Save}" />
+            <MenuItem Header="_Save..." InputGesture="Ctrl+S" Command="{Binding NewMethod}" />
             <MenuItem Header="Save _Module..." />
             <MenuItem Header="Save A_ll..." InputGesture="Ctrl+Shift+S" />
             <Separator />
-            <MenuItem Header="_Open..." InputGesture="Ctrl+O" />
+            <MenuItem Header="_Open..." InputGesture="Ctrl+O" Command="{Binding Open}" />
             <MenuItem Header="Open from _GAC..." InputGesture="Ctrl+Shift+O" />
             <MenuItem Header="Open L_ist..." />
             <MenuItem Header="Recent _Files" />
@@ -97,7 +98,7 @@
             <MenuItem Header="_About" />
         </MenuItem>
 
-        <Separator Background="Red" Focusable="False" />
+        <Separator MaxWidth="3" />
 
         <Button Background="Red">
             <ToolTip.Tip>Navigate Backward</ToolTip.Tip>
@@ -106,7 +107,7 @@
             <ToolTip.Tip>Navigate Forward</ToolTip.Tip>
         </Button>
 
-        <Separator Background="Red" Focusable="False" />
+        <Separator Width="3" />
 
         <Button Background="Red">
             <ToolTip.Tip>Open</ToolTip.Tip>
@@ -115,7 +116,7 @@
             <ToolTip.Tip>Save All</ToolTip.Tip>
         </Button>
 
-        <Separator Background="Red" Focusable="False" />
+        <Separator Width="3" />
 
         <ComboBox SelectedIndex="0">
             <ComboBoxItem>C#</ComboBoxItem>
@@ -123,7 +124,7 @@
             <ComboBoxItem>IL</ComboBoxItem>
         </ComboBox>
 
-        <Separator Background="Red" Focusable="False" />
+        <Separator Width="3" />
 
         <Button Background="Red">
             <ToolTip.Tip>Undo</ToolTip.Tip>
@@ -132,11 +133,11 @@
             <ToolTip.Tip>Redo</ToolTip.Tip>
         </Button>
 
-        <Separator Background="Red" Focusable="False" />
+        <Separator Width="3" />
 
         <Button>Debug</Button>
 
-        <Separator Background="Red" Focusable="False" />
+        <Separator Width="3" />
 
         <Button Background="Red">
             <ToolTip.Tip>Search Assemblies</ToolTip.Tip>

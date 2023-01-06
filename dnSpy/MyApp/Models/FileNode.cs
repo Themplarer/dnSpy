@@ -1,7 +1,7 @@
 using System.Collections.ObjectModel;
 using System.IO;
 
-namespace AvaloniaDebuggerUI.Models;
+namespace MyApp.Models;
 
 public class FileNode
 {
@@ -9,7 +9,7 @@ public class FileNode
 	{
 		FullPath = fullPath;
 		FileName = Path.GetFileName(fullPath);
-		Subfolders = new();
+		Subfolders = new ObservableCollection<FileNode>();
 	}
 
 	public string FullPath { get; }
