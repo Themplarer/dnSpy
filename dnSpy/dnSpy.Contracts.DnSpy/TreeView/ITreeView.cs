@@ -19,104 +19,105 @@
 
 using System;
 using System.Collections.Generic;
-// using System.Windows.Controls;
+using Avalonia.Controls;
 
-namespace dnSpy.Contracts.TreeView {
-	/// <summary>
-	/// A treeview
-	/// </summary>
-	public interface ITreeView : IDisposable {
-		/// <summary>
-		/// Guid of this treeview
-		/// </summary>
-		Guid Guid { get; }
+namespace dnSpy.Contracts.TreeView;
 
-		/// <summary>
-		/// Gets the invisible root node
-		/// </summary>
-		ITreeNode Root { get; }
+/// <summary>
+/// A treeview
+/// </summary>
+public interface ITreeView : IDisposable
+{
+    /// <summary>
+    /// Guid of this treeview
+    /// </summary>
+    Guid Guid { get; }
 
-		/// <summary>
-		/// Creates a new <see cref="ITreeNode"/> instance that can be inserted into this, and only
-		/// this, treeview.
-		/// </summary>
-		/// <param name="data">User data</param>
-		/// <returns></returns>
-		ITreeNode Create(TreeNodeData data);
+    /// <summary>
+    /// Gets the invisible root node
+    /// </summary>
+    ITreeNode Root { get; }
 
-		/// <summary>
-		/// Gets the treeview UI object
-		/// </summary>
-		// Control UIObject { get; }
+    /// <summary>
+    /// Creates a new <see cref="ITreeNode"/> instance that can be inserted into this, and only
+    /// this, treeview.
+    /// </summary>
+    /// <param name="data">User data</param>
+    /// <returns></returns>
+    ITreeNode Create(TreeNodeData data);
 
-		/// <summary>
-		/// Select items
-		/// </summary>
-		/// <param name="items">Items to select</param>
-		void SelectItems(IEnumerable<TreeNodeData> items);
+    /// <summary>
+    /// Gets the treeview UI object
+    /// </summary>
+    Control UIObject { get; }
 
-		/// <summary>
-		/// Selects all visible items
-		/// </summary>
-		void SelectAll();
+    /// <summary>
+    /// Select items
+    /// </summary>
+    /// <param name="items">Items to select</param>
+    void SelectItems(IEnumerable<TreeNodeData> items);
 
-		/// <summary>
-		/// Raised when selection has changed
-		/// </summary>
-		event EventHandler<TreeViewSelectionChangedEventArgs>? SelectionChanged;
+    /// <summary>
+    /// Selects all visible items
+    /// </summary>
+    void SelectAll();
 
-		/// <summary>
-		/// Raised when a node has been removed
-		/// </summary>
-		event EventHandler<TreeViewNodeRemovedEventArgs>? NodeRemoved;
+    /// <summary>
+    /// Raised when selection has changed
+    /// </summary>
+    event EventHandler<TreeViewSelectionChangedEventArgs>? SelectionChanged;
 
-		/// <summary>
-		/// Gets the selected node or null
-		/// </summary>
-		TreeNodeData? SelectedItem { get; }
+    /// <summary>
+    /// Raised when a node has been removed
+    /// </summary>
+    event EventHandler<TreeViewNodeRemovedEventArgs>? NodeRemoved;
 
-		/// <summary>
-		/// Gets all selected items
-		/// </summary>
-		TreeNodeData[] SelectedItems { get; }
+    /// <summary>
+    /// Gets the selected node or null
+    /// </summary>
+    TreeNodeData? SelectedItem { get; }
 
-		/// <summary>
-		/// Gets the selected items which don't have any of their ancestors selected
-		/// </summary>
-		TreeNodeData[] TopLevelSelection { get; }
+    /// <summary>
+    /// Gets all selected items
+    /// </summary>
+    TreeNodeData[] SelectedItems { get; }
 
-		/// <summary>
-		/// Focuses the treeview, possibly getting keyboard focus
-		/// </summary>
-		void Focus();
+    /// <summary>
+    /// Gets the selected items which don't have any of their ancestors selected
+    /// </summary>
+    TreeNodeData[] TopLevelSelection { get; }
 
-		/// <summary>
-		/// Scrolls the current node into view
-		/// </summary>
-		void ScrollIntoView();
+    /// <summary>
+    /// Focuses the treeview, possibly getting keyboard focus
+    /// </summary>
+    void Focus();
 
-		/// <summary>
-		/// Calls all nodes' <see cref="ITreeNode.RefreshUI()"/> method
-		/// </summary>
-		void RefreshAllNodes();
+    /// <summary>
+    /// Scrolls the current node into view
+    /// </summary>
+    void ScrollIntoView();
 
-		/// <summary>
-		/// Converts the selected item to a <see cref="TreeNodeData"/>. Should rarely be called.
-		/// </summary>
-		/// <param name="selectedItem">Selected item</param>
-		/// <returns></returns>
-		TreeNodeData? FromImplNode(object? selectedItem);
+    /// <summary>
+    /// Calls all nodes' <see cref="ITreeNode.RefreshUI()"/> method
+    /// </summary>
+    void RefreshAllNodes();
 
-		/// <summary>
-		/// Converts <paramref name="node"/> to the real tree node
-		/// </summary>
-		/// <param name="node">Node</param>
-		/// <returns></returns>
-		object? ToImplNode(TreeNodeData node);
+    /// <summary>
+    /// Converts the selected item to a <see cref="TreeNodeData"/>. Should rarely be called.
+    /// </summary>
+    /// <param name="selectedItem">Selected item</param>
+    /// <returns></returns>
+    TreeNodeData? FromImplNode(object? selectedItem);
 
-		/// <summary>
-		/// Collapses all unselected nodes
-		/// </summary>
-		void CollapseUnusedNodes();
-	}
+    /// <summary>
+    /// Converts <paramref name="node"/> to the real tree node
+    /// </summary>
+    /// <param name="node">Node</param>
+    /// <returns></returns>
+    object? ToImplNode(TreeNodeData node);
+
+    /// <summary>
+    /// Collapses all unselected nodes
+    /// </summary>
+    void CollapseUnusedNodes();
 }

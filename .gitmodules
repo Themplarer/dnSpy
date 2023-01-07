@@ -21,3 +21,6 @@
 	path = Extensions/dnSpy.Debugger/Mono.Debugger.Soft
 	url = git@github.com:Themplarer/Mono.Debugger.Soft.git
 	branch = bump-runtime
+[submodule "Libraries/ICSharpCode.TreeView"]
+	path = Libraries/ICSharpCode.TreeView
+	url = git@github.com:Themplarer/ICSharpCode.TreeView.git

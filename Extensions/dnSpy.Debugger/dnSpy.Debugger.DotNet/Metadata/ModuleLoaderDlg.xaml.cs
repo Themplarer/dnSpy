@@ -24,40 +24,39 @@ using dnSpy.Contracts.Controls;
 namespace dnSpy.Debugger.DotNet.Metadata {
 	sealed partial class ModuleLoaderDlg : WindowBase {
 		public ModuleLoaderDlg() {
-			InitializeComponent();
-			DataContextChanged += (s, e) => {
-				var data = DataContext as ModuleLoaderVM;
-				if (data is not null) {
-					data.OnCompleted += ModuleLoaderVM_OnCompleted;
-					if (data.HasCompleted)
-						OnCompleted();
-				}
-			};
+			// InitializeComponent();
+			// DataContextChanged += (s, e) => {
+			// 	if (DataContext is ModuleLoaderVM data) {
+			// 		data.OnCompleted += ModuleLoaderVM_OnCompleted;
+			// 		if (data.HasCompleted)
+			// 			OnCompleted();
+			// 	}
+			// };
 		}
 
-		protected override void OnClosed(EventArgs e) {
-			progressBar.IsIndeterminate = false;
-			base.OnClosed(e);
-		}
-
-		protected override void OnClosing(CancelEventArgs e) {
-			base.OnClosing(e);
-
-			var data = DataContext as ModuleLoaderVM;
-			if (data is null)
-				return;
-			if (!data.HasCompleted)
-				data.AskCancel();
-			if (!data.HasCompleted)
-				e.Cancel = true;
-		}
-
-		void ModuleLoaderVM_OnCompleted(object? sender, EventArgs e) => OnCompleted();
-
-		void OnCompleted() {
-			var data = DataContext as ModuleLoaderVM;
-			DialogResult = data is not null && !data.WasCanceled;
-			Close();
-		}
+		// protected override void OnClosed(EventArgs e) {
+		// 	progressBar.IsIndeterminate = false;
+		// 	base.OnClosed(e);
+		// }
+		//
+		// protected override void OnClosing(CancelEventArgs e) {
+		// 	base.OnClosing(e);
+		//
+		// 	var data = DataContext as ModuleLoaderVM;
+		// 	if (data is null)
+		// 		return;
+		// 	if (!data.HasCompleted)
+		// 		data.AskCancel();
+		// 	if (!data.HasCompleted)
+		// 		e.Cancel = true;
+		// }
+		//
+		// void ModuleLoaderVM_OnCompleted(object? sender, EventArgs e) => OnCompleted();
+		//
+		// void OnCompleted() {
+		// 	var data = DataContext as ModuleLoaderVM;
+		// 	DialogResult = data is not null && !data.WasCanceled;
+		// 	Close();
+		// }
 	}
 }

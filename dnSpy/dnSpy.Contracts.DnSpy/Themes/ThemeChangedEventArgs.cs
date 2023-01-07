@@ -24,6 +24,6 @@ namespace dnSpy.Contracts.Themes {
 	/// Theme changed event args
 	/// </summary>
 	public sealed class ThemeChangedEventArgs : EventArgs {
-		internal ThemeChangedEventArgs() { }
+		public ThemeChangedEventArgs() { }
 	}
 }

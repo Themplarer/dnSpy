@@ -11,11 +11,11 @@
     <Menu>
         <MenuItem Header="_File">
             <MenuItem Header="Export to Pro_ject..." />
-            <MenuItem Header="_Save..." InputGesture="Ctrl+S" Command="{Binding NewMethod}" />
+            <MenuItem Header="_Save..." InputGesture="Ctrl+S" Command="{Binding OpenFilesAsync}" />
             <MenuItem Header="Save _Module..." />
             <MenuItem Header="Save A_ll..." InputGesture="Ctrl+Shift+S" />
             <Separator />
-            <MenuItem Header="_Open..." InputGesture="Ctrl+O" Command="{Binding Open}" />
+            <MenuItem Header="_Open..." InputGesture="Ctrl+O" Command="{Binding OpenFilesAsync}" />
             <MenuItem Header="Open from _GAC..." InputGesture="Ctrl+Shift+O" />
             <MenuItem Header="Open L_ist..." />
             <MenuItem Header="Recent _Files" />
@@ -63,7 +63,7 @@
             <MenuItem Header="_Options" />
         </MenuItem>
 
-        <MenuItem Header="_Debug">
+        <MenuItem Header="_Debug" IsEnabled="False">
             <MenuItem Header="_Windows">
                 <MenuItem Header="Breakpoints" InputGesture="Ctrl+Alt+B" />
                 <MenuItem Header="Mod_ule Breakpoints" />

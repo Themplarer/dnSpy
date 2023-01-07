@@ -48,7 +48,7 @@ namespace dnSpy.Contracts.Documents.TreeView {
 		/// <summary>
 		/// Gets the <see cref="IWpfCommands"/> instance
 		/// </summary>
-		IWpfCommands WpfCommands { get; }
+		// IWpfCommands WpfCommands { get; }
 
 		/// <summary>
 		/// Raised when the collection gets changed

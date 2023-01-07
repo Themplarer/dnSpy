@@ -20,7 +20,7 @@
 using System.Threading;
 
 namespace dnSpy.Decompiler.ILSpy.Core.Settings {
-	class DecompilerSettingsService {
+	public class DecompilerSettingsService {
 		/// <summary>
 		/// Should only be used indirectly by dnSpy.Console.exe
 		/// </summary>
@@ -33,7 +33,7 @@ namespace dnSpy.Decompiler.ILSpy.Core.Settings {
 		}
 		static DecompilerSettingsService? __instance_DONT_USE;
 
-		protected DecompilerSettingsService() {
+		public DecompilerSettingsService() {
 			CSharpVBDecompilerSettings = new CSharpVBDecompilerSettings();
 			ILDecompilerSettings = new ILDecompilerSettings();
 		}

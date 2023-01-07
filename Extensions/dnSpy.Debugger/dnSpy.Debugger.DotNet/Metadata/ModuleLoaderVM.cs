@@ -75,9 +75,9 @@ namespace dnSpy.Debugger.DotNet.Metadata {
 				return;
 
 			if (!HasCompleted) {
-				var res = messageBoxService.Show(dnSpy_Debugger_DotNet_Resources.CancelLoadingModulesMessage, MsgBoxButton.Yes | MsgBoxButton.No);
-				if (res != MsgBoxButton.Yes)
-					return;
+				// var res = messageBoxService.Show(dnSpy_Debugger_DotNet_Resources.CancelLoadingModulesMessage, MsgBoxButton.Yes | MsgBoxButton.No);
+				// if (res != MsgBoxButton.Yes)
+				// 	return;
 			}
 
 			Cancel();
@@ -141,7 +141,7 @@ namespace dnSpy.Debugger.DotNet.Metadata {
 			}
 			catch (Exception ex) {
 				wasCanceled = false;
-				UI(() => messageBoxService.Show(ex));
+				// UI(() => messageBoxService.Show(ex));
 			}
 			UI(() => {
 				WasCanceled = wasCanceled;

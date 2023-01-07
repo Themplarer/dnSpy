@@ -46,7 +46,7 @@ namespace dnSpy.Contracts.TreeView {
 	/// <summary>
 	/// Exports a <see cref="ITreeNodeDataProvider"/> instance
 	/// </summary>
-	[MetadataAttribute, AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
+	[MetadataAttribute, AttributeUsage(AttributeTargets.Class)]
 	public sealed class ExportTreeNodeDataProviderAttribute : ExportAttribute, ITreeNodeDataProviderMetadata {
 		/// <summary>Constructor</summary>
 		public ExportTreeNodeDataProviderAttribute()

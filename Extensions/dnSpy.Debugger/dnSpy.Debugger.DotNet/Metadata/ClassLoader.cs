@@ -150,7 +150,7 @@ namespace dnSpy.Debugger.DotNet.Metadata {
 						new TreeViewUpdater(documentTabService.Value, state.Document, state.ModuleNode, state.ModifiedTypes, state.LoadClassHash).Update();
 				}
 				catch (Exception ex) {
-					messageBoxService.Value.Show(ex);
+					// messageBoxService.Value.Show(ex);
 				}
 			});
 		}

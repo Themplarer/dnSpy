@@ -18,45 +18,47 @@
 */
 
 using System;
-using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Reflection;
-using System.Windows.Threading;
-using dnSpy.Contracts.App;
+using Avalonia.Threading;
 
-namespace dnSpy.Debugger.DotNet.UI {
-	[Export(typeof(UIDispatcher))]
-	sealed class UIDispatcher {
-		static readonly FieldInfo? _disableProcessingCountFieldInfo;
-		static UIDispatcher() {
-			_disableProcessingCountFieldInfo = typeof(Dispatcher).GetField("_disableProcessingCount", BindingFlags.NonPublic | BindingFlags.Instance);
-			Debug2.Assert(_disableProcessingCountFieldInfo is not null && _disableProcessingCountFieldInfo.FieldType == typeof(int));
-		}
+namespace dnSpy.Debugger.DotNet.UI;
 
-		Dispatcher Dispatcher { get; }
+sealed class UIDispatcher
+{
+    static readonly FieldInfo? _disableProcessingCountFieldInfo;
 
-		[ImportingConstructor]
-		UIDispatcher(IAppWindow appWindow) => Dispatcher = appWindow.MainWindow.Dispatcher;
+    static UIDispatcher()
+    {
+        _disableProcessingCountFieldInfo = typeof(Dispatcher).GetField("_disableProcessingCount", BindingFlags.NonPublic | BindingFlags.Instance);
+        Debug2.Assert(_disableProcessingCountFieldInfo is not null && _disableProcessingCountFieldInfo.FieldType == typeof(int));
+    }
 
-		public void VerifyAccess() => Dispatcher.VerifyAccess();
-		public bool CheckAccess() => Dispatcher.CheckAccess();
+    private UIDispatcher() => Dispatcher = Dispatcher.UIThread;
 
-		public bool IsProcessingDisabled() {
-			if (_disableProcessingCountFieldInfo is null || _disableProcessingCountFieldInfo.FieldType != typeof(int))
-				return false;
-			return (int)_disableProcessingCountFieldInfo.GetValue(Dispatcher)! > 0;
-		}
+    Dispatcher Dispatcher { get; }
 
-		public void Invoke(Action callback) {
-			System.Diagnostics.Debugger.NotifyOfCrossThreadDependency();
-			Dispatcher.Invoke(DispatcherPriority.Background, callback);
-		}
+    public void VerifyAccess() => Dispatcher.VerifyAccess();
 
-		public void UIBackground(Action callback) =>
-			Dispatcher.BeginInvoke(DispatcherPriority.Background, callback);
+    public bool CheckAccess() => Dispatcher.CheckAccess();
 
-		public void UI(Action callback) =>
-			// Use Send so the windows are updated as fast as possible when adding new items
-			Dispatcher.BeginInvoke(DispatcherPriority.Send, callback);
-	}
+    public bool IsProcessingDisabled()
+    {
+        if (_disableProcessingCountFieldInfo is null || _disableProcessingCountFieldInfo.FieldType != typeof(int))
+            return false;
+
+        return (int)_disableProcessingCountFieldInfo.GetValue(Dispatcher)! > 0;
+    }
+
+    public void Invoke(Action callback)
+    {
+        System.Diagnostics.Debugger.NotifyOfCrossThreadDependency();
+        Dispatcher.Post(callback, DispatcherPriority.Background);
+    }
+
+    public void UIBackground(Action callback) =>
+        Dispatcher.Post(callback, DispatcherPriority.Background);
+
+    public void UI(Action callback) =>
+        Dispatcher.Post(callback, DispatcherPriority.Send);
 }

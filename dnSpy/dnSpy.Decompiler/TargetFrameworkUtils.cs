@@ -23,7 +23,7 @@ using dnlib.PE;
 using dnSpy.Decompiler.Properties;
 
 namespace dnSpy.Decompiler {
-	static class TargetFrameworkUtils {
+	public static class TargetFrameworkUtils {
 		/// <summary>
 		/// Gets the arch as a string
 		/// </summary>

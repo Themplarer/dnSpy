@@ -8,7 +8,7 @@
     <InformationalVersion>$(DnSpyAssemblyInformationalVersion)</InformationalVersion>
 
     <AssemblyName>dnSpy.Debugger.DotNet.x</AssemblyName>
-    <AssemblyOriginatorKeyFile>..\..\..\dnSpy.snk</AssemblyOriginatorKeyFile>
+<!--    <AssemblyOriginatorKeyFile>..\..\..\dnSpy.snk</AssemblyOriginatorKeyFile>-->
     <OutputPath>..\..\..\dnSpy\dnSpy\bin\$(Configuration)\</OutputPath>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Diagnostics;
 using dnSpy.AsmEditor.Hex.PE;
 using dnSpy.Contracts.Documents;
@@ -28,68 +27,81 @@ using dnSpy.Contracts.Hex;
 using dnSpy.Contracts.Hex.Files;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	abstract class PETreeNodeDataProviderBase : ITreeNodeDataProvider {
-		readonly Lazy<IHexBufferService> hexBufferService;
-		readonly Lazy<PEStructureProviderFactory> peStructureProviderFactory;
-		readonly Lazy<HexBufferFileServiceFactory> hexBufferFileServiceFactory;
+namespace dnSpy.AsmEditor.Hex.Nodes
+{
+    abstract class PETreeNodeDataProviderBase : ITreeNodeDataProvider
+    {
+        readonly IHexBufferService hexBufferService;
+        readonly PEStructureProviderFactory peStructureProviderFactory;
+        readonly HexBufferFileServiceFactory hexBufferFileServiceFactory;
 
-		protected PETreeNodeDataProviderBase(Lazy<IHexBufferService> hexBufferService, Lazy<PEStructureProviderFactory> peStructureProviderFactory, Lazy<HexBufferFileServiceFactory> hexBufferFileServiceFactory) {
-			this.hexBufferService = hexBufferService;
-			this.peStructureProviderFactory = peStructureProviderFactory;
-			this.hexBufferFileServiceFactory = hexBufferFileServiceFactory;
-		}
+        protected PETreeNodeDataProviderBase(IHexBufferService hexBufferService, PEStructureProviderFactory peStructureProviderFactory,
+            HexBufferFileServiceFactory hexBufferFileServiceFactory)
+        {
+            this.hexBufferService = hexBufferService;
+            this.peStructureProviderFactory = peStructureProviderFactory;
+            this.hexBufferFileServiceFactory = hexBufferFileServiceFactory;
+        }
 
-		public IEnumerable<TreeNodeData> Create(TreeNodeDataProviderContext context) {
-			var fileNode = context.Owner.Data as DsDocumentNode;
-			Debug2.Assert(fileNode is not null);
-			if (fileNode is null)
-				yield break;
+        public IEnumerable<TreeNodeData> Create(TreeNodeDataProviderContext context)
+        {
+            var fileNode = context.Owner.Data as DsDocumentNode;
+            Debug2.Assert(fileNode is not null);
+            if (fileNode is null)
+                yield break;
 
-			bool hasPENode = HasPENode(fileNode);
-			var peImage = fileNode.Document.PEImage;
-			Debug2.Assert(!hasPENode || peImage is not null);
-			if (hasPENode && peImage is not null) {
-				Func<HexBufferFile> createBufferFile = () => {
-					var buffer = hexBufferService.Value.GetOrCreate(peImage);
-					var service = hexBufferFileServiceFactory.Value.Create(buffer);
-					var pePosition = HexPosition.Zero;
-					var bufferFile = service.GetFile(pePosition, checkNestedFiles: false);
-					Debug2.Assert(bufferFile is not null, "File hasn't been created");
-					return bufferFile;
-				};
-				yield return new PENode(createBufferFile, peStructureProviderFactory.Value);
-			}
-		}
+            bool hasPENode = HasPENode(fileNode);
+            var peImage = fileNode.Document.PEImage;
+            Debug2.Assert(!hasPENode || peImage is not null);
 
-		public static bool HasPENode(DsDocumentNode node) {
-			if (node is null)
-				return false;
+            if (hasPENode && peImage is not null)
+            {
+                Func<HexBufferFile> createBufferFile = () =>
+                {
+                    var buffer = hexBufferService.GetOrCreate(peImage);
+                    var service = hexBufferFileServiceFactory.Create(buffer);
+                    var pePosition = HexPosition.Zero;
+                    var bufferFile = service.GetFile(pePosition, checkNestedFiles: false);
+                    Debug2.Assert(bufferFile is not null, "File hasn't been created");
+                    return bufferFile;
+                };
+                yield return new PENode(createBufferFile, peStructureProviderFactory);
+            }
+        }
 
-			var peImage = node.Document.PEImage;
+        public static bool HasPENode(DsDocumentNode node)
+        {
+            if (node is null)
+                return false;
 
-			// Only show the PE node if it was loaded from a file. The hex document is always loaded
-			// from a file, so if the PEImage wasn't loaded from the same file, conversion to/from
-			// RVA/FileOffset won't work and the wrong data will be displayed, eg. in the .NET
-			// storage stream nodes.
-			bool loadedFromFile = node.Document.Key is FilenameKey;
-			return loadedFromFile && peImage is not null;
-		}
-	}
+            var peImage = node.Document.PEImage;
 
-	[ExportTreeNodeDataProvider(Guid = DocumentTreeViewConstants.MODULE_NODE_GUID)]
-	sealed class ModulePETreeNodeDataProvider : PETreeNodeDataProviderBase {
-		[ImportingConstructor]
-		ModulePETreeNodeDataProvider(Lazy<IHexBufferService> hexBufferService, Lazy<PEStructureProviderFactory> peStructureProviderFactory, Lazy<HexBufferFileServiceFactory> hexBufferFileServiceFactory)
-			: base(hexBufferService, peStructureProviderFactory, hexBufferFileServiceFactory) {
-		}
-	}
+            // Only show the PE node if it was loaded from a file. The hex document is always loaded
+            // from a file, so if the PEImage wasn't loaded from the same file, conversion to/from
+            // RVA/FileOffset won't work and the wrong data will be displayed, eg. in the .NET
+            // storage stream nodes.
+            bool loadedFromFile = node.Document.Key is FilenameKey;
+            return loadedFromFile && peImage is not null;
+        }
+    }
 
-	[ExportTreeNodeDataProvider(Guid = DocumentTreeViewConstants.PEDOCUMENT_NODE_GUID)]
-	sealed class PEFilePETreeNodeDataProvider : PETreeNodeDataProviderBase {
-		[ImportingConstructor]
-		PEFilePETreeNodeDataProvider(Lazy<IHexBufferService> hexBufferService, Lazy<PEStructureProviderFactory> peStructureProviderFactory, Lazy<HexBufferFileServiceFactory> hexBufferFileServiceFactory)
-			: base(hexBufferService, peStructureProviderFactory, hexBufferFileServiceFactory) {
-		}
-	}
+    [ExportTreeNodeDataProvider(Guid = DocumentTreeViewConstants.MODULE_NODE_GUID)]
+    sealed class ModulePETreeNodeDataProvider : PETreeNodeDataProviderBase
+    {
+        private ModulePETreeNodeDataProvider(IHexBufferService hexBufferService, PEStructureProviderFactory peStructureProviderFactory,
+            HexBufferFileServiceFactory hexBufferFileServiceFactory)
+            : base(hexBufferService, peStructureProviderFactory, hexBufferFileServiceFactory)
+        {
+        }
+    }
+
+    [ExportTreeNodeDataProvider(Guid = DocumentTreeViewConstants.PEDOCUMENT_NODE_GUID)]
+    sealed class PEFilePETreeNodeDataProvider : PETreeNodeDataProviderBase
+    {
+        private PEFilePETreeNodeDataProvider(IHexBufferService hexBufferService, PEStructureProviderFactory peStructureProviderFactory,
+            HexBufferFileServiceFactory hexBufferFileServiceFactory)
+            : base(hexBufferService, peStructureProviderFactory, hexBufferFileServiceFactory)
+        {
+        }
+    }
 }

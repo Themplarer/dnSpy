@@ -312,7 +312,7 @@ namespace dnSpy.Contracts.Documents {
 	/// <summary>
 	/// mmap'd I/O helper methods
 	/// </summary>
-	static class MemoryMappedIOHelper {
+	public static class MemoryMappedIOHelper {
 		/// <summary>
 		/// Disable memory mapped I/O
 		/// </summary>

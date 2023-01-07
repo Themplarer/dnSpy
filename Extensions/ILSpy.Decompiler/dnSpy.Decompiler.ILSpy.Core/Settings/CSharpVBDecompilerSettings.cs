@@ -27,7 +27,7 @@ using dnSpy.Decompiler.Settings;
 using ICSharpCode.Decompiler;
 
 namespace dnSpy.Decompiler.ILSpy.Core.Settings {
-	sealed class CSharpVBDecompilerSettings : DecompilerSettingsBase {
+	public sealed class CSharpVBDecompilerSettings : DecompilerSettingsBase {
 		public DecompilerSettings Settings => decompilerSettings;
 		readonly DecompilerSettings decompilerSettings;
 

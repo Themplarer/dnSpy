@@ -5,15 +5,15 @@
              xmlns:viewModels="clr-namespace:MyApp.ViewModels"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="MyApp.Views.AssemblyExplorerView"
-             x:CompileBindings="True"  x:DataType="viewModels:MainWindowViewModel">
-    
-    <ScrollViewer>
-        <StackPanel Orientation="Vertical">
-            <Label Background="Blue" Foreground="White" Content="Assembly Explorer" />
+             x:CompileBindings="True" x:DataType="viewModels:MainWindowViewModel">
+
+    <ScrollViewer HorizontalAlignment="Stretch">
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+            <Label Background="Blue" Foreground="White" Content="Assembly Explorer" HorizontalAlignment="Stretch" />
             <TreeView Items="{Binding Items}">
                 <TreeView.ItemTemplate>
-                    <TreeDataTemplate ItemsSource="{Binding Subfolders}">
-                        <TextBlock Text="{Binding FileName}" />
+                    <TreeDataTemplate ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding Name}" Background="Blue" />
                     </TreeDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>

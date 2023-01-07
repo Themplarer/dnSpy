@@ -34,12 +34,12 @@ namespace dnSpy.Debugger.DotNet.Metadata {
 		ShowModuleLoaderServiceImpl(IAppWindow appWindow) => this.appWindow = appWindow;
 
 		public override void Show(ModuleLoaderVM vm) {
-			using (vm) {
-				var win = new ModuleLoaderDlg();
-				win.DataContext = vm ?? throw new ArgumentNullException(nameof(vm));
-				win.Owner = appWindow.MainWindow;
-				win.ShowDialog();
-			}
+			// using (vm) {
+			// 	var win = new ModuleLoaderDlg();
+			// 	win.DataContext = vm ?? throw new ArgumentNullException(nameof(vm));
+			// 	win.Owner = appWindow.MainWindow;
+			// 	win.ShowDialog();
+			// }
 		}
 	}
 }

@@ -29,7 +29,6 @@ namespace dnSpy.AsmEditor.Hex.PE {
 		public abstract PEStructureProvider? TryGetProvider(HexBufferFile file);
 	}
 
-	[Export(typeof(PEStructureProviderFactory))]
 	sealed class PEStructureProviderFactoryImpl : PEStructureProviderFactory {
 		public override PEStructureProvider? TryGetProvider(HexBufferFile file) {
 			if (file is null)

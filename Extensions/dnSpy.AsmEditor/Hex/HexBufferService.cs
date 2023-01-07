@@ -28,177 +28,230 @@ using dnlib.PE;
 using dnSpy.AsmEditor.UndoRedo;
 using dnSpy.Contracts.Hex;
 
-namespace dnSpy.AsmEditor.Hex {
-	interface IHexBufferService {
-		HexBuffer GetOrCreate(IPEImage peImage);
-		HexBuffer? GetOrCreate(string filename);
-		HexBuffer[] GetBuffers();
-		HexBuffer? TryGet(string filename);
-		HexBuffer[] Clear();
-	}
+namespace dnSpy.AsmEditor.Hex;
 
-	interface IHexBufferServiceListener {
-		void BufferCreated(HexBuffer buffer);
-		void BuffersCleared(IEnumerable<HexBuffer> buffers);
-	}
+public interface IHexBufferService
+{
+    HexBuffer GetOrCreate(IPEImage peImage);
 
-	[Export(typeof(IHexBufferService))]
-	sealed class HexBufferService : IHexBufferService {
-		readonly object lockObj = new object();
-		readonly Dictionary<string, object> filenameToBuffer = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
-		readonly HexBufferFactoryService hexBufferFactoryService;
-		readonly Lazy<IHexBufferServiceListener>[] hexBufferServiceListeners;
+    HexBuffer? GetOrCreate(string filename);
 
-		[ImportingConstructor]
-		HexBufferService(IUndoCommandService undoCommandService, HexBufferFactoryService hexBufferFactoryService, [ImportMany] IEnumerable<Lazy<IHexBufferServiceListener>> hexBufferServiceListeners) {
-			this.hexBufferFactoryService = hexBufferFactoryService;
-			this.hexBufferServiceListeners = hexBufferServiceListeners.ToArray();
-			undoCommandService.OnEvent += UndoCommandService_OnEvent;
-		}
+    HexBuffer[] GetBuffers();
 
-		void UndoCommandService_OnEvent(object? sender, UndoCommandServiceEventArgs e) {
-			var buffer = HexUndoableDocumentsProvider.TryGetHexBuffer(e.UndoObject);
-			if (buffer is null)
-				return;
+    HexBuffer? TryGet(string filename);
 
-			if (e.Type == UndoCommandServiceEventType.Saved)
-				OnDocumentSaved(buffer);
-			else if (e.Type == UndoCommandServiceEventType.Dirty)
-				OnDocumentDirty(buffer);
-		}
+    HexBuffer[] Clear();
+}
 
-		void OnDocumentSaved(HexBuffer buffer) {
-			lock (lockObj) {
-				bool b = filenameToBuffer.TryGetValue(buffer.Name, out var dictObj);
-				Debug.Assert(b);
-				if (!b)
-					return;
-				if (dictObj is WeakReference) {
-					Debug.Assert(((WeakReference)dictObj).Target == buffer);
-					return;
-				}
-				Debug.Assert(buffer == dictObj);
-				filenameToBuffer[buffer.Name] = new WeakReference(buffer);
-			}
-		}
+interface IHexBufferServiceListener
+{
+    void BufferCreated(HexBuffer buffer);
 
-		void OnDocumentDirty(HexBuffer buffer) {
-			lock (lockObj) {
-				bool b = filenameToBuffer.TryGetValue(buffer.Name, out var dictObj);
-				Debug.Assert(b);
-				if (!b)
-					return;
-				filenameToBuffer[buffer.Name] = buffer;
-			}
-		}
+    void BuffersCleared(IEnumerable<HexBuffer> buffers);
+}
 
-		HexBuffer[] IHexBufferService.Clear() {
-			object[] objs;
-			lock (lockObj) {
-				objs = filenameToBuffer.Values.ToArray();
-				filenameToBuffer.Clear();
-			}
-			var buffersToDispose = new List<HexBuffer>(objs.Length);
-			foreach (var obj in objs) {
-				var buffer = TryGetBuffer(obj);
-				if (buffer is not null)
-					buffersToDispose.Add(buffer);
-			}
-			foreach (var lz in hexBufferServiceListeners)
-				lz.Value.BuffersCleared(buffersToDispose);
-			return buffersToDispose.ToArray();
-		}
+public sealed class HexBufferService : IHexBufferService
+{
+    readonly object lockObj = new();
+    readonly Dictionary<string, object> filenameToBuffer = new(StringComparer.OrdinalIgnoreCase);
+    readonly HexBufferFactoryService hexBufferFactoryService;
+    readonly IHexBufferServiceListener[] hexBufferServiceListeners;
 
-		HexBuffer? IHexBufferService.TryGet(string filename) {
-			filename = GetFullPath(filename);
+    private HexBufferService(IUndoCommandService undoCommandService, HexBufferFactoryService hexBufferFactoryService,
+        IEnumerable<IHexBufferServiceListener> hexBufferServiceListeners)
+    {
+        this.hexBufferFactoryService = hexBufferFactoryService;
+        this.hexBufferServiceListeners = hexBufferServiceListeners.ToArray();
+        undoCommandService.OnEvent += UndoCommandService_OnEvent;
+    }
 
-			lock (lockObj)
-				return TryGet_NoLock(filename);
-		}
+    void UndoCommandService_OnEvent(object? sender, UndoCommandServiceEventArgs e)
+    {
+        var buffer = HexUndoableDocumentsProvider.TryGetHexBuffer(e.UndoObject);
+        if (buffer is null)
+            return;
 
-		HexBuffer? TryGet_NoLock(string filename) {
-			if (!filenameToBuffer.TryGetValue(filename, out var obj))
-				return null;
-			return TryGetBuffer(obj);
-		}
+        if (e.Type == UndoCommandServiceEventType.Saved)
+            OnDocumentSaved(buffer);
+        else if (e.Type == UndoCommandServiceEventType.Dirty)
+            OnDocumentDirty(buffer);
+    }
 
-		HexBuffer? TryGetBuffer(object obj) {
-			if (obj is HexBuffer buffer)
-				return buffer;
-			var weakRef = obj as WeakReference;
-			Debug2.Assert(weakRef is not null);
-			return weakRef?.Target as HexBuffer;
-		}
+    void OnDocumentSaved(HexBuffer buffer)
+    {
+        lock (lockObj)
+        {
+            bool b = filenameToBuffer.TryGetValue(buffer.Name, out var dictObj);
+            Debug.Assert(b);
+            if (!b)
+                return;
 
-		HexBuffer? GetOrCreate(string filename) {
-			if (!File.Exists(filename))
-				return null;
-			filename = GetFullPath(filename);
+            if (dictObj is WeakReference)
+            {
+                Debug.Assert(((WeakReference)dictObj).Target == buffer);
+                return;
+            }
 
-			HexBuffer? buffer;
-			lock (lockObj) {
-				buffer = TryGet_NoLock(filename);
-				if (buffer is not null)
-					return buffer;
+            Debug.Assert(buffer == dictObj);
+            filenameToBuffer[buffer.Name] = new WeakReference(buffer);
+        }
+    }
 
-				byte[] data;
-				try {
-					data = File.ReadAllBytes(filename);
-				}
-				catch {
-					return null;
-				}
+    void OnDocumentDirty(HexBuffer buffer)
+    {
+        lock (lockObj)
+        {
+            var b = filenameToBuffer.ContainsKey(buffer.Name);
+            Debug.Assert(b);
 
-				buffer = hexBufferFactoryService.Create(data, filename, hexBufferFactoryService.DefaultFileTags);
-				filenameToBuffer[filename] = new WeakReference(buffer);
-			}
-			return NotifyBufferCreated(buffer);
-		}
+            if (!b)
+                return;
 
-		HexBuffer NotifyBufferCreated(HexBuffer buffer) {
-			foreach (var lz in hexBufferServiceListeners)
-				lz.Value.BufferCreated(buffer);
-			return buffer;
-		}
+            filenameToBuffer[buffer.Name] = buffer;
+        }
+    }
 
-		HexBuffer GetOrCreate(IPEImage peImage) {
-			var filename = GetFullPath(peImage.Filename);
+    HexBuffer[] IHexBufferService.Clear()
+    {
+        object[] objs;
 
-			HexBuffer? buffer;
-			lock (lockObj) {
-				buffer = TryGet_NoLock(filename);
-				if (buffer is not null)
-					return buffer;
+        lock (lockObj)
+        {
+            objs = filenameToBuffer.Values.ToArray();
+            filenameToBuffer.Clear();
+        }
 
-				buffer = hexBufferFactoryService.Create(peImage.CreateReader().ToArray(), filename, hexBufferFactoryService.DefaultFileTags);
-				filenameToBuffer[filename] = new WeakReference(buffer);
-			}
-			return NotifyBufferCreated(buffer);
-		}
+        var buffersToDispose = new List<HexBuffer>(objs.Length);
 
-		HexBuffer IHexBufferService.GetOrCreate(IPEImage peImage) => GetOrCreate(peImage);
-		HexBuffer? IHexBufferService.GetOrCreate(string filename) => GetOrCreate(filename);
+        foreach (var obj in objs)
+        {
+            var buffer = TryGetBuffer(obj);
+            if (buffer is not null)
+                buffersToDispose.Add(buffer);
+        }
 
-		HexBuffer[] IHexBufferService.GetBuffers() {
-			lock (lockObj)
-				return filenameToBuffer.Values.Select(a => TryGetBuffer(a)).OfType<HexBuffer>().ToArray();
-		}
+        foreach (var lz in hexBufferServiceListeners)
+            lz.BuffersCleared(buffersToDispose);
+        return buffersToDispose.ToArray();
+    }
 
-		static string GetFullPath(string filename) {
-			if (!File.Exists(filename))
-				return filename ?? string.Empty;
-			try {
-				return Path.GetFullPath(filename);
-			}
-			catch (ArgumentException) {
-			}
-			catch (IOException) {
-			}
-			catch (SecurityException) {
-			}
-			catch (NotSupportedException) {
-			}
-			return filename;
-		}
-	}
+    HexBuffer? IHexBufferService.TryGet(string filename)
+    {
+        filename = GetFullPath(filename);
+
+        lock (lockObj)
+            return TryGet_NoLock(filename);
+    }
+
+    HexBuffer? TryGet_NoLock(string filename)
+    {
+        if (!filenameToBuffer.TryGetValue(filename, out var obj))
+            return null;
+
+        return TryGetBuffer(obj);
+    }
+
+    HexBuffer? TryGetBuffer(object obj)
+    {
+        if (obj is HexBuffer buffer)
+            return buffer;
+
+        var weakRef = obj as WeakReference;
+        Debug2.Assert(weakRef is not null);
+        return weakRef?.Target as HexBuffer;
+    }
+
+    HexBuffer? GetOrCreate(string filename)
+    {
+        if (!File.Exists(filename))
+            return null;
+
+        filename = GetFullPath(filename);
+
+        HexBuffer? buffer;
+
+        lock (lockObj)
+        {
+            buffer = TryGet_NoLock(filename);
+            if (buffer is not null)
+                return buffer;
+
+            byte[] data;
+
+            try
+            {
+                data = File.ReadAllBytes(filename);
+            }
+            catch
+            {
+                return null;
+            }
+
+            buffer = hexBufferFactoryService.Create(data, filename, hexBufferFactoryService.DefaultFileTags);
+            filenameToBuffer[filename] = new WeakReference(buffer);
+        }
+
+        return NotifyBufferCreated(buffer);
+    }
+
+    HexBuffer NotifyBufferCreated(HexBuffer buffer)
+    {
+        foreach (var lz in hexBufferServiceListeners)
+            lz.BufferCreated(buffer);
+        return buffer;
+    }
+
+    HexBuffer GetOrCreate(IPEImage peImage)
+    {
+        var filename = GetFullPath(peImage.Filename);
+
+        HexBuffer? buffer;
+
+        lock (lockObj)
+        {
+            buffer = TryGet_NoLock(filename);
+            if (buffer is not null)
+                return buffer;
+
+            buffer = hexBufferFactoryService.Create(peImage.CreateReader().ToArray(), filename, hexBufferFactoryService.DefaultFileTags);
+            filenameToBuffer[filename] = new WeakReference(buffer);
+        }
+
+        return NotifyBufferCreated(buffer);
+    }
+
+    HexBuffer IHexBufferService.GetOrCreate(IPEImage peImage) => GetOrCreate(peImage);
+
+    HexBuffer? IHexBufferService.GetOrCreate(string filename) => GetOrCreate(filename);
+
+    HexBuffer[] IHexBufferService.GetBuffers()
+    {
+        lock (lockObj)
+            return filenameToBuffer.Values.Select(a => TryGetBuffer(a)).OfType<HexBuffer>().ToArray();
+    }
+
+    static string GetFullPath(string filename)
+    {
+        if (!File.Exists(filename))
+            return filename ?? string.Empty;
+
+        try
+        {
+            return Path.GetFullPath(filename);
+        }
+        catch (ArgumentException)
+        {
+        }
+        catch (IOException)
+        {
+        }
+        catch (SecurityException)
+        {
+        }
+        catch (NotSupportedException)
+        {
+        }
+
+        return filename;
+    }
 }

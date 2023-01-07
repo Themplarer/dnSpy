@@ -1,98 +1,101 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Dialogs;
+using Avalonia.Platform.Storage;
+using Avalonia.Threading;
+using dnSpy.Contracts.Decompiler;
+using dnSpy.Contracts.Documents.Tabs.DocViewer;
+using dnSpy.Contracts.Documents.TreeView;
+using dnSpy.Contracts.TreeView;
+using dnSpy.Decompiler.MSBuild;
+using Microsoft.VisualStudio.Utilities;
+using MyApp.Documents.Tabs.Dialogs;
+using MyApp.Documents.TreeView;
 using MyApp.Models;
-using ReactiveUI;
 
 namespace MyApp.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    public ObservableCollection<FileNode> Items { get; }
+    private readonly IDocumentTreeView _documentTreeView;
+    private readonly AssemblyExplorerMostRecentlyUsedList _mruList;
 
-    public ICommand Save { get; } = null!;
+    public ObservableCollection<Node> Items { get; }
 
-    public ICommand Open { get; }
-
-    public MainWindowViewModel()
+    public MainWindowViewModel(IDocumentTreeView documentTreeView, AssemblyExplorerMostRecentlyUsedList mruList)
     {
-        Items = new ObservableCollection<FileNode>();
+        _documentTreeView = documentTreeView;
+        _mruList = mruList;
 
-        Open = ReactiveCommand.CreateFromTask(NewMethod);
+        Items = new ObservableCollection<Node>();
     }
 
-    public async Task NewMethod()
+    public async Task OpenFilesAsync()
     {
-        var windows = (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)?.Windows;
-        var window = windows!.FirstOrDefault(x => ReferenceEquals(this, x.DataContext));
+        var window = GetWindow();
+        var files = await Dispatcher.UIThread.InvokeAsync(async () => await window.StorageProvider.OpenFilePickerAsync(CreateFileDialogOptions()));
 
-        await new AboutAvaloniaDialog().ShowDialog(window!);
+        if (files is null or []) return;
 
-        var openFileDialog = new OpenFileDialog
+        var openDocuments = OpenDocumentsHelper.OpenDocuments(_documentTreeView, _mruList, files.Select(f => f.Name));
+
+        foreach (var openDocument in openDocuments)
+        {
+            var documentNode = _documentTreeView.CreateNode(null, openDocument);
+            var node = new Node(openDocument.AssemblyDef?.Name + " (" + openDocument.AssemblyDef?.Version + ")");
+            Items.Add(node);
+            var childNode = new Node(openDocument.Filename);
+            node.AppendChild(childNode);
+            FillChildren(documentNode, childNode);
+        }
+    }
+
+    private Window GetWindow() =>
+        (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.Windows
+        .First(x => ReferenceEquals(this, x.DataContext));
+
+    private static FilePickerOpenOptions CreateFileDialogOptions() =>
+        new()
         {
             AllowMultiple = true,
-            Filters = new List<FileDialogFilter>
+            FileTypeFilter = new[]
             {
-                new()
+                new FilePickerFileType(".NET Executables")
                 {
-                    Extensions = new List<string>
+                    Patterns = new[]
                     {
-                        "exe",
-                        "dll",
-                        "netmodule",
-                        "winmd"
+                        "*.exe",
+                        "*.dll",
+                        "*.netmodule",
+                        "*.winmd"
                     },
-                    Name = ".NET Executables"
                 },
-                new()
+                new FilePickerFileType("All Files")
                 {
-                    Extensions = new List<string>
+                    Patterns = new[]
                     {
-                        "*"
-                    },
-                    Name = "All Files"
+                        "*.*"
+                    }
                 }
             }
         };
-        var strings = await openFileDialog.ShowAsync(window!);
 
-        if (strings is null or []) return;
-
-        // var openDocuments = OpenDocumentsHelper.OpenDocuments(_dsDocumentService, strings);
-
-        // foreach (var openDocument in openDocuments) Items.Add(new FileNode(openDocument.Filename));
-    }
-
-    private static FileNode CreateRootNode(string path)
+    private static void FillChildren(TreeNodeData treeNodeData, Node node)
     {
-        var rootNode = new FileNode(path);
+        var children = treeNodeData.CreateChildren().ToArray();
 
-        foreach (var subfolder in GetSubfolders(path))
-            rootNode.AppendSubfolder(subfolder);
+        if (children.Length == 0) return;
 
-        return rootNode;
-    }
-
-    private static IEnumerable<FileNode> GetSubfolders(string path) =>
-        GetSubfolders(Directory.GetDirectories(path, "*", SearchOption.TopDirectoryOnly));
-
-    private static IEnumerable<FileNode> GetSubfolders(IEnumerable<string> directories)
-    {
-        foreach (var directory in directories)
+        foreach (var child in children)
         {
-            var node = new FileNode(directory);
-
-            foreach (var subfolder in GetSubfolders(directory))
-                node.AppendSubfolder(subfolder);
-
-            yield return node;
+            var childNode = new Node((child.Text as string)!);
+            node.AppendChild(childNode);
+            FillChildren(child, childNode);
         }
     }
 }

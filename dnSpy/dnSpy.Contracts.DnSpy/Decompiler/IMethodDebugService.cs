@@ -105,7 +105,7 @@ namespace dnSpy.Contracts.Decompiler {
 	/// <summary>
 	/// Constants
 	/// </summary>
-	internal static class MethodDebugServiceConstants {
+	public static class MethodDebugServiceConstants {
 		/// <summary>
 		/// <see cref="IMethodDebugService"/> key
 		/// </summary>

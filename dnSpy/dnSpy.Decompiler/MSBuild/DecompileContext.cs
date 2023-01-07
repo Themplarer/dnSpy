@@ -20,7 +20,7 @@
 using System.Threading;
 
 namespace dnSpy.Decompiler.MSBuild {
-	sealed class DecompileContext {
+	public sealed class DecompileContext {
 		public CancellationToken CancellationToken { get; }
 		public IMSBuildProjectWriterLogger Logger { get; }
 

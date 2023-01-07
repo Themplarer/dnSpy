@@ -79,7 +79,7 @@ namespace dnSpy.Debugger.DotNet.Modules {
 			if (module.IsDynamic && !module.Runtime.IsClosed && module.Process.IsRunning) {
 				if (canShowMessageBox) {
 					canShowMessageBox = false;
-					messageBoxService.Value.Show(dnSpy_Debugger_DotNet_Resources.Module_BreakProcessBeforeLoadingDynamicModules);
+					// messageBoxService.Value.Show(dnSpy_Debugger_DotNet_Resources.Module_BreakProcessBeforeLoadingDynamicModules);
 				}
 				return null;
 			}

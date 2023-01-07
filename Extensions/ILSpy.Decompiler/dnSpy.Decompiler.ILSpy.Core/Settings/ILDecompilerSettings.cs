@@ -25,7 +25,7 @@ using dnSpy.Decompiler.ILSpy.Core.Properties;
 using dnSpy.Decompiler.Settings;
 
 namespace dnSpy.Decompiler.ILSpy.Core.Settings {
-	sealed class ILDecompilerSettings : DecompilerSettingsBase {
+	public sealed class ILDecompilerSettings : DecompilerSettingsBase {
 		public ILSettings Settings => ilSettings;
 		readonly ILSettings ilSettings;
 

@@ -20,13 +20,13 @@
 using System.ComponentModel.Composition;
 using dnSpy.Decompiler.ILSpy.Core.Settings;
 
-namespace dnSpy.Decompiler.ILSpy.Settings {
-	[Export(typeof(DecompilerSettingsService))]
-	sealed class DecompilerSettingsServiceImpl : DecompilerSettingsService {
-		[ImportingConstructor]
-		DecompilerSettingsServiceImpl(DecompilerSettingsImpl decompilerSettings, ILSettingsImpl ilSettings) {
-			CSharpVBDecompilerSettings = new CSharpVBDecompilerSettings(decompilerSettings);
-			ILDecompilerSettings = new ILDecompilerSettings(ilSettings);
-		}
-	}
+namespace dnSpy.Decompiler.ILSpy.Settings;
+
+sealed class DecompilerSettingsServiceImpl : DecompilerSettingsService
+{
+    public DecompilerSettingsServiceImpl(DecompilerSettingsImpl decompilerSettings, ILSettingsImpl ilSettings)
+    {
+        CSharpVBDecompilerSettings = new CSharpVBDecompilerSettings(decompilerSettings);
+        ILDecompilerSettings = new ILDecompilerSettings(ilSettings);
+    }
 }

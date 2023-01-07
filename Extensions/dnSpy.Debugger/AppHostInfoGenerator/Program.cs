@@ -39,7 +39,7 @@ namespace AppHostInfoGenerator {
 		// Add new versions from: https://www.nuget.org/packages/Microsoft.NETCore.DotNetAppHost/
 		// The code ignores known versions so all versions can be added.
 		//	^(\S+)\s.*		=>		\t\t\t"\1",
-		static readonly string[] DotNetAppHost_Versions_ToCheck = new string[] {
+		static readonly string[] DotNetAppHost_Versions_ToCheck = {
 			"3.0.0",
 			"3.0.0-rc1-19456-20",
 			"3.0.0-preview9-19423-09",

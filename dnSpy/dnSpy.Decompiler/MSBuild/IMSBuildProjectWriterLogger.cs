@@ -21,7 +21,7 @@ namespace dnSpy.Decompiler.MSBuild {
 	/// <summary>
 	/// Logs errors
 	/// </summary>
-	interface IMSBuildProjectWriterLogger {
+	public interface IMSBuildProjectWriterLogger {
 		/// <summary>
 		/// Logs an error. This method can be called from any thread
 		/// </summary>

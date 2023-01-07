@@ -11,6 +11,36 @@
     <Folder Include="Models\" />
     <AvaloniaResource Include="Assets\**" />
     <None Remove=".gitignore" />
+    <None Update="FileLists\DOTNET Framework v3.5 Client.FileList.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="FileLists\DOTNET Framework v4.0 Client.FileList.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="LicenseInfo\ApacheV2.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="LicenseInfo\GPLv3.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="LicenseInfo\LICENSE.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="LicenseInfo\OtherLicenses.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Themes\blue.dntheme">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Themes\dark.dntheme">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Themes\hc.dntheme">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Themes\light.dntheme">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -25,14 +55,29 @@
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.0-preview4" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-preview4" />
     <PackageReference Include="dnlib" Version="3.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.0" />
+    <PackageReference Include="Splat.Microsoft.Extensions.DependencyInjection" Version="14.6.1" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
   </ItemGroup>
 
   <ItemGroup>
+<!--    <ProjectReference Include="..\..\Extensions\dnSpy.AsmEditor\dnSpy.AsmEditor.csproj" />-->
     <ProjectReference Include="..\..\Extensions\dnSpy.Debugger\dnSpy.Debugger.DotNet.Metadata\dnSpy.Debugger.DotNet.Metadata.csproj" />
+    <ProjectReference Include="..\..\Extensions\dnSpy.Debugger\dnSpy.Debugger.DotNet\dnSpy.Debugger.DotNet.csproj" />
+    <ProjectReference Include="..\..\Extensions\ILSpy.Decompiler\dnSpy.Decompiler.ILSpy.Core\dnSpy.Decompiler.ILSpy.Core.csproj" />
+<!--    <ProjectReference Include="..\..\Libraries\ICSharpCode.TreeView\ICSharpCode.TreeView.csproj" />-->
     <ProjectReference Include="..\dnSpy.Contracts.Debugger.DotNet\dnSpy.Contracts.Debugger.DotNet.csproj" />
     <ProjectReference Include="..\dnSpy.Contracts.Debugger\dnSpy.Contracts.Debugger.csproj" />
     <ProjectReference Include="..\dnSpy.Contracts.DnSpy\dnSpy.Contracts.DnSpy.csproj" />
+    <ProjectReference Include="..\dnSpy.Decompiler\dnSpy.Decompiler.csproj" />
     <ProjectReference Include="..\dnSpy.Images\dnSpy.Images.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="LicenseInfo\CREDITS.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\dnSpy.ico" />
   </ItemGroup>
 </Project>

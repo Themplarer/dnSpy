@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <Import Project="..\..\DnSpyCommon.props"/>
+    <Import Project="..\..\DnSpyCommon.props" />
 
     <PropertyGroup>
         <Nullable>enable</Nullable>
@@ -8,7 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\dnSpy.Contracts.Logic\dnSpy.Contracts.Logic.csproj"/>
+        <ProjectReference Include="..\dnSpy.Contracts.Logic\dnSpy.Contracts.Logic.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,8 +21,9 @@
         Will probably be fixed after Microsoft.VisualStudio.Composition.NetFxAttributes and Microsoft.VisualStudio.Composition
         reference a newer System.ComponentModel.Composition nuget in which case this hack can be removed.
         -->
-        <PackageReference Include="Microsoft.VisualStudio.Composition.NetFxAttributes" Version="16.9.20"/>
-        <PackageReference Include="Microsoft.VisualStudio.Language.Intellisense" Version="17.4.255"/>
+        <PackageReference Include="Avalonia" Version="11.0.0-preview4" />
+        <PackageReference Include="Microsoft.VisualStudio.Composition.NetFxAttributes" Version="16.9.20" />
+        <PackageReference Include="Microsoft.VisualStudio.Language.Intellisense" Version="17.4.255" />
     </ItemGroup>
 
 </Project>

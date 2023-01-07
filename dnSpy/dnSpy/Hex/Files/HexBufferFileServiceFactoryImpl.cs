@@ -19,34 +19,38 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using dnSpy.Contracts.Hex;
 using dnSpy.Contracts.Hex.Files;
 using VSUTIL = Microsoft.VisualStudio.Utilities;
 
-namespace dnSpy.Hex.Files {
-	[Export(typeof(HexBufferFileServiceFactory))]
-	sealed class HexBufferFileServiceFactoryImpl : HexBufferFileServiceFactory {
-		public override event EventHandler<BufferFileServiceCreatedEventArgs>? BufferFileServiceCreated;
-		readonly Lazy<StructureProviderFactory, VSUTIL.IOrderable>[] structureProviderFactories;
-		readonly Lazy<BufferFileHeadersProviderFactory>[] bufferFileHeadersProviderFactories;
+namespace dnSpy.Hex.Files;
 
-		[ImportingConstructor]
-		HexBufferFileServiceFactoryImpl([ImportMany] IEnumerable<Lazy<StructureProviderFactory, VSUTIL.IOrderable>> structureProviderFactories, [ImportMany] IEnumerable<Lazy<BufferFileHeadersProviderFactory>> bufferFileHeadersProviderFactories) {
-			this.structureProviderFactories = VSUTIL.Orderer.Order(structureProviderFactories).ToArray();
-			this.bufferFileHeadersProviderFactories = bufferFileHeadersProviderFactories.ToArray();
-		}
+sealed class HexBufferFileServiceFactoryImpl : HexBufferFileServiceFactory
+{
+    readonly Lazy<StructureProviderFactory, VSUTIL.IOrderable>[] structureProviderFactories;
+    readonly Lazy<BufferFileHeadersProviderFactory>[] bufferFileHeadersProviderFactories;
 
-		public override HexBufferFileService Create(HexBuffer buffer) {
-			if (buffer is null)
-				throw new ArgumentNullException(nameof(buffer));
-			if (buffer.Properties.TryGetProperty(typeof(HexBufferFileServiceImpl), out HexBufferFileServiceImpl impl))
-				return impl;
-			impl = new HexBufferFileServiceImpl(buffer, structureProviderFactories, bufferFileHeadersProviderFactories);
-			buffer.Properties.AddProperty(typeof(HexBufferFileServiceImpl), impl);
-			BufferFileServiceCreated?.Invoke(this, new BufferFileServiceCreatedEventArgs(impl));
-			return impl;
-		}
-	}
+    private HexBufferFileServiceFactoryImpl(IEnumerable<Lazy<StructureProviderFactory, VSUTIL.IOrderable>> structureProviderFactories,
+        IEnumerable<Lazy<BufferFileHeadersProviderFactory>> bufferFileHeadersProviderFactories)
+    {
+        this.structureProviderFactories = VSUTIL.Orderer.Order(structureProviderFactories).ToArray();
+        this.bufferFileHeadersProviderFactories = bufferFileHeadersProviderFactories.ToArray();
+    }
+
+    public override event EventHandler<BufferFileServiceCreatedEventArgs>? BufferFileServiceCreated;
+
+    public override HexBufferFileService Create(HexBuffer buffer)
+    {
+        if (buffer is null)
+            throw new ArgumentNullException(nameof(buffer));
+
+        if (buffer.Properties.TryGetProperty(typeof(HexBufferFileServiceImpl), out HexBufferFileServiceImpl impl))
+            return impl;
+
+        impl = new HexBufferFileServiceImpl(buffer, structureProviderFactories, bufferFileHeadersProviderFactories);
+        buffer.Properties.AddProperty(typeof(HexBufferFileServiceImpl), impl);
+        BufferFileServiceCreated?.Invoke(this, new BufferFileServiceCreatedEventArgs(impl));
+        return impl;
+    }
 }
