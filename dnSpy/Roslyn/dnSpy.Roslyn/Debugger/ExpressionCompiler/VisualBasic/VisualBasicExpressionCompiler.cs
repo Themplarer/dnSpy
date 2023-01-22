@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Immutable;
 using System.Threading;
+using BasicExpressionCompiler.Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator;
 using dnlib.DotNet;
 using dnSpy.Contracts.Debugger.DotNet.Code;
 using dnSpy.Contracts.Debugger.DotNet.Evaluation;
@@ -31,7 +32,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.ExpressionEvaluator;
 using Microsoft.CodeAnalysis.ExpressionEvaluator.DnSpy;
 using Microsoft.CodeAnalysis.VisualBasic;
-using Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator;
+//using Microsoft.CodeAnalysis.VisualBasic.ExpressionEvaluator;
 using Microsoft.VisualStudio.Debugger.Evaluation;
 
 namespace dnSpy.Roslyn.Debugger.ExpressionCompiler.VisualBasic {
