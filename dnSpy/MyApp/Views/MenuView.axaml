@@ -11,12 +11,12 @@
     <Menu>
         <MenuItem Header="_File">
             <MenuItem Header="Export to Pro_ject..." />
-            <MenuItem Header="_Save..." InputGesture="Ctrl+S" Command="{Binding OpenFilesAsync}" />
+            <MenuItem Header="_Save..." InputGesture="Ctrl+S" />
             <MenuItem Header="Save _Module..." />
             <MenuItem Header="Save A_ll..." InputGesture="Ctrl+Shift+S" />
             <Separator />
             <MenuItem Header="_Open..." InputGesture="Ctrl+O" Command="{Binding OpenFilesAsync}" />
-            <MenuItem Header="Open from _GAC..." InputGesture="Ctrl+Shift+O" />
+            <MenuItem Header="Open from _GAC..." InputGesture="Ctrl+Shift+O" Command="{Binding OpenFilesAsync}" />
             <MenuItem Header="Open L_ist..." />
             <MenuItem Header="Recent _Files" />
             <MenuItem Header="_Reload All Assemblies" />
@@ -111,7 +111,7 @@
             <ToolTip.Tip>Navigate Forward</ToolTip.Tip>
         </Button>
 
-        <Button Background="Transparent">
+        <Button Background="Transparent" Command="{Binding OpenFilesAsync}">
             <Panel>
                 <Image Source="/Assets/Images/Open.16.16.png" />
             </Panel>

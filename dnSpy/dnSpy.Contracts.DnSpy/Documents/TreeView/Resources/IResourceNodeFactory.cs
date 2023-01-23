@@ -21,27 +21,28 @@ using dnlib.DotNet;
 using dnlib.DotNet.Resources;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// Creates resource nodes
-	/// </summary>
-	public interface IResourceNodeFactory {
-		/// <summary>
-		/// Creates a <see cref="DocumentTreeNodeData"/> instance. Pass it to <see cref="ITreeView.Create(TreeNodeData)"/>
-		/// </summary>
-		/// <param name="module">Owner module</param>
-		/// <param name="resource">Resource</param>
-		/// <param name="treeNodeGroup">Group</param>
-		/// <returns></returns>
-		DocumentTreeNodeData Create(ModuleDef module, Resource resource, ITreeNodeGroup treeNodeGroup);
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
 
-		/// <summary>
-		/// Creates a <see cref="DocumentTreeNodeData"/> instance. Pass it to <see cref="ITreeView.Create(TreeNodeData)"/>
-		/// </summary>
-		/// <param name="module">Owner module</param>
-		/// <param name="resourceElement">Resource</param>
-		/// <param name="treeNodeGroup">Group</param>
-		/// <returns></returns>
-		DocumentTreeNodeData Create(ModuleDef module, ResourceElement resourceElement, ITreeNodeGroup treeNodeGroup);
-	}
+/// <summary>
+/// Creates resource nodes
+/// </summary>
+public interface IResourceNodeFactory
+{
+    /// <summary>
+    /// Creates a <see cref="DocumentTreeNodeData"/> instance. Pass it to <see cref="ITreeView.Create(TreeNodeData)"/>
+    /// </summary>
+    /// <param name="module">Owner module</param>
+    /// <param name="resource">Resource</param>
+    /// <param name="treeNodeGroup">Group</param>
+    /// <returns></returns>
+    DocumentTreeNodeData Create(ModuleDef module, Resource resource, ITreeNodeGroup treeNodeGroup, IDocumentTreeNodeDataContext context);
+
+    /// <summary>
+    /// Creates a <see cref="DocumentTreeNodeData"/> instance. Pass it to <see cref="ITreeView.Create(TreeNodeData)"/>
+    /// </summary>
+    /// <param name="module">Owner module</param>
+    /// <param name="resourceElement">Resource</param>
+    /// <param name="treeNodeGroup">Group</param>
+    /// <returns></returns>
+    DocumentTreeNodeData Create(ModuleDef module, ResourceElement resourceElement, ITreeNodeGroup treeNodeGroup, IDocumentTreeNodeDataContext context);
 }

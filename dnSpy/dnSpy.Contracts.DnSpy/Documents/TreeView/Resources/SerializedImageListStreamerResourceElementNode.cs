@@ -20,23 +20,25 @@
 using dnlib.DotNet.Resources;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// A resource node created from a serialized <see cref="ImageListStreamer"/>
-	/// </summary>
-	public abstract class SerializedImageListStreamerResourceElementNode : ResourceElementNode {
-		/// <summary>
-		/// Gets the <see cref="ImageList"/> options
-		/// </summary>
-		public abstract ImageListOptions ImageListOptions { get; }
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="treeNodeGroup">Treenode group</param>
-		/// <param name="resourceElement">Resource element</param>
-		protected SerializedImageListStreamerResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement)
-			: base(treeNodeGroup, resourceElement) {
-		}
-	}
+/// <summary>
+/// A resource node created from a serialized <see cref="ImageListStreamer"/>
+/// </summary>
+public abstract class SerializedImageListStreamerResourceElementNode : ResourceElementNode
+{
+    /// <summary>
+    /// Gets the <see cref="ImageList"/> options
+    /// </summary>
+    public abstract ImageListOptions ImageListOptions { get; }
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="treeNodeGroup">Treenode group</param>
+    /// <param name="resourceElement">Resource element</param>
+    protected SerializedImageListStreamerResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement,
+        IDocumentTreeNodeDataContext context) : base(treeNodeGroup, resourceElement, context)
+    {
+    }
 }

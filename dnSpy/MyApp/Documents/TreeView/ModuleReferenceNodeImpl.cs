@@ -25,25 +25,32 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class ModuleReferenceNodeImpl : ModuleReferenceNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.MODULEREF_NODE_GUID);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => dnImgMgr.GetImageReferenceModuleRef();
-		public override NodePathName NodePathName => new NodePathName(Guid, ModuleRef.FullName);
-		public override ITreeNodeGroup? TreeNodeGroup { get; }
+namespace dnSpy.Documents.TreeView;
 
-		public ModuleReferenceNodeImpl(ITreeNodeGroup treeNodeGroup, ModuleRef moduleRef)
-			: base(moduleRef) => TreeNodeGroup = treeNodeGroup;
+sealed class ModuleReferenceNodeImpl : ModuleReferenceNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.MODULEREF_NODE_GUID);
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			new NodeFormatter().Write(output, decompiler, ModuleRef, GetShowToken(options));
-			if ((options & DocumentNodeWriteOptions.ToolTip) != 0) {
-				output.WriteLine();
-				WriteFilename(output);
-			}
-		}
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => dnImgMgr.GetImageReferenceModuleRef();
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
-			filter.GetResult(ModuleRef).FilterType;
-	}
+    public override NodePathName NodePathName => new NodePathName(Guid, ModuleRef.FullName);
+
+    public override ITreeNodeGroup? TreeNodeGroup { get; }
+
+    public ModuleReferenceNodeImpl(ITreeNodeGroup treeNodeGroup, ModuleRef moduleRef, IDocumentTreeNodeDataContext context)
+        : base(moduleRef, context) => TreeNodeGroup = treeNodeGroup;
+
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        new NodeFormatter().Write(output, decompiler, ModuleRef, GetShowToken(options));
+
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
+        {
+            output.WriteLine();
+            WriteFilename(output);
+        }
+    }
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
+        filter.GetResult(ModuleRef).FilterType;
 }

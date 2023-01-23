@@ -20,22 +20,24 @@
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// An assembly reference node
-	/// </summary>
-	public abstract class AssemblyReferenceNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the assembly reference
-		/// </summary>
-		public abstract AssemblyRef AssemblyRef { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		protected AssemblyReferenceNode() {
-		}
+/// <summary>
+/// An assembly reference node
+/// </summary>
+public abstract class AssemblyReferenceNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the assembly reference
+    /// </summary>
+    public abstract AssemblyRef AssemblyRef { get; }
 
-		IMDTokenProvider? IMDTokenNode.Reference => AssemblyRef;
-	}
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    protected AssemblyReferenceNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
+
+    IMDTokenProvider IMDTokenNode.Reference => AssemblyRef;
 }

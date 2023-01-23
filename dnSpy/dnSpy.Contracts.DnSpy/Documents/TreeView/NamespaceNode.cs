@@ -19,27 +19,28 @@
 
 using dnlib.DotNet;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A namespace node
-	/// </summary>
-	public abstract class NamespaceNode : DocumentTreeNodeData {
-		/// <summary>
-		/// Name
-		/// </summary>
-		public string Name { get; set; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="name">Name</param>
-		protected NamespaceNode(string name) => Name = name;
+/// <summary>
+/// A namespace node
+/// </summary>
+public abstract class NamespaceNode : DocumentTreeNodeData
+{
+    /// <summary>
+    /// Name
+    /// </summary>
+    public string Name { get; set; }
 
-		/// <summary>
-		/// Creates a <see cref="TypeNode"/>
-		/// </summary>
-		/// <param name="type">Type</param>
-		/// <returns></returns>
-		public TypeNode Create(TypeDef type) => Context.DocumentTreeView.Create(type);
-	}
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="name">Name</param>
+    protected NamespaceNode(string name, IDocumentTreeNodeDataContext context) : base(context) => Name = name;
+
+    /// <summary>
+    /// Creates a <see cref="TypeNode"/>
+    /// </summary>
+    /// <param name="type">Type</param>
+    /// <returns></returns>
+    public TypeNode Create(TypeDef type) => Context.DocumentTreeView.Create(type);
 }

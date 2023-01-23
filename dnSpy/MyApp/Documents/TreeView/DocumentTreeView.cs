@@ -57,19 +57,17 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
         IDocumentTreeViewSettings documentTreeViewSettings,
         // IMenuService menuService,
         IDotNetImageService dotNetImageService,
-        // IWpfCommandService wpfCommandService,
         IResourceNodeFactory resourceNodeFactory, IEnumerable<Lazy<IDsDocumentNodeProvider, IDsDocumentNodeProviderMetadata>> dsDocumentNodeProviders,
         // IEnumerable<Lazy<IDocumentTreeNodeDataFinder, IDocumentTreeNodeDataFinderMetadata>> mefFinders,
         ITreeViewNodeTextElementProvider treeViewNodeTextElementProvider, AssemblyExplorerMostRecentlyUsedList mruList)
-        : this(true, null, treeViewService, decompilerService, documentService, documentTreeViewSettings, null!, dotNetImageService, null!,
-            resourceNodeFactory, dsDocumentNodeProviders, null!, treeViewNodeTextElementProvider, mruList)
+        : this(true, null, treeViewService, decompilerService, documentService, documentTreeViewSettings, dotNetImageService, resourceNodeFactory,
+            dsDocumentNodeProviders, null!, treeViewNodeTextElementProvider, mruList)
     {
     }
 
     private DocumentTreeView(bool isGlobal, IDocumentTreeNodeFilter? filter, ITreeViewService treeViewService, IDecompilerService decompilerService,
-        IDsDocumentService documentService, IDocumentTreeViewSettings documentTreeViewSettings, IMenuService menuService,
-        IDotNetImageService dotNetImageService, IWpfCommandService wpfCommandService, IResourceNodeFactory resourceNodeFactory,
-        IEnumerable<Lazy<IDsDocumentNodeProvider, IDsDocumentNodeProviderMetadata>> dsDocumentNodeProvider,
+        IDsDocumentService documentService, IDocumentTreeViewSettings documentTreeViewSettings, IDotNetImageService dotNetImageService,
+        IResourceNodeFactory resourceNodeFactory, IEnumerable<Lazy<IDsDocumentNodeProvider, IDsDocumentNodeProviderMetadata>> dsDocumentNodeProvider,
         IEnumerable<Lazy<IDocumentTreeNodeDataFinder, IDocumentTreeNodeDataFinderMetadata>> mefFinders,
         ITreeViewNodeTextElementProvider treeViewNodeTextElementProvider, AssemblyExplorerMostRecentlyUsedList? mruList)
     {
@@ -95,7 +93,7 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
             AllowDrop = true,
             IsVirtualizing = true,
             TreeViewListener = this,
-            RootNode = new RootNode
+            RootNode = new RootNode(_context)
             {
                 DropNodes = OnDropNodes,
                 DropFiles = OnDropFiles,
@@ -112,16 +110,6 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
         documentService.CollectionChanged += DocumentService_CollectionChanged;
         decompilerService.DecompilerChanged += DecompilerService_DecompilerChanged;
         documentTreeViewSettings.PropertyChanged += DocumentTreeViewSettings_PropertyChanged;
-
-        // WpfCommands = wpfCommandService.GetCommands(ControlConstants.GUID_DOCUMENT_TREEVIEW);
-
-        if (isGlobal)
-        {
-            // menuService.InitializeContextMenu(TreeView.UIObject, new Guid(MenuConstants.GUIDOBJ_DOCUMENTS_TREEVIEW_GUID),
-            //     new GuidObjectsProvider(TreeView));
-            // wpfCommandService.Add(ControlConstants.GUID_DOCUMENT_TREEVIEW, TreeView.UIObject);
-        }
-
         // _nodeFinders = mefFinders.OrderBy(a => a.Metadata.Order).ToArray();
         InitializeDocumentTreeNodeGroups();
     }
@@ -135,8 +123,6 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
     private IEnumerable<DsDocumentNode> TopNodes => TreeView.Root.Children.Select(a => (DsDocumentNode)a.Data);
 
     public IDotNetImageService DotNetImageService { get; }
-
-    // public IWpfCommands WpfCommands { get; }
 
     public event EventHandler<NotifyDocumentTreeViewCollectionChangedEventArgs>? CollectionChanged;
 
@@ -178,12 +164,10 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
             callInvoke = _actionsToCall.Count == 1;
         }
 
+        // Always notify with a delay because adding stuff to the tree view could
+        // cause some problems with the tree view or the list box it derives from.
         if (callInvoke)
-        {
-            // Always notify with a delay because adding stuff to the tree view could
-            // cause some problems with the tree view or the list box it derives from.
             _dispatcher.Post(CallActions, DispatcherPriority.Background);
-        }
     }
 
     // It's not using IDisposable.Dispose() because MEF will call Dispose() at app exit which
@@ -209,7 +193,7 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
 
     private void InitializeDocumentTreeNodeGroups()
     {
-        var orders = new MemberKind[]
+        var orders = new[]
         {
             _documentTreeViewSettings.MemberKind0,
             _documentTreeViewSettings.MemberKind1,
@@ -313,17 +297,18 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
 
     private void RefreshNodes() => TreeView.RefreshAllNodes();
 
-    private void DocumentService_CollectionChanged(object? sender, NotifyDocumentCollectionChangedEventArgs e)
+    private void DocumentService_CollectionChanged(object? sender, NotifyDocumentCollectionChangedEventArgs e) =>
+        NewMethod(e.Type, e.Documents, e.Data);
+
+    public void NewMethod(NotifyDocumentCollectionType type, IDsDocument[] documents, object? data)
     {
-        switch (e.Type)
+        switch (type)
         {
             case NotifyDocumentCollectionType.Add:
                 DsDocumentNode newNode;
-
-                var addDocumentInfo = e.Data as AddDocumentInfo;
                 int index;
 
-                if (addDocumentInfo is not null)
+                if (data is AddDocumentInfo addDocumentInfo)
                 {
                     newNode = addDocumentInfo.DsDocumentNode;
                     index = addDocumentInfo.Index;
@@ -333,21 +318,25 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
                 }
                 else
                 {
-                    newNode = CreateNode(null, e.Documents[0]);
+                    newNode = CreateNode(null, documents[0]);
                     TreeView.Create(newNode);
                     index = TreeView.Root.Children.Count;
                 }
 
                 if ((uint)index >= (uint)TreeView.Root.Children.Count)
                     index = TreeView.Root.Children.Count;
+
                 TreeView.Root.Children.Insert(index, newNode.TreeNode);
                 CallCollectionChanged(NotifyDocumentTreeViewCollectionChangedEventArgs.CreateAdd(newNode));
                 break;
 
             case NotifyDocumentCollectionType.Remove:
+                // not yet supported
+                break;
+
                 var dict = new Dictionary<DsDocumentNode, int>();
                 var dict2 = new Dictionary<IDsDocument, DsDocumentNode>();
-                int i = 0;
+                var i = 0;
 
                 foreach (var n in TopNodes)
                 {
@@ -355,12 +344,12 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
                     dict2[n.Document] = n;
                 }
 
-                var list = new List<(DsDocumentNode docNode, int index)>(e.Documents.Select(a =>
+                var list = new List<(DsDocumentNode docNode, int index)>(documents.Select(a =>
                 {
-                    bool b = dict2.TryGetValue(a, out var node);
+                    var b = dict2.TryGetValue(a, out var node);
                     Debug.Assert(b);
                     Debug2.Assert(node is not null);
-                    int j = -1;
+                    var j = -1;
                     b = b && dict.TryGetValue(node, out j);
                     Debug.Assert(b);
                     return (node, b ? j : -1);
@@ -384,6 +373,9 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
                 break;
 
             case NotifyDocumentCollectionType.Clear:
+                // not yet supported
+                break;
+
                 var oldNodes = TreeView.Root.Children.Select(a => (DsDocumentNode)a.Data).ToArray();
                 TreeView.Root.Children.Clear();
                 DisableMemoryMappedIo(oldNodes);
@@ -391,7 +383,7 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
                 break;
 
             default:
-                Debug.Fail($"Unknown event type: {e.Type}");
+                Debug.Fail($"Unknown event type: {type}");
                 break;
         }
     }
@@ -413,12 +405,12 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
     {
         foreach (var provider in _dsDocumentNodeProvider)
         {
-            var result = provider.Value.Create(this, owner, document);
+            var result = provider.Value.Create(this, owner, document, _context);
             if (result is not null)
                 return result;
         }
 
-        return new UnknownDocumentNodeImpl(document);
+        return new UnknownDocumentNodeImpl(document, _context);
     }
 
     void ITreeViewListener.OnEvent(ITreeView treeView, TreeViewListenerEventArgs e)
@@ -429,61 +421,71 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
             var node = (ITreeNode)e.Argument;
             if (node.Data is DocumentTreeNodeData d)
                 d.Context = _context;
-            return;
         }
     }
 
     public AssemblyDocumentNode CreateAssembly(IDsDotNetDocument asmDocument) =>
-        (AssemblyDocumentNode)TreeView.Create(new AssemblyDocumentNodeImpl(asmDocument)).Data;
+        (AssemblyDocumentNode)TreeView.Create(new AssemblyDocumentNodeImpl(asmDocument, _context)).Data;
 
     public ModuleDocumentNode CreateModule(IDsDotNetDocument modDocument) =>
-        (ModuleDocumentNode)TreeView.Create(new ModuleDocumentNodeImpl(modDocument)).Data;
+        (ModuleDocumentNode)TreeView.Create(new ModuleDocumentNodeImpl(modDocument, _context)).Data;
 
     public AssemblyReferenceNode Create(AssemblyRef asmRef, ModuleDef ownerModule) =>
         (AssemblyReferenceNode)TreeView
             .Create(new AssemblyReferenceNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.AssemblyRefTreeNodeGroupReferences),
-                ownerModule, asmRef)).Data;
+                ownerModule, asmRef, _context))
+            .Data;
 
     public ModuleReferenceNode Create(ModuleRef modRef) =>
         (ModuleReferenceNode)TreeView
-            .Create(
-                new ModuleReferenceNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ModuleRefTreeNodeGroupReferences), modRef))
+            .Create(new ModuleReferenceNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ModuleRefTreeNodeGroupReferences), modRef,
+                _context))
             .Data;
 
     public MethodNode CreateEvent(MethodDef method) =>
-        (MethodNode)TreeView.Create(new MethodNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.MethodTreeNodeGroupEvent), method))
+        (MethodNode)TreeView
+            .Create(new MethodNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.MethodTreeNodeGroupEvent), method, _context))
             .Data;
 
     public MethodNode CreateProperty(MethodDef method) =>
         (MethodNode)TreeView
-            .Create(new MethodNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.MethodTreeNodeGroupProperty), method)).Data;
+            .Create(new MethodNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.MethodTreeNodeGroupProperty), method, _context))
+            .Data;
 
     public NamespaceNode Create(string name) =>
         (NamespaceNode)TreeView
             .Create(new NamespaceNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.NamespaceTreeNodeGroupModule), name,
-                new List<TypeDef>())).Data;
+                new List<TypeDef>(), _context))
+            .Data;
 
     public TypeNode Create(TypeDef type) =>
-        (TypeNode)TreeView.Create(new TypeNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.TypeTreeNodeGroupNamespace), type))
+        (TypeNode)TreeView
+            .Create(new TypeNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.TypeTreeNodeGroupNamespace), type, _context))
             .Data;
 
     public TypeNode CreateNested(TypeDef type) =>
-        (TypeNode)TreeView.Create(new TypeNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.TypeTreeNodeGroupType), type)).Data;
+        (TypeNode)TreeView
+            .Create(new TypeNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.TypeTreeNodeGroupType), type, _context))
+            .Data;
 
     public MethodNode Create(MethodDef method) =>
-        (MethodNode)TreeView.Create(new MethodNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.MethodTreeNodeGroupType), method))
+        (MethodNode)TreeView
+            .Create(new MethodNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.MethodTreeNodeGroupType), method, _context))
             .Data;
 
     public PropertyNode Create(PropertyDef property) =>
         (PropertyNode)TreeView
-            .Create(new PropertyNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.PropertyTreeNodeGroupType), property)).Data;
+            .Create(new PropertyNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.PropertyTreeNodeGroupType), property, _context))
+            .Data;
 
     public EventNode Create(EventDef @event) =>
-        (EventNode)TreeView.Create(new EventNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.EventTreeNodeGroupType), @event))
+        (EventNode)TreeView
+            .Create(new EventNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.EventTreeNodeGroupType), @event, _context))
             .Data;
 
     public FieldNode Create(FieldDef field) =>
-        (FieldNode)TreeView.Create(new FieldNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.FieldTreeNodeGroupType), field))
+        (FieldNode)TreeView
+            .Create(new FieldNodeImpl(DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.FieldTreeNodeGroupType), field, _context))
             .Data;
 
     public DocumentTreeNodeData? FindNode(object? @ref)

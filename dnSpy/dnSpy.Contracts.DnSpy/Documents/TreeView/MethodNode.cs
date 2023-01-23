@@ -21,22 +21,24 @@ using System;
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A method node
-	/// </summary>
-	public abstract class MethodNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the method
-		/// </summary>
-		public MethodDef MethodDef { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		IMDTokenProvider? IMDTokenNode.Reference => MethodDef;
+/// <summary>
+/// A method node
+/// </summary>
+public abstract class MethodNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the method
+    /// </summary>
+    public MethodDef MethodDef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="method">Method</param>
-		protected MethodNode(MethodDef method) => MethodDef = method ?? throw new ArgumentNullException(nameof(method));
-	}
+    IMDTokenProvider IMDTokenNode.Reference => MethodDef;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="method">Method</param>
+    protected MethodNode(MethodDef method, IDocumentTreeNodeDataContext context) : base(context) =>
+        MethodDef = method ?? throw new ArgumentNullException(nameof(method));
 }

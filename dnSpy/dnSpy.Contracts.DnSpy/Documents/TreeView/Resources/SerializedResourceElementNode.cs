@@ -26,113 +26,122 @@ using dnlib.DotNet.Resources;
 using dnSpy.Contracts.Images;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// Serialized resource element node base class
-	/// </summary>
-	public abstract class SerializedResourceElementNode : ResourceElementNode {
-		object? deserializedData;
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
 
-		string? DeserializedStringValue => deserializedData?.ToString();
-		bool IsSerialized => deserializedData is null;
+/// <summary>
+/// Serialized resource element node base class
+/// </summary>
+public abstract class SerializedResourceElementNode : ResourceElementNode
+{
+    private object? _deserializedData;
 
-		/// <inheritdoc/>
-		protected override string ValueString {
-			get {
-				if (deserializedData is null)
-					return base.ValueString;
-				return ConvertObjectToString(deserializedData)!;
-			}
-		}
+    string? DeserializedStringValue => _deserializedData?.ToString();
 
-		/// <inheritdoc/>
-		protected override ImageReference GetIcon() => DsImages.UserDefinedDataType;
+    bool IsSerialized => _deserializedData is null;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="treeNodeGroup">Treenode group</param>
-		/// <param name="resourceElement">Resource element</param>
-		protected SerializedResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement)
-			: base(treeNodeGroup, resourceElement) => Debug.Assert(resourceElement.ResourceData is BinaryResourceData);
+    /// <inheritdoc/>
+    protected override string ValueString => _deserializedData is null
+        ? base.ValueString
+        : ConvertObjectToString(_deserializedData)!;
 
-		/// <inheritdoc/>
-		public override void Initialize() => DeserializeIfPossible();
+    /// <inheritdoc/>
+    protected override ImageReference GetIcon() => DsImages.UserDefinedDataType;
 
-		void DeserializeIfPossible() {
-			if (Context.DeserializeResources)
-				Deserialize();
-		}
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="treeNodeGroup">Treenode group</param>
+    /// <param name="resourceElement">Resource element</param>
+    protected SerializedResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement, IDocumentTreeNodeDataContext context)
+        : base(treeNodeGroup, resourceElement, context) =>
+        Debug.Assert(resourceElement.ResourceData is BinaryResourceData);
 
-		/// <inheritdoc/>
-		protected override IEnumerable<ResourceData> GetDeserializedData() {
-			var dd = deserializedData;
-			var re = ResourceElement;
-			if (dd is not null)
-				yield return new ResourceData(re.Name, token => ResourceUtilities.StringToStream(ConvertObjectToString(dd)));
-			else
-				yield return new ResourceData(re.Name, token => new MemoryStream(((BinaryResourceData)re.ResourceData).Data));
-		}
+    /// <inheritdoc/>
+    public override void Initialize() => DeserializeIfPossible();
 
-		/// <summary>
-		/// Called after it's been deserialized
-		/// </summary>
-		protected virtual void OnDeserialized() { }
+    void DeserializeIfPossible()
+    {
+        if (Context.DeserializeResources)
+            Deserialize();
+    }
 
-		/// <summary>
-		/// true if <see cref="Deserialize()"/> can execute
-		/// </summary>
-		public bool CanDeserialize => IsSerialized;
+    /// <inheritdoc/>
+    protected override IEnumerable<ResourceData> GetDeserializedData()
+    {
+        var dd = _deserializedData;
+        var re = ResourceElement;
 
-		/// <summary>
-		/// Deserializes the data
-		/// </summary>
-		public void Deserialize() {
-			if (!CanDeserialize)
-				return;
+        if (dd is not null)
+            yield return new ResourceData(re.Name, _ => ResourceUtilities.StringToStream(ConvertObjectToString(dd)));
+        else
+            yield return new ResourceData(re.Name, _ => new MemoryStream(((BinaryResourceData)re.ResourceData).Data));
+    }
 
-			var serializedData = ((BinaryResourceData)ResourceElement.ResourceData).Data;
-			var formatter = new BinaryFormatter();
-			try {
+    /// <summary>
+    /// Called after it's been deserialized
+    /// </summary>
+    protected virtual void OnDeserialized()
+    {
+    }
+
+    /// <summary>
+    /// true if <see cref="Deserialize()"/> can execute
+    /// </summary>
+    public bool CanDeserialize => IsSerialized;
+
+    /// <summary>
+    /// Deserializes the data
+    /// </summary>
+    public void Deserialize()
+    {
+        if (!CanDeserialize)
+            return;
+
+        var serializedData = ((BinaryResourceData)ResourceElement.ResourceData).Data;
+        var formatter = new BinaryFormatter();
+
+        try
+        {
 #pragma warning disable SYSLIB0011
-				deserializedData = formatter.Deserialize(new MemoryStream(serializedData));
+            _deserializedData = formatter.Deserialize(new MemoryStream(serializedData));
 #pragma warning restore SYSLIB0011
-			}
-			catch {
-				return;
-			}
-			if (deserializedData is null)
-				return;
+        }
+        catch
+        {
+            return;
+        }
 
-			try {
-				OnDeserialized();
-			}
-			catch {
-				deserializedData = null;
-			}
-		}
+        if (_deserializedData is null)
+            return;
 
-		string? ConvertObjectToString(object obj) {
-			if (obj is null)
-				return null;
-			if (!Context.DeserializeResources)
-				return obj.ToString();
+        try
+        {
+            OnDeserialized();
+        }
+        catch
+        {
+            _deserializedData = null;
+        }
+    }
 
-			return SerializationUtilities.ConvertObjectToString(obj);
-		}
+    string? ConvertObjectToString(object? obj)
+    {
+        if (obj is null)
+            return null;
 
-		/// <inheritdoc/>
-		public override void UpdateData(ResourceElement newResElem) {
-			base.UpdateData(newResElem);
-			deserializedData = null;
-			DeserializeIfPossible();
-		}
+        return !Context.DeserializeResources
+            ? obj.ToString()
+            : SerializationUtilities.ConvertObjectToString(obj);
+    }
 
-		/// <inheritdoc/>
-		public override string? ToString(CancellationToken token, bool canDecompile) {
-			if (IsSerialized)
-				return null;
-			return DeserializedStringValue;
-		}
-	}
+    /// <inheritdoc/>
+    public override void UpdateData(ResourceElement newResElem)
+    {
+        base.UpdateData(newResElem);
+        _deserializedData = null;
+        DeserializeIfPossible();
+    }
+
+    /// <inheritdoc/>
+    public override string? ToString(CancellationToken token, bool canDecompile) => IsSerialized ? null : DeserializedStringValue;
 }

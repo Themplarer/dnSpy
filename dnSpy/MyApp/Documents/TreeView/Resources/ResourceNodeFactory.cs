@@ -36,7 +36,7 @@ internal sealed class ResourceNodeFactory : IResourceNodeFactory
     public ResourceNodeFactory(IEnumerable<Lazy<IResourceNodeProvider, IResourceNodeProviderMetadata>> resourceNodeProviders) =>
         _resourceNodeProviders = resourceNodeProviders.OrderBy(a => a.Metadata.Order).ToArray();
 
-    public DocumentTreeNodeData Create(ModuleDef module, Resource resource, ITreeNodeGroup treeNodeGroup)
+    public DocumentTreeNodeData Create(ModuleDef module, Resource resource, ITreeNodeGroup treeNodeGroup, IDocumentTreeNodeDataContext context)
     {
         if (module is null)
             throw new ArgumentNullException(nameof(module));
@@ -47,12 +47,13 @@ internal sealed class ResourceNodeFactory : IResourceNodeFactory
         if (treeNodeGroup is null)
             throw new ArgumentNullException(nameof(treeNodeGroup));
 
-        var node = CreateNode(module, resource, treeNodeGroup);
+        var node = CreateNode(module, resource, treeNodeGroup, context);
         ResourceNode.AddResource(node, resource);
         return node;
     }
 
-    public DocumentTreeNodeData Create(ModuleDef module, ResourceElement resourceElement, ITreeNodeGroup treeNodeGroup)
+    public DocumentTreeNodeData Create(ModuleDef module, ResourceElement resourceElement, ITreeNodeGroup treeNodeGroup,
+        IDocumentTreeNodeDataContext context)
     {
         if (module is null)
             throw new ArgumentNullException(nameof(module));
@@ -63,12 +64,12 @@ internal sealed class ResourceNodeFactory : IResourceNodeFactory
         if (treeNodeGroup is null)
             throw new ArgumentNullException(nameof(treeNodeGroup));
 
-        var node = CreateNode(module, resourceElement, treeNodeGroup);
+        var node = CreateNode(module, resourceElement, treeNodeGroup, context);
         ResourceElementNode.AddResourceElement(node, resourceElement);
         return node;
     }
 
-    private DocumentTreeNodeData CreateNode(ModuleDef module, Resource resource, ITreeNodeGroup treeNodeGroup)
+    private DocumentTreeNodeData CreateNode(ModuleDef module, Resource resource, ITreeNodeGroup treeNodeGroup, IDocumentTreeNodeDataContext context)
     {
         foreach (var provider in _resourceNodeProviders)
             try
@@ -81,10 +82,11 @@ internal sealed class ResourceNodeFactory : IResourceNodeFactory
                 // ignored
             }
 
-        return new UnknownResourceNodeImpl(treeNodeGroup, resource);
+        return new UnknownResourceNodeImpl(treeNodeGroup, resource, context);
     }
 
-    private DocumentTreeNodeData CreateNode(ModuleDef module, ResourceElement resourceElement, ITreeNodeGroup treeNodeGroup)
+    private DocumentTreeNodeData CreateNode(ModuleDef module, ResourceElement resourceElement, ITreeNodeGroup treeNodeGroup,
+        IDocumentTreeNodeDataContext context)
     {
         foreach (var provider in _resourceNodeProviders)
             try
@@ -97,6 +99,6 @@ internal sealed class ResourceNodeFactory : IResourceNodeFactory
                 // ignored
             }
 
-        return new BuiltInResourceElementNodeImpl(treeNodeGroup, resourceElement);
+        return new BuiltInResourceElementNodeImpl(treeNodeGroup, resourceElement, context);
     }
 }

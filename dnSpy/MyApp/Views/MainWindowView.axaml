@@ -4,18 +4,18 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:views="clr-namespace:MyApp.Views"
-        mc:Ignorable="d" d:DesignWidth="1920" d:DesignHeight="1080"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="MyApp.Views.MainWindow"
-        Icon="/Assets/dnSpy.ico"
-        Title="MyApp">
+        Icon="/Assets/dnSpy.ico" Title="MyApp" WindowState="Maximized">
 
     <Design.DataContext>
+        <!-- ReSharper disable once Xaml.ConstructorWarning -->
         <vm:MainWindowViewModel />
     </Design.DataContext>
 
     <DockPanel>
         <views:MenuView DockPanel.Dock="Top" />
-        <Grid ColumnDefinitions="200,1,*">
+        <Grid ColumnDefinitions="*,1,*">
             <views:AssemblyExplorerView Grid.Column="0" HorizontalContentAlignment="Left" />
             <GridSplitter Grid.Column="1" />
             <Border Background="DarkGray" Grid.Column="2" />

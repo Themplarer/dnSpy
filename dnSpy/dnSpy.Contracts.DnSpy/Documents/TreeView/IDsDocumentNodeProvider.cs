@@ -20,41 +20,44 @@
 using System;
 using System.ComponentModel.Composition;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// Creates <see cref="DsDocumentNode"/>s. Use <see cref="ExportDsDocumentNodeProviderAttribute"/>
-	/// to export an instance.
-	/// </summary>
-	public interface IDsDocumentNodeProvider {
-		/// <summary>
-		/// Creates a new <see cref="DsDocumentNode"/> instance or returns null
-		/// </summary>
-		/// <param name="documentTreeView">Document treeview</param>
-		/// <param name="owner">Owner node or null if owner is the root node</param>
-		/// <param name="document">New document</param>
-		/// <returns></returns>
-		DsDocumentNode? Create(IDocumentTreeView documentTreeView, DsDocumentNode? owner, IDsDocument document);
-	}
+namespace dnSpy.Contracts.Documents.TreeView;
 
-	/// <summary>Metadata</summary>
-	public interface IDsDocumentNodeProviderMetadata {
-		/// <summary>See <see cref="ExportDsDocumentNodeProviderAttribute.Order"/></summary>
-		double Order { get; }
-	}
+/// <summary>
+/// Creates <see cref="DsDocumentNode"/>s. Use <see cref="ExportDsDocumentNodeProviderAttribute"/>
+/// to export an instance.
+/// </summary>
+public interface IDsDocumentNodeProvider
+{
+    /// <summary>
+    /// Creates a new <see cref="DsDocumentNode"/> instance or returns null
+    /// </summary>
+    /// <param name="documentTreeView">Document treeview</param>
+    /// <param name="owner">Owner node or null if owner is the root node</param>
+    /// <param name="document">New document</param>
+    /// <returns></returns>
+    DsDocumentNode? Create(IDocumentTreeView documentTreeView, DsDocumentNode? owner, IDsDocument document, IDocumentTreeNodeDataContext context);
+}
 
-	/// <summary>
-	/// Exports a <see cref="IDsDocumentNodeProvider"/> instance
-	/// </summary>
-	[MetadataAttribute, AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
-	public sealed class ExportDsDocumentNodeProviderAttribute : ExportAttribute, IDsDocumentNodeProviderMetadata {
-		/// <summary>Constructor</summary>
-		public ExportDsDocumentNodeProviderAttribute()
-			: base(typeof(IDsDocumentNodeProvider)) {
-		}
+/// <summary>Metadata</summary>
+public interface IDsDocumentNodeProviderMetadata
+{
+    /// <summary>See <see cref="ExportDsDocumentNodeProviderAttribute.Order"/></summary>
+    double Order { get; }
+}
 
-		/// <summary>
-		/// Order of this instance
-		/// </summary>
-		public double Order { get; set; }
-	}
+/// <summary>
+/// Exports a <see cref="IDsDocumentNodeProvider"/> instance
+/// </summary>
+[MetadataAttribute, AttributeUsage(AttributeTargets.Class)]
+public sealed class ExportDsDocumentNodeProviderAttribute : Attribute, IDsDocumentNodeProviderMetadata
+{
+    /// <summary>Constructor</summary>
+    public ExportDsDocumentNodeProviderAttribute()
+    {
+    }
+
+    /// <summary>
+    /// Order of this instance
+    /// </summary>
+    public double Order { get; set; }
 }

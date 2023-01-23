@@ -27,40 +27,58 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class ReferencesFolderNodeImpl : ReferencesFolderNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.REFERENCES_FOLDER_NODE_GUID);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => DsImages.Reference;
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		public override void Initialize() => TreeNode.LazyLoading = true;
-		public override ITreeNodeGroup? TreeNodeGroup { get; }
+namespace dnSpy.Documents.TreeView;
 
-		readonly ModuleDocumentNode moduleNode;
+sealed class ReferencesFolderNodeImpl : ReferencesFolderNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.REFERENCES_FOLDER_NODE_GUID);
 
-		public ReferencesFolderNodeImpl(ITreeNodeGroup treeNodeGroup, ModuleDocumentNode moduleNode) {
-			Debug2.Assert(moduleNode.Document.ModuleDef is not null);
-			TreeNodeGroup = treeNodeGroup;
-			this.moduleNode = moduleNode;
-		}
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => DsImages.Reference;
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			output.Write(BoxedTextColor.Text, "dnSpy_Resources.ReferencesFolder"); // todo
-			if ((options & DocumentNodeWriteOptions.ToolTip) != 0) {
-				output.WriteLine();
-				WriteFilename(output);
-			}
-		}
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			Debug2.Assert(moduleNode.Document.ModuleDef is not null);
-			foreach (var asmRef in moduleNode.Document.ModuleDef.GetAssemblyRefs())
-				yield return new AssemblyReferenceNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.AssemblyRefTreeNodeGroupReferences), moduleNode.Document.ModuleDef, asmRef);
-			foreach (var modRef in moduleNode.Document.ModuleDef.GetModuleRefs())
-				yield return new ModuleReferenceNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ModuleRefTreeNodeGroupReferences), modRef);
-		}
+    public override void Initialize() => TreeNode.LazyLoading = true;
 
-		public override AssemblyReferenceNode Create(AssemblyRef asmRef) => Context.DocumentTreeView.Create(asmRef, moduleNode.Document.ModuleDef!);
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
-			filter.GetResult(this).FilterType;
-	}
+    public override ITreeNodeGroup? TreeNodeGroup { get; }
+
+    readonly ModuleDocumentNode moduleNode;
+
+    public ReferencesFolderNodeImpl(ITreeNodeGroup treeNodeGroup, ModuleDocumentNode moduleNode, IDocumentTreeNodeDataContext context)
+        : base(context)
+    {
+        Debug2.Assert(moduleNode.Document.ModuleDef is not null);
+        TreeNodeGroup = treeNodeGroup;
+        this.moduleNode = moduleNode;
+    }
+
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        output.Write(BoxedTextColor.Text, "dnSpy_Resources.ReferencesFolder"); // todo
+
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
+        {
+            output.WriteLine();
+            WriteFilename(output);
+        }
+    }
+
+    public override IEnumerable<TreeNodeData> CreateChildren()
+    {
+        Debug.Assert(moduleNode.Document.ModuleDef is not null);
+
+        foreach (var asmRef in moduleNode.Document.ModuleDef.GetAssemblyRefs())
+            yield return new AssemblyReferenceNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.AssemblyRefTreeNodeGroupReferences),
+                moduleNode.Document.ModuleDef, asmRef, Context);
+
+        foreach (var modRef in moduleNode.Document.ModuleDef.GetModuleRefs())
+            yield return new ModuleReferenceNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ModuleRefTreeNodeGroupReferences), modRef,
+                Context);
+    }
+
+    public override AssemblyReferenceNode Create(AssemblyRef asmRef) => Context.DocumentTreeView.Create(asmRef, moduleNode.Document.ModuleDef!);
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
+        filter.GetResult(this).FilterType;
 }

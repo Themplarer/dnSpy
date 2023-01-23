@@ -48,8 +48,8 @@ sealed class BuiltInResourceElementNodeImpl : BuiltInResourceElementNode, IDecom
         return ResourceUtilities.TryGetImageReference(asm, ResourceElement.Name) ?? DsImages.Binary;
     }
 
-    public BuiltInResourceElementNodeImpl(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement)
-        : base(treeNodeGroup, resourceElement)
+    public BuiltInResourceElementNodeImpl(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement, IDocumentTreeNodeDataContext context)
+        : base(treeNodeGroup, resourceElement, context)
     {
     }
 
@@ -72,7 +72,7 @@ sealed class BuiltInResourceElementNodeImpl : BuiltInResourceElementNode, IDecom
             yield return new ResourceData(re.Name, token => new MemoryStream());
         else if (re.ResourceData.Code == ResourceTypeCode.String)
             yield return new ResourceData(re.Name, token => ResourceUtilities.StringToStream((string)((BuiltInResourceData)re.ResourceData).Data));
-        else if (re.ResourceData.Code == ResourceTypeCode.ByteArray || re.ResourceData.Code == ResourceTypeCode.Stream)
+        else if (re.ResourceData.Code is ResourceTypeCode.ByteArray or ResourceTypeCode.Stream)
             yield return new ResourceData(re.Name, token => new MemoryStream((byte[])((BuiltInResourceData)re.ResourceData).Data));
         else if (re.ResourceData.Code >= ResourceTypeCode.UserTypes)
             yield return new ResourceData(re.Name, token => new MemoryStream(((BinaryResourceData)re.ResourceData).Data));
@@ -92,7 +92,7 @@ sealed class BuiltInResourceElementNodeImpl : BuiltInResourceElementNode, IDecom
             return true;
         }
 
-        if (ResourceElement.ResourceData.Code == ResourceTypeCode.ByteArray || ResourceElement.ResourceData.Code == ResourceTypeCode.Stream)
+        if (ResourceElement.ResourceData.Code is ResourceTypeCode.ByteArray or ResourceTypeCode.Stream)
         {
             var data = (byte[])((BuiltInResourceData)ResourceElement.ResourceData).Data;
             return ResourceUtilities.Decompile(context, new MemoryStream(data), Name);

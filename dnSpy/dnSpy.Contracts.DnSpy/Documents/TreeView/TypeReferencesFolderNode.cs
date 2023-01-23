@@ -22,145 +22,179 @@ using System.Diagnostics;
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// Type References node
-	/// </summary>
-	public abstract class TypeReferencesFolderNode : DocumentTreeNodeData {
-	}
+namespace dnSpy.Contracts.Documents.TreeView;
 
-	/// <summary>
-	/// TypeSpec node
-	/// </summary>
-	public abstract class TypeSpecsFolderNode : DocumentTreeNodeData {
-	}
+/// <summary>
+/// Type References node
+/// </summary>
+public abstract class TypeReferencesFolderNode : DocumentTreeNodeData
+{
+    protected TypeReferencesFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
+}
 
-	/// <summary>
-	/// Method References node
-	/// </summary>
-	public abstract class MethodReferencesFolderNode : DocumentTreeNodeData {
-	}
+/// <summary>
+/// TypeSpec node
+/// </summary>
+public abstract class TypeSpecsFolderNode : DocumentTreeNodeData
+{
+    protected TypeSpecsFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
+}
 
-	/// <summary>
-	/// Field References node
-	/// </summary>
-	public abstract class FieldReferencesFolderNode : DocumentTreeNodeData {
-	}
+/// <summary>
+/// Method References node
+/// </summary>
+public abstract class MethodReferencesFolderNode : DocumentTreeNodeData
+{
+    protected MethodReferencesFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
+}
 
-	/// <summary>
-	/// Property References node
-	/// </summary>
-	public abstract class PropertyReferencesFolderNode : DocumentTreeNodeData {
-	}
+/// <summary>
+/// Field References node
+/// </summary>
+public abstract class FieldReferencesFolderNode : DocumentTreeNodeData
+{
+    protected FieldReferencesFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
+}
 
-	/// <summary>
-	/// Event References node
-	/// </summary>
-	public abstract class EventReferencesFolderNode : DocumentTreeNodeData {
-	}
+/// <summary>
+/// Property References node
+/// </summary>
+public abstract class PropertyReferencesFolderNode : DocumentTreeNodeData
+{
+    protected PropertyReferencesFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
+}
 
-	/// <summary>
-	/// Type reference node
-	/// </summary>
-	public abstract class TypeReferenceNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the type reference
-		/// </summary>
-		public ITypeDefOrRef TypeRef { get; }
+/// <summary>
+/// Event References node
+/// </summary>
+public abstract class EventReferencesFolderNode : DocumentTreeNodeData
+{
+    protected EventReferencesFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
+}
 
-		IMDTokenProvider? IMDTokenNode.Reference => TypeRef;
+/// <summary>
+/// Type reference node
+/// </summary>
+public abstract class TypeReferenceNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the type reference
+    /// </summary>
+    public ITypeDefOrRef TypeRef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="type">Type ref or type spec</param>
-		protected TypeReferenceNode(ITypeDefOrRef type) {
-			Debug.Assert(type is TypeRef || type is TypeSpec);
-			TypeRef = type ?? throw new ArgumentNullException(nameof(type));
-		}
-	}
+    IMDTokenProvider IMDTokenNode.Reference => TypeRef;
 
-	/// <summary>
-	/// Method reference node
-	/// </summary>
-	public abstract class MethodReferenceNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the method reference
-		/// </summary>
-		public IMethod MethodRef { get; }
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="type">Type ref or type spec</param>
+    protected TypeReferenceNode(ITypeDefOrRef type, IDocumentTreeNodeDataContext context) : base(context)
+    {
+        Debug.Assert(type is dnlib.DotNet.TypeRef or TypeSpec);
+        TypeRef = type ?? throw new ArgumentNullException(nameof(type));
+    }
+}
 
-		IMDTokenProvider? IMDTokenNode.Reference => MethodRef;
+/// <summary>
+/// Method reference node
+/// </summary>
+public abstract class MethodReferenceNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the method reference
+    /// </summary>
+    public IMethod MethodRef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="method">Method ref</param>
-		protected MethodReferenceNode(IMethod method) {
-			Debug.Assert((method is MemberRef && ((MemberRef)method).IsMethodRef) || method is MethodSpec || method is MethodDef);
-			MethodRef = method ?? throw new ArgumentNullException(nameof(method));
-		}
-	}
+    IMDTokenProvider IMDTokenNode.Reference => MethodRef;
 
-	/// <summary>
-	/// Field reference node
-	/// </summary>
-	public abstract class FieldReferenceNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the field reference
-		/// </summary>
-		public MemberRef FieldRef { get; }
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="method">Method ref</param>
+    protected MethodReferenceNode(IMethod method, IDocumentTreeNodeDataContext context) : base(context)
+    {
+        Debug.Assert(method is MemberRef { IsMethodRef: true } or MethodSpec or MethodDef);
+        MethodRef = method ?? throw new ArgumentNullException(nameof(method));
+    }
+}
 
-		IMDTokenProvider? IMDTokenNode.Reference => FieldRef;
+/// <summary>
+/// Field reference node
+/// </summary>
+public abstract class FieldReferenceNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the field reference
+    /// </summary>
+    public MemberRef FieldRef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="field">Field ref</param>
-		protected FieldReferenceNode(MemberRef field) {
-			Debug.Assert(field.IsFieldRef);
-			FieldRef = field ?? throw new ArgumentNullException(nameof(field));
-		}
-	}
+    IMDTokenProvider IMDTokenNode.Reference => FieldRef;
 
-	/// <summary>
-	/// Property reference node
-	/// </summary>
-	public abstract class PropertyReferenceNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the property reference
-		/// </summary>
-		public IMethod PropertyRef { get; }
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="field">Field ref</param>
+    protected FieldReferenceNode(MemberRef field, IDocumentTreeNodeDataContext context) : base(context)
+    {
+        Debug.Assert(field.IsFieldRef);
+        FieldRef = field ?? throw new ArgumentNullException(nameof(field));
+    }
+}
 
-		IMDTokenProvider? IMDTokenNode.Reference => PropertyRef;
+/// <summary>
+/// Property reference node
+/// </summary>
+public abstract class PropertyReferenceNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the property reference
+    /// </summary>
+    public IMethod PropertyRef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="method">Property ref</param>
-		protected PropertyReferenceNode(IMethod method) {
-			Debug.Assert((method is MemberRef && ((MemberRef)method).IsMethodRef) || method is MethodSpec || method is MethodDef);
-			PropertyRef = method ?? throw new ArgumentNullException(nameof(method));
-		}
-	}
+    IMDTokenProvider IMDTokenNode.Reference => PropertyRef;
 
-	/// <summary>
-	/// Event reference node
-	/// </summary>
-	public abstract class EventReferenceNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the event reference
-		/// </summary>
-		public IMethod EventRef { get; }
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="method">Property ref</param>
+    protected PropertyReferenceNode(IMethod method, IDocumentTreeNodeDataContext context) : base(context)
+    {
+        Debug.Assert(method is MemberRef { IsMethodRef: true } or MethodSpec or MethodDef);
+        PropertyRef = method ?? throw new ArgumentNullException(nameof(method));
+    }
+}
 
-		IMDTokenProvider? IMDTokenNode.Reference => EventRef;
+/// <summary>
+/// Event reference node
+/// </summary>
+public abstract class EventReferenceNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the event reference
+    /// </summary>
+    public IMethod EventRef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="method">Event ref</param>
-		protected EventReferenceNode(IMethod method) {
-			Debug.Assert((method is MemberRef && ((MemberRef)method).IsMethodRef) || method is MethodSpec || method is MethodDef);
-			EventRef = method ?? throw new ArgumentNullException(nameof(method));
-		}
-	}
+    IMDTokenProvider IMDTokenNode.Reference => EventRef;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="method">Event ref</param>
+    protected EventReferenceNode(IMethod method, IDocumentTreeNodeDataContext context) : base(context)
+    {
+        Debug.Assert(method is MemberRef { IsMethodRef: true } or MethodSpec or MethodDef);
+        EventRef = method ?? throw new ArgumentNullException(nameof(method));
+    }
 }

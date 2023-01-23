@@ -25,33 +25,42 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class FieldNodeImpl : FieldNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.FIELD_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid, FieldDef.FullName);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => dnImgMgr.GetImageReference(FieldDef);
-		public override ITreeNodeGroup? TreeNodeGroup { get; }
+namespace dnSpy.Documents.TreeView;
 
-		public FieldNodeImpl(ITreeNodeGroup treeNodeGroup, FieldDef field)
-			: base(field) => TreeNodeGroup = treeNodeGroup;
+sealed class FieldNodeImpl : FieldNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.FIELD_NODE_GUID);
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			if ((options & DocumentNodeWriteOptions.ToolTip) != 0) {
-				WriteMemberRef(output, decompiler, FieldDef);
-				output.WriteLine();
-				WriteFilename(output);
-			}
-			else
-				new NodeFormatter().Write(output, decompiler, FieldDef, GetShowToken(options));
-		}
+    public override NodePathName NodePathName => new NodePathName(Guid, FieldDef.FullName);
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) {
-			var res = filter.GetResult(FieldDef);
-			if (res.FilterType != FilterType.Default)
-				return res.FilterType;
-			if (Context.Decompiler.ShowMember(FieldDef))
-				return FilterType.Visible;
-			return FilterType.Hide;
-		}
-	}
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => dnImgMgr.GetImageReference(FieldDef);
+
+    public override ITreeNodeGroup? TreeNodeGroup { get; }
+
+    public FieldNodeImpl(ITreeNodeGroup treeNodeGroup, FieldDef field, IDocumentTreeNodeDataContext context)
+        : base(field, context) => TreeNodeGroup = treeNodeGroup;
+
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
+        {
+            WriteMemberRef(output, decompiler, FieldDef);
+            output.WriteLine();
+            WriteFilename(output);
+        }
+        else
+            new NodeFormatter().Write(output, decompiler, FieldDef, GetShowToken(options));
+    }
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter)
+    {
+        var res = filter.GetResult(FieldDef);
+        if (res.FilterType != FilterType.Default)
+            return res.FilterType;
+
+        if (Context.Decompiler.ShowMember(FieldDef))
+            return FilterType.Visible;
+
+        return FilterType.Hide;
+    }
 }

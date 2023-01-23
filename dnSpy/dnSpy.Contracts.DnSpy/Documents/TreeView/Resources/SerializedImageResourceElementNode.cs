@@ -20,24 +20,26 @@
 using dnlib.DotNet.Resources;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// A resource node created from a serialized image (BMP or ICO)
-	/// </summary>
-	public abstract class SerializedImageResourceElementNode : ResourceElementNode {
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="treeNodeGroup">Treenode group</param>
-		/// <param name="resourceElement">Resource element</param>
-		protected SerializedImageResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement)
-			: base(treeNodeGroup, resourceElement) {
-		}
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
 
-		/// <summary>
-		/// Gets the raw <see cref="ResourceElement"/>
-		/// </summary>
-		/// <returns></returns>
-		public abstract ResourceElement GetAsRawImage();
-	}
+/// <summary>
+/// A resource node created from a serialized image (BMP or ICO)
+/// </summary>
+public abstract class SerializedImageResourceElementNode : ResourceElementNode
+{
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="treeNodeGroup">Treenode group</param>
+    /// <param name="resourceElement">Resource element</param>
+    protected SerializedImageResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement, IDocumentTreeNodeDataContext context)
+        : base(treeNodeGroup, resourceElement, context)
+    {
+    }
+
+    /// <summary>
+    /// Gets the raw <see cref="ResourceElement"/>
+    /// </summary>
+    /// <returns></returns>
+    public abstract ResourceElement GetAsRawImage();
 }

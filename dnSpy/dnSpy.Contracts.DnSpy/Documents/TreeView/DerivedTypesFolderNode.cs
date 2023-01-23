@@ -17,15 +17,17 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// Contains all derived types
-	/// </summary>
-	public abstract class DerivedTypesFolderNode : DocumentTreeNodeData {
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		protected DerivedTypesFolderNode() {
-		}
-	}
+namespace dnSpy.Contracts.Documents.TreeView;
+
+/// <summary>
+/// Contains all derived types
+/// </summary>
+public abstract class DerivedTypesFolderNode : DocumentTreeNodeData
+{
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    protected DerivedTypesFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
 }

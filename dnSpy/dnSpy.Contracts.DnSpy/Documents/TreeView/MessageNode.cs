@@ -17,20 +17,22 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A message node
-	/// </summary>
-	public abstract class MessageNode : DocumentTreeNodeData {
-		/// <summary>
-		/// Gets the message
-		/// </summary>
-		public abstract string Message { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		protected MessageNode() {
-		}
-	}
+/// <summary>
+/// A message node
+/// </summary>
+public abstract class MessageNode : DocumentTreeNodeData
+{
+    /// <summary>
+    /// Gets the message
+    /// </summary>
+    public abstract string Message { get; }
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    protected MessageNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
 }

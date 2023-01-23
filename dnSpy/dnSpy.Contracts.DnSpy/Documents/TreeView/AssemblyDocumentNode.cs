@@ -21,29 +21,31 @@ using dnlib.DotNet;
 using dnlib.PE;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A .NET assembly file
-	/// </summary>
-	public abstract class AssemblyDocumentNode : DsDocumentNode, IMDTokenNode {
-		/// <summary>
-		/// Gets the <see cref="IDsDocument"/> instance
-		/// </summary>
-		public new IDsDotNetDocument Document => (IDsDotNetDocument)base.Document;
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		/// <summary>
-		/// true if it's an .exe file, false if it's a .dll or .netmodule
-		/// </summary>
-		public bool IsExe => (Document.ModuleDef!.Characteristics & Characteristics.Dll) == 0;
+/// <summary>
+/// A .NET assembly file
+/// </summary>
+public abstract class AssemblyDocumentNode : DsDocumentNode, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the <see cref="IDsDocument"/> instance
+    /// </summary>
+    public new IDsDotNetDocument Document => (IDsDotNetDocument)base.Document;
 
-		IMDTokenProvider? IMDTokenNode.Reference => Document.AssemblyDef;
+    /// <summary>
+    /// true if it's an .exe file, false if it's a .dll or .netmodule
+    /// </summary>
+    public bool IsExe => (Document.ModuleDef!.Characteristics & Characteristics.Dll) == 0;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="document">Document</param>
-		protected AssemblyDocumentNode(IDsDotNetDocument document)
-			: base(document) {
-		}
-	}
+    IMDTokenProvider? IMDTokenNode.Reference => Document.AssemblyDef;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="document">Document</param>
+    protected AssemblyDocumentNode(IDsDotNetDocument document, IDocumentTreeNodeDataContext context)
+        : base(document, context)
+    {
+    }
 }

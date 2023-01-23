@@ -25,62 +25,76 @@ using dnSpy.Contracts.Documents.TreeView;
 using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class RootNode : DocumentTreeNodeData {
-		static readonly Guid guid = new Guid("5112F4B3-3674-43CB-A252-EE9D57A619B8");
+namespace dnSpy.Documents.TreeView;
 
-		public override Guid Guid => guid;
+sealed class RootNode : DocumentTreeNodeData
+{
+    static readonly Guid guid = new Guid("5112F4B3-3674-43CB-A252-EE9D57A619B8");
 
-		public override NodePathName NodePathName {
-			get { Debug.Fail("Shouldn't be called"); return new NodePathName(Guid); }
-		}
+    public RootNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) {
-			Debug.Fail("Shouldn't be called");
-			return FilterType.Default;
-		}
+    public override Guid Guid => guid;
 
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) =>
-			new ImageReference();
+    public override NodePathName NodePathName
+    {
+        get
+        {
+            Debug.Fail("Shouldn't be called");
+            return new NodePathName(Guid);
+        }
+    }
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) { }
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter)
+    {
+        Debug.Fail("Shouldn't be called");
+        return FilterType.Default;
+    }
 
-		public bool CanDrop(DragEventArgs e, int index) {
-			// if (!Context.CanDragAndDrop) {
-			// 	e.Effects = DragDropEffects.None;
-			// 	return false;
-			// }
-			//
-			// if (e.Data.GetDataPresent(DocumentTreeViewConstants.DATAFORMAT_COPIED_ROOT_NODES) || e.Data.GetDataPresent(DataFormats.FileDrop)) {
-			// 	e.Effects = DragDropEffects.Move;
-			// 	return true;
-			// }
-			//
-			// e.Effects = DragDropEffects.None;
-			return false;
-		}
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => new();
 
-		public void Drop(DragEventArgs e, int index) {
-			Debug.Assert(Context.CanDragAndDrop);
-			if (!Context.CanDragAndDrop)
-				return;
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+    }
 
-			// if (e.Data.GetData(DocumentTreeViewConstants.DATAFORMAT_COPIED_ROOT_NODES) is int[] nodeIndexes) {
-			// 	Debug2.Assert(DropNodes is not null);
-			// 	DropNodes?.Invoke(index, nodeIndexes);
-			// 	return;
-			// }
-			//
-			// if (e.Data.GetData(DataFormats.FileDrop) is string[] filenames) {
-			// 	Debug2.Assert(DropFiles is not null);
-			// 	DropFiles?.Invoke(index, filenames);
-			// 	return;
-			// }
+    public bool CanDrop(DragEventArgs e, int index)
+    {
+        // if (!Context.CanDragAndDrop) {
+        // 	e.Effects = DragDropEffects.None;
+        // 	return false;
+        // }
+        //
+        // if (e.Data.GetDataPresent(DocumentTreeViewConstants.DATAFORMAT_COPIED_ROOT_NODES) || e.Data.GetDataPresent(DataFormats.FileDrop)) {
+        // 	e.Effects = DragDropEffects.Move;
+        // 	return true;
+        // }
+        //
+        // e.Effects = DragDropEffects.None;
+        return false;
+    }
 
-			Debug.Fail("Unknown drop data format");
-		}
+    public void Drop(DragEventArgs e, int index)
+    {
+        Debug.Assert(Context.CanDragAndDrop);
+        if (!Context.CanDragAndDrop)
+            return;
 
-		public Action<int, int[]>? DropNodes;
-		public Action<int, string[]>? DropFiles;
-	}
+        // if (e.Data.GetData(DocumentTreeViewConstants.DATAFORMAT_COPIED_ROOT_NODES) is int[] nodeIndexes) {
+        // 	Debug2.Assert(DropNodes is not null);
+        // 	DropNodes?.Invoke(index, nodeIndexes);
+        // 	return;
+        // }
+        //
+        // if (e.Data.GetData(DataFormats.FileDrop) is string[] filenames) {
+        // 	Debug2.Assert(DropFiles is not null);
+        // 	DropFiles?.Invoke(index, filenames);
+        // 	return;
+        // }
+
+        Debug.Fail("Unknown drop data format");
+    }
+
+    public Action<int, int[]>? DropNodes;
+    public Action<int, string[]>? DropFiles;
 }

@@ -21,57 +21,59 @@ using System;
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A type node
-	/// </summary>
-	public abstract class TypeNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the type
-		/// </summary>
-		public TypeDef TypeDef { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		IMDTokenProvider? IMDTokenNode.Reference => TypeDef;
+/// <summary>
+/// A type node
+/// </summary>
+public abstract class TypeNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the type
+    /// </summary>
+    public TypeDef TypeDef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="type">Type</param>
-		protected TypeNode(TypeDef type) => TypeDef = type ?? throw new ArgumentNullException(nameof(type));
+    IMDTokenProvider IMDTokenNode.Reference => TypeDef;
 
-		/// <summary>
-		/// Creates a <see cref="MethodNode"/>
-		/// </summary>
-		/// <param name="method">Method</param>
-		/// <returns></returns>
-		public MethodNode Create(MethodDef method) => Context.DocumentTreeView.Create(method);
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="type">Type</param>
+    protected TypeNode(TypeDef type, IDocumentTreeNodeDataContext context) : base(context) =>
+        TypeDef = type ?? throw new ArgumentNullException(nameof(type));
 
-		/// <summary>
-		/// Creates a <see cref="PropertyNode"/>
-		/// </summary>
-		/// <param name="property">Property</param>
-		/// <returns></returns>
-		public PropertyNode Create(PropertyDef property) => Context.DocumentTreeView.Create(property);
+    /// <summary>
+    /// Creates a <see cref="MethodNode"/>
+    /// </summary>
+    /// <param name="method">Method</param>
+    /// <returns></returns>
+    public MethodNode Create(MethodDef method) => Context.DocumentTreeView.Create(method);
 
-		/// <summary>
-		/// Creates a <see cref="EventNode"/>
-		/// </summary>
-		/// <param name="event">Event</param>
-		/// <returns></returns>
-		public EventNode Create(EventDef @event) => Context.DocumentTreeView.Create(@event);
+    /// <summary>
+    /// Creates a <see cref="PropertyNode"/>
+    /// </summary>
+    /// <param name="property">Property</param>
+    /// <returns></returns>
+    public PropertyNode Create(PropertyDef property) => Context.DocumentTreeView.Create(property);
 
-		/// <summary>
-		/// Creates a <see cref="FieldNode"/>
-		/// </summary>
-		/// <param name="field">Field</param>
-		/// <returns></returns>
-		public FieldNode Create(FieldDef field) => Context.DocumentTreeView.Create(field);
+    /// <summary>
+    /// Creates a <see cref="EventNode"/>
+    /// </summary>
+    /// <param name="event">Event</param>
+    /// <returns></returns>
+    public EventNode Create(EventDef @event) => Context.DocumentTreeView.Create(@event);
 
-		/// <summary>
-		/// Creates a <see cref="TypeNode"/>
-		/// </summary>
-		/// <param name="type">Type</param>
-		/// <returns></returns>
-		public TypeNode Create(TypeDef type) => Context.DocumentTreeView.CreateNested(type);
-	}
+    /// <summary>
+    /// Creates a <see cref="FieldNode"/>
+    /// </summary>
+    /// <param name="field">Field</param>
+    /// <returns></returns>
+    public FieldNode Create(FieldDef field) => Context.DocumentTreeView.Create(field);
+
+    /// <summary>
+    /// Creates a <see cref="TypeNode"/>
+    /// </summary>
+    /// <param name="type">Type</param>
+    /// <returns></returns>
+    public TypeNode Create(TypeDef type) => Context.DocumentTreeView.CreateNested(type);
 }

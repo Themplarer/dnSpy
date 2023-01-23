@@ -18,24 +18,20 @@
 */
 
 using System;
-using System.Diagnostics;
 using System.IO;
 
-namespace dnSpy.Documents {
-	static class FileUtils {
-		public static bool IsFileInDir(string dir, string file) {
-			Debug.Assert(dir.Length != 0);
-			if (dir.Length >= file.Length)
-				return false;
-			var c = file[dir.Length];
-			if (c != Path.DirectorySeparatorChar && c != Path.AltDirectorySeparatorChar)
-				return false;
-			if (!file.StartsWith(dir, StringComparison.OrdinalIgnoreCase))
-				return false;
-			return file.IndexOfAny(dirSeps, dir.Length + 1) < 0;
-		}
-		static readonly char[] dirSeps = Path.DirectorySeparatorChar == Path.AltDirectorySeparatorChar ?
-			new[] { Path.DirectorySeparatorChar } :
-			new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
-	}
+namespace dnSpy.Documents;
+
+internal static class FileUtils
+{
+    private static readonly char[] DirSeps = Path.DirectorySeparatorChar == Path.AltDirectorySeparatorChar
+        ? new[] { Path.DirectorySeparatorChar }
+        : new[] { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar };
+
+    public static bool IsFileInDir(string dir, string file) =>
+        dir.Length < file.Length &&
+        file[dir.Length] is var charAfterDir &&
+        (charAfterDir == Path.DirectorySeparatorChar || charAfterDir == Path.AltDirectorySeparatorChar) &&
+        file.StartsWith(dir, StringComparison.OrdinalIgnoreCase) &&
+        file.IndexOfAny(DirSeps, dir.Length + 1) < 0;
 }

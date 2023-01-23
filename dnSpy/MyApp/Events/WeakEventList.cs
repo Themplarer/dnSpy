@@ -23,94 +23,120 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace dnSpy.Events {
-	// Not thread safe, uses MethodInfo.Invoke() to invoke original method
-	sealed class WeakEventList<TEventArgs> where TEventArgs : EventArgs {
-		readonly List<Info> handlers;
+namespace dnSpy.Events;
 
-		abstract class Info {
-			public abstract bool IsAlive { get; }
-			public abstract void Execute(object? source, TEventArgs e);
-			public abstract bool Equals(EventHandler<TEventArgs> h);
-			public static Info Create(EventHandler<TEventArgs> h) {
-				if (h.Target is null)
-					return new HardRefInfo(h);
+// Not thread safe, uses MethodInfo.Invoke() to invoke original method
+sealed class WeakEventList<TEventArgs> where TEventArgs : EventArgs
+{
+    readonly List<Info> handlers;
 
-				// Need to add check for cases when there's no 'this' pointer in h.Target
-				bool compilerGenerated = h.Target.GetType().IsDefined(typeof(CompilerGeneratedAttribute), false);
-				Debug.Assert(!compilerGenerated, $"Event handler {h.Method} is compiler generated (probably a lambda expression) and can't be removed from the event");
-				if (compilerGenerated)
-					return new HardRefInfo(h);
+    abstract class Info
+    {
+        public abstract bool IsAlive { get; }
 
-				return new InstanceInfo(h);
-			}
-		}
+        public abstract void Execute(object? source, TEventArgs e);
 
-		sealed class HardRefInfo : Info {
-			public override bool IsAlive => true;
-			public override void Execute(object? source, TEventArgs e) => handler(source, e);
-			public override bool Equals(EventHandler<TEventArgs> h) => handler == h;
+        public abstract bool Equals(EventHandler<TEventArgs> h);
 
-			readonly EventHandler<TEventArgs> handler;
+        public static Info Create(EventHandler<TEventArgs> h)
+        {
+            if (h.Target is null)
+                return new HardRefInfo(h);
 
-			public HardRefInfo(EventHandler<TEventArgs> handler) => this.handler = handler;
-		}
+            // Need to add check for cases when there's no 'this' pointer in h.Target
+            var compilerGenerated = h.Target.GetType().IsDefined(typeof(CompilerGeneratedAttribute), false);
+            Debug.Assert(!compilerGenerated,
+                $"Event handler {h.Method} is compiler generated (probably a lambda expression) and can't be removed from the event");
+            if (compilerGenerated)
+                return new HardRefInfo(h);
 
-		sealed class InstanceInfo : Info {
-			public override bool IsAlive => target.Target is not null;
+            return new InstanceInfo(h);
+        }
+    }
 
-			public override void Execute(object? source, TEventArgs e) {
-				if (target.Target is object self)
-					methodInfo.Invoke(self, new object?[] { source, e });
-			}
+    sealed class HardRefInfo : Info
+    {
+        public override bool IsAlive => true;
 
-			public override bool Equals(EventHandler<TEventArgs> h) =>
-				h.Target == target.Target && h.Method == methodInfo;
+        public override void Execute(object? source, TEventArgs e) => handler(source, e);
 
-			readonly WeakReference target;
-			readonly MethodInfo methodInfo;
+        public override bool Equals(EventHandler<TEventArgs> h) => handler == h;
 
-			public InstanceInfo(EventHandler<TEventArgs> handler) {
-				Debug2.Assert(handler.Target is not null);
-				Debug.Assert(handler.GetInvocationList().Length == 1);
-				target = new WeakReference(handler.Target);
-				methodInfo = handler.Method;
-			}
-		}
+        readonly EventHandler<TEventArgs> handler;
 
-		public WeakEventList() => handlers = new List<Info>();
+        public HardRefInfo(EventHandler<TEventArgs> handler) => this.handler = handler;
+    }
 
-		public void Add(EventHandler<TEventArgs> h) {
-			if (h is null)
-				throw new ArgumentNullException(nameof(h));
-			handlers.Add(Info.Create(h));
-		}
+    sealed class InstanceInfo : Info
+    {
+        public override bool IsAlive => target.Target is not null;
 
-		public void Remove(EventHandler<TEventArgs> h) {
-			if (h is null)
-				throw new ArgumentNullException(nameof(h));
-			for (int i = 0; i < handlers.Count; i++) {
-				if (handlers[i].Equals(h)) {
-					handlers.RemoveAt(i);
-					return;
-				}
-			}
-		}
+        public override void Execute(object? source, TEventArgs e)
+        {
+            if (target.Target is object self)
+                methodInfo.Invoke(self, new object?[] { source, e });
+        }
 
-		public void Raise(object? sender, TEventArgs e) {
-			if (handlers.Count == 0)
-				return;
-			var newList = new List<Info>(handlers.Count);
-			foreach (var info in handlers) {
-				if (info.IsAlive)
-					newList.Add(info);
-			}
-			if (newList.Count != handlers.Count) {
-				handlers.Clear();
-				handlers.AddRange(newList);
-			}
-			foreach (var info in newList)
-				info.Execute(sender, e);
-		}
-	}
+        public override bool Equals(EventHandler<TEventArgs> h) =>
+            h.Target == target.Target && h.Method == methodInfo;
+
+        readonly WeakReference target;
+        readonly MethodInfo methodInfo;
+
+        public InstanceInfo(EventHandler<TEventArgs> handler)
+        {
+            Debug2.Assert(handler.Target is not null);
+            Debug.Assert(handler.GetInvocationList().Length == 1);
+            target = new WeakReference(handler.Target);
+            methodInfo = handler.Method;
+        }
+    }
+
+    public WeakEventList() => handlers = new List<Info>();
+
+    public void Add(EventHandler<TEventArgs> h)
+    {
+        if (h is null)
+            throw new ArgumentNullException(nameof(h));
+
+        handlers.Add(Info.Create(h));
+    }
+
+    public void Remove(EventHandler<TEventArgs> h)
+    {
+        if (h is null)
+            throw new ArgumentNullException(nameof(h));
+
+        for (int i = 0; i < handlers.Count; i++)
+        {
+            if (handlers[i].Equals(h))
+            {
+                handlers.RemoveAt(i);
+                return;
+            }
+        }
+    }
+
+    public void Raise(object? sender, TEventArgs e)
+    {
+        if (handlers.Count == 0)
+            return;
+
+        var newList = new List<Info>(handlers.Count);
+
+        foreach (var info in handlers)
+        {
+            if (info.IsAlive)
+                newList.Add(info);
+        }
+
+        if (newList.Count != handlers.Count)
+        {
+            handlers.Clear();
+            handlers.AddRange(newList);
+        }
+
+        foreach (var info in newList)
+            info.Execute(sender, e);
+    }
 }

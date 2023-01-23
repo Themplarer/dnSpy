@@ -21,29 +21,31 @@ using System;
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A property node
-	/// </summary>
-	public abstract class PropertyNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the property
-		/// </summary>
-		public PropertyDef PropertyDef { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		IMDTokenProvider? IMDTokenNode.Reference => PropertyDef;
+/// <summary>
+/// A property node
+/// </summary>
+public abstract class PropertyNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the property
+    /// </summary>
+    public PropertyDef PropertyDef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="property">Property</param>
-		protected PropertyNode(PropertyDef property) => PropertyDef = property ?? throw new ArgumentNullException(nameof(property));
+    IMDTokenProvider? IMDTokenNode.Reference => PropertyDef;
 
-		/// <summary>
-		/// Creates a <see cref="MethodNode"/>, a getter, setter, or an other property method
-		/// </summary>
-		/// <param name="method">Method</param>
-		/// <returns></returns>
-		public MethodNode Create(MethodDef method) => Context.DocumentTreeView.CreateProperty(method);
-	}
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="property">Property</param>
+    protected PropertyNode(PropertyDef property, IDocumentTreeNodeDataContext context) : base(context) =>
+        PropertyDef = property ?? throw new ArgumentNullException(nameof(property));
+
+    /// <summary>
+    /// Creates a <see cref="MethodNode"/>, a getter, setter, or an other property method
+    /// </summary>
+    /// <param name="method">Method</param>
+    /// <returns></returns>
+    public MethodNode Create(MethodDef method) => Context.DocumentTreeView.CreateProperty(method);
 }

@@ -21,23 +21,25 @@ using System;
 using dnlib.DotNet.Resources;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// Unknown serialized <see cref="ResourceElementNode"/>
-	/// </summary>
-	public sealed class UnknownSerializedResourceElementNode : SerializedResourceElementNode {
-		/// <summary>
-		/// Guid of this node
-		/// </summary>
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.UNKNOWN_SERIALIZED_RESOURCE_ELEMENT_NODE_GUID);
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="treeNodeGroup">Treenode group</param>
-		/// <param name="resourceElement">Resource element</param>
-		public UnknownSerializedResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement)
-			: base(treeNodeGroup, resourceElement) {
-		}
-	}
+/// <summary>
+/// Unknown serialized <see cref="ResourceElementNode"/>
+/// </summary>
+public sealed class UnknownSerializedResourceElementNode : SerializedResourceElementNode
+{
+    /// <summary>
+    /// Guid of this node
+    /// </summary>
+    public override Guid Guid => new(DocumentTreeViewConstants.UNKNOWN_SERIALIZED_RESOURCE_ELEMENT_NODE_GUID);
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="treeNodeGroup">Treenode group</param>
+    /// <param name="resourceElement">Resource element</param>
+    public UnknownSerializedResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement, IDocumentTreeNodeDataContext context)
+        : base(treeNodeGroup, resourceElement, context)
+    {
+    }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
-using System.IO;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -8,12 +6,10 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using dnSpy.Contracts.Decompiler;
-using dnSpy.Contracts.Documents.Tabs.DocViewer;
+using dnSpy.Contracts.Documents;
 using dnSpy.Contracts.Documents.TreeView;
 using dnSpy.Contracts.TreeView;
-using dnSpy.Decompiler.MSBuild;
-using Microsoft.VisualStudio.Utilities;
+using dnSpy.Documents.TreeView;
 using MyApp.Documents.Tabs.Dialogs;
 using MyApp.Documents.TreeView;
 using MyApp.Models;
@@ -43,16 +39,15 @@ public class MainWindowViewModel : ViewModelBase
         if (files is null or []) return;
 
         var openDocuments = OpenDocumentsHelper.OpenDocuments(_documentTreeView, _mruList, files.Select(f => f.Name));
+        ((DocumentTreeView)_documentTreeView).NewMethod(NotifyDocumentCollectionType.Add, openDocuments, null!);
 
-        foreach (var openDocument in openDocuments)
-        {
-            var documentNode = _documentTreeView.CreateNode(null, openDocument);
-            var node = new Node(openDocument.AssemblyDef?.Name + " (" + openDocument.AssemblyDef?.Version + ")");
-            Items.Add(node);
-            var childNode = new Node(openDocument.Filename);
-            node.AppendChild(childNode);
-            FillChildren(documentNode, childNode);
-        }
+        foreach (var child in _documentTreeView.TreeView.Root.Children)
+            if (child.Data is AssemblyDocumentNodeImpl documentNode)
+            {
+                var node = new Node(documentNode.ToString());
+                Items.Add(node);
+                FillChildren(documentNode, node);
+            }
     }
 
     private Window GetWindow() =>
@@ -93,7 +88,7 @@ public class MainWindowViewModel : ViewModelBase
 
         foreach (var child in children)
         {
-            var childNode = new Node((child.Text as string)!);
+            var childNode = new Node(child.ToString()!);
             node.AppendChild(childNode);
             FillChildren(child, childNode);
         }
