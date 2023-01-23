@@ -19,15 +19,16 @@
 
 using System.Collections.Generic;
 
-namespace dnSpy.Contracts.Decompiler {
-	/// <summary>
-	/// Creates <see cref="IDecompiler"/>s
-	/// </summary>
-	public interface IDecompilerCreator {
-		/// <summary>
-		/// Creates all decompilers
-		/// </summary>
-		/// <returns></returns>
-		IEnumerable<IDecompiler> Create();
-	}
+namespace dnSpy.Contracts.Decompiler;
+
+/// <summary>
+/// Creates <see cref="IDecompiler"/>s
+/// </summary>
+public interface IDecompilerCreator
+{
+    /// <summary>
+    /// Creates all decompilers
+    /// </summary>
+    /// <returns></returns>
+    IEnumerable<IDecompiler> Create();
 }

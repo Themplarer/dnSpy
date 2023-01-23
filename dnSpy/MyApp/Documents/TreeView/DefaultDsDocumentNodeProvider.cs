@@ -31,19 +31,17 @@ sealed class DefaultDsDocumentNodeProvider : IDsDocumentNodeProvider
     {
         if (document is IDsDotNetDocument dnDocument)
         {
-            Debug2.Assert(document.ModuleDef is not null);
+            Debug.Assert(document.ModuleDef is not null);
 
-            if (document.AssemblyDef is null || owner is not null)
-                return new ModuleDocumentNodeImpl(dnDocument, context);
-
-            return new AssemblyDocumentNodeImpl(dnDocument, context);
+            return document.AssemblyDef is null || owner is not null
+                ? new ModuleDocumentNodeImpl(dnDocument, context)
+                : new AssemblyDocumentNodeImpl(dnDocument, context);
         }
 
-        Debug2.Assert(document.AssemblyDef is null && document.ModuleDef is null);
+        Debug.Assert(document.AssemblyDef is null && document.ModuleDef is null);
 
-        if (document.PEImage is not null)
-            return new PEDocumentNodeImpl(document, context);
-
-        return null;
+        return document.PEImage is not null
+            ? new PEDocumentNodeImpl(document, context) 
+            : null;
     }
 }

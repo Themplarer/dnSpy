@@ -66,6 +66,7 @@
     <ProjectReference Include="..\..\Extensions\dnSpy.Debugger\dnSpy.Debugger.DotNet.Metadata\dnSpy.Debugger.DotNet.Metadata.csproj" />
     <ProjectReference Include="..\..\Extensions\dnSpy.Debugger\dnSpy.Debugger.DotNet\dnSpy.Debugger.DotNet.csproj" />
     <ProjectReference Include="..\..\Extensions\ILSpy.Decompiler\dnSpy.Decompiler.ILSpy.Core\dnSpy.Decompiler.ILSpy.Core.csproj" />
+    <ProjectReference Include="..\..\Extensions\ILSpy.Decompiler\dnSpy.Decompiler.ILSpy\dnSpy.Decompiler.ILSpy.csproj" />
     <ProjectReference Include="..\dnSpy.Contracts.Debugger.DotNet\dnSpy.Contracts.Debugger.DotNet.csproj" />
     <ProjectReference Include="..\dnSpy.Contracts.Debugger\dnSpy.Contracts.Debugger.csproj" />
     <ProjectReference Include="..\dnSpy.Contracts.DnSpy\dnSpy.Contracts.DnSpy.csproj" />

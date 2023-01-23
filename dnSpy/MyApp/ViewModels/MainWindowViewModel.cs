@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -13,21 +14,27 @@ using dnSpy.Documents.TreeView;
 using MyApp.Documents.Tabs.Dialogs;
 using MyApp.Documents.TreeView;
 using MyApp.Models;
+using MyApp.Views;
 
 namespace MyApp.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private readonly IDocumentTreeView _documentTreeView;
     private readonly AssemblyExplorerMostRecentlyUsedList _mruList;
+    private readonly Dictionary<string, TreeNodeData> _nodes = new();
+
+    private IDocumentTreeView DocumentTreeView { get; }
 
     public ObservableCollection<Node> Items { get; }
 
-    public MainWindowViewModel(IDocumentTreeView documentTreeView, AssemblyExplorerMostRecentlyUsedList mruList)
-    {
-        _documentTreeView = documentTreeView;
-        _mruList = mruList;
+    public DecompilationHandler DecompilationHandler { get; }
 
+    public MainWindowViewModel(IDocumentTreeView documentTreeView, AssemblyExplorerMostRecentlyUsedList mruList,
+        DecompilationHandler decompilationHandler)
+    {
+        DocumentTreeView = documentTreeView;
+        DecompilationHandler = decompilationHandler;
+        _mruList = mruList;
         Items = new ObservableCollection<Node>();
     }
 
@@ -38,17 +45,24 @@ public class MainWindowViewModel : ViewModelBase
 
         if (files is null or []) return;
 
-        var openDocuments = OpenDocumentsHelper.OpenDocuments(_documentTreeView, _mruList, files.Select(f => f.Name));
-        ((DocumentTreeView)_documentTreeView).NewMethod(NotifyDocumentCollectionType.Add, openDocuments, null!);
+        var openDocuments = OpenDocumentsHelper.OpenDocuments(DocumentTreeView, _mruList, files
+            .Select(f => (f.TryGetUri(out var uri), uri))
+            .Where(t => t.Item1)
+            .Select(t => t.uri!.AbsolutePath));
+        ((DocumentTreeView)DocumentTreeView).NewMethod(NotifyDocumentCollectionType.Add, openDocuments, null!);
 
-        foreach (var child in _documentTreeView.TreeView.Root.Children)
+        foreach (var child in DocumentTreeView.TreeView.Root.Children.TakeLast(1))
             if (child.Data is AssemblyDocumentNodeImpl documentNode)
             {
-                var node = new Node(documentNode.ToString());
+                var node = new Node(documentNode.ToString(), documentNode, this);
                 Items.Add(node);
-                FillChildren(documentNode, node);
+                node.LoadChildren();
             }
     }
+
+    public void AppendNode(string name, TreeNodeData treeNodeData) => _nodes[name] = treeNodeData;
+
+    public TreeNodeData GetCodeNode(string name) => _nodes[name];
 
     private Window GetWindow() =>
         (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.Windows
@@ -79,18 +93,4 @@ public class MainWindowViewModel : ViewModelBase
                 }
             }
         };
-
-    private static void FillChildren(TreeNodeData treeNodeData, Node node)
-    {
-        var children = treeNodeData.CreateChildren().ToArray();
-
-        if (children.Length == 0) return;
-
-        foreach (var child in children)
-        {
-            var childNode = new Node(child.ToString()!);
-            node.AppendChild(childNode);
-            FillChildren(child, childNode);
-        }
-    }
 }

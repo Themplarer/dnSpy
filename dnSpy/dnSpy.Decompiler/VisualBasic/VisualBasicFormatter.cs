@@ -179,8 +179,8 @@ namespace dnSpy.Decompiler.VisualBasic {
 			if (!forceWrite) {
 				if (outputLengthExceeded)
 					return;
-				if (lineLength + s.Length > TypeFormatterUtils.MAX_OUTPUT_LEN) {
-					s = s.Substring(0, TypeFormatterUtils.MAX_OUTPUT_LEN - lineLength);
+				if (lineLength + s.Length > TypeFormatterUtils.MaxOutputLen) {
+					s = s.Substring(0, TypeFormatterUtils.MaxOutputLen - lineLength);
 					s += "[...]";
 					outputLengthExceeded = true;
 				}
@@ -789,7 +789,7 @@ namespace dnSpy.Decompiler.VisualBasic {
 				return;
 			}
 
-			if (recursionCounter >= TypeFormatterUtils.MAX_RECURSION)
+			if (recursionCounter >= TypeFormatterUtils.MaxRecursion)
 				return;
 			recursionCounter++;
 			try {
@@ -864,7 +864,7 @@ namespace dnSpy.Decompiler.VisualBasic {
 				return;
 			}
 
-			if (recursionCounter >= TypeFormatterUtils.MAX_RECURSION)
+			if (recursionCounter >= TypeFormatterUtils.MaxRecursion)
 				return;
 			recursionCounter++;
 			try {
@@ -1122,7 +1122,7 @@ namespace dnSpy.Decompiler.VisualBasic {
 
 		void Write(ModuleDef? module) {
 			try {
-				if (recursionCounter++ >= TypeFormatterUtils.MAX_RECURSION)
+				if (recursionCounter++ >= TypeFormatterUtils.MaxRecursion)
 					return;
 				if (module is null) {
 					OutputWrite("null module", BoxedTextColor.Error);

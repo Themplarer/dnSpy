@@ -13,7 +13,7 @@
             <TreeView Items="{Binding Items}">
                 <TreeView.ItemTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Name}" />
+                        <Label DoubleTapped="InputElement_OnDoubleTapped" Content="{Binding Name}" />
                     </TreeDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
