@@ -20,18 +20,17 @@
 using dnlib.DotNet;
 using dnSpy.Contracts.Decompiler;
 
-namespace dnSpy.Decompiler.IL {
-	public static class InstructionBytesReader {
-		public static IInstructionBytesReader Create(MethodDef method, bool isBodyModified) {
-			bool noInstrStream = method is MethodDefUser;
-			//TODO: OriginalInstructionBytesReader can't handle CorModuleDef assemblies since it
-			//		can't get an instruction stream.
-			if (!(method.Module is ModuleDefMD))
-				noInstrStream = true;
-			if (noInstrStream || isBodyModified)
-				return new ModifiedInstructionBytesReader(method);
-			else
-				return new OriginalInstructionBytesReader(method);
-		}
-	}
+namespace dnSpy.Decompiler.IL;
+
+public static class InstructionBytesReader
+{
+    public static IInstructionBytesReader Create(MethodDef method, bool isBodyModified)
+    {
+        //TODO: OriginalInstructionBytesReader can't handle CorModuleDef assemblies since it
+        //		can't get an instruction stream.
+        var noInstrStream = method is MethodDefUser || method.Module is not ModuleDefMD;
+        return noInstrStream || isBodyModified
+            ? new ModifiedInstructionBytesReader(method)
+            : new OriginalInstructionBytesReader(method);
+    }
 }

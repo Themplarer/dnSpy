@@ -1,6 +1,5 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Avalonia;
@@ -9,30 +8,38 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using dnSpy.Contracts.Decompiler;
-using dnSpy.Contracts.Documents.Tabs.DocViewer;
 using dnSpy.Contracts.Documents.TreeView;
 using dnSpy.Contracts.TreeView;
-using dnSpy.Decompiler.MSBuild;
-using Microsoft.VisualStudio.Utilities;
+using dnSpy.Documents.TreeView;
 using MyApp.Documents.Tabs.Dialogs;
 using MyApp.Documents.TreeView;
 using MyApp.Models;
+using MyApp.Views;
 
 namespace MyApp.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private readonly IDocumentTreeView _documentTreeView;
     private readonly AssemblyExplorerMostRecentlyUsedList _mruList;
+    private readonly Dictionary<string, TreeNodeData> _nodes = new();
 
-    public ObservableCollection<Node> Items { get; }
+    private IDocumentTreeView DocumentTreeView { get; }
 
-    public MainWindowViewModel(IDocumentTreeView documentTreeView, AssemblyExplorerMostRecentlyUsedList mruList)
+    public ObservableCollection<Node> Items { get; } = new();
+
+    public DecompilationHandler DecompilationHandler { get; }
+
+    public IDecompilerOutput DecompilerOutput { get; }
+
+    public ObservableCollection<EditorTab> Tabs { get; } = new();
+
+    public MainWindowViewModel(IDocumentTreeView documentTreeView, AssemblyExplorerMostRecentlyUsedList mruList,
+        DecompilationHandler decompilationHandler, IDecompilerOutput decompilerOutput)
     {
-        _documentTreeView = documentTreeView;
+        DocumentTreeView = documentTreeView;
+        DecompilationHandler = decompilationHandler;
+        DecompilerOutput = decompilerOutput;
         _mruList = mruList;
-
-        Items = new ObservableCollection<Node>();
     }
 
     public async Task OpenFilesAsync()
@@ -42,18 +49,24 @@ public class MainWindowViewModel : ViewModelBase
 
         if (files is null or []) return;
 
-        var openDocuments = OpenDocumentsHelper.OpenDocuments(_documentTreeView, _mruList, files.Select(f => f.Name));
+        var filenames = files
+            .Select(f => (GotUri: f.TryGetUri(out var uri), Uri: uri))
+            .Where(t => t.GotUri)
+            .Select(t => t.Uri!.AbsolutePath);
+        var openDocuments = OpenDocumentsHelper.OpenDocuments(DocumentTreeView, _mruList, filenames);
+        var docNode = DocumentTreeView.CreateNodeFromDocs(openDocuments);
 
-        foreach (var openDocument in openDocuments)
+        if (docNode is AssemblyDocumentNodeImpl documentNode)
         {
-            var documentNode = _documentTreeView.CreateNode(null, openDocument);
-            var node = new Node(openDocument.AssemblyDef?.Name + " (" + openDocument.AssemblyDef?.Version + ")");
+            var node = new Node(documentNode.ToString(), documentNode, this);
             Items.Add(node);
-            var childNode = new Node(openDocument.Filename);
-            node.AppendChild(childNode);
-            FillChildren(documentNode, childNode);
+            node.LoadChildren();
         }
     }
+
+    public void AppendNode(string name, TreeNodeData treeNodeData) => _nodes[name] = treeNodeData;
+
+    public TreeNodeData GetCodeNode(string name) => _nodes[name];
 
     private Window GetWindow() =>
         (Application.Current?.ApplicationLifetime as IClassicDesktopStyleApplicationLifetime)!.Windows
@@ -84,18 +97,4 @@ public class MainWindowViewModel : ViewModelBase
                 }
             }
         };
-
-    private static void FillChildren(TreeNodeData treeNodeData, Node node)
-    {
-        var children = treeNodeData.CreateChildren().ToArray();
-
-        if (children.Length == 0) return;
-
-        foreach (var child in children)
-        {
-            var childNode = new Node((child.Text as string)!);
-            node.AppendChild(childNode);
-            FillChildren(child, childNode);
-        }
-    }
 }

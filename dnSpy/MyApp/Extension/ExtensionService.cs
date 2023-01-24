@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
 using System.Diagnostics;
 using System.Linq;
 using Avalonia.Controls;
@@ -29,46 +28,37 @@ using dnSpy.Extension;
 
 namespace MyApp.Extension;
 
-interface IExtensionService
-{
-    IEnumerable<IExtension> Extensions { get; }
-
-    IEnumerable<LoadedExtension> LoadedExtensions { get; }
-}
-
-[Export, Export(typeof(IExtensionService))]
 sealed class ExtensionService : IExtensionService
 {
-    readonly Lazy<IAutoLoaded, IAutoLoadedMetadata>[] mefAutoLoaded;
-    readonly Lazy<IExtension, IExtensionMetadata>[] extensions;
+    private readonly Lazy<IAutoLoaded, IAutoLoadedMetadata>[] _mefAutoLoaded;
+    private readonly Lazy<IExtension, IExtensionMetadata>[] _extensions;
+    private LoadedExtension[]? _loadedExtensions;
 
-    public IEnumerable<IExtension> Extensions => extensions.Select(a => a.Value);
+    public ExtensionService(IEnumerable<Lazy<IAutoLoaded, IAutoLoadedMetadata>> mefAutoLoaded,
+        IEnumerable<Lazy<IExtension, IExtensionMetadata>> extensions)
+    {
+        _mefAutoLoaded = mefAutoLoaded.OrderBy(a => a.Metadata.Order).ToArray();
+        _extensions = extensions.OrderBy(a => a.Metadata.Order).ToArray();
+    }
+
+    public IEnumerable<IExtension> Extensions => _extensions.Select(a => a.Value);
 
     public IEnumerable<LoadedExtension> LoadedExtensions
     {
         get
         {
-            Debug2.Assert(loadedExtensions is not null, "Called too early");
-            return loadedExtensions ?? Array.Empty<LoadedExtension>();
+            Debug.Assert(_loadedExtensions is not null, "Called too early");
+            return _loadedExtensions ?? Array.Empty<LoadedExtension>();
         }
         internal set
         {
-            Debug2.Assert(loadedExtensions is null);
-            if (loadedExtensions is not null)
+            Debug.Assert(_loadedExtensions is null);
+
+            if (_loadedExtensions is not null)
                 throw new InvalidOperationException();
 
-            loadedExtensions = value.ToArray();
+            _loadedExtensions = value.ToArray();
         }
-    }
-
-    LoadedExtension[]? loadedExtensions;
-
-    [ImportingConstructor]
-    ExtensionService([ImportMany] IEnumerable<Lazy<IAutoLoaded, IAutoLoadedMetadata>> mefAutoLoaded,
-        [ImportMany] IEnumerable<Lazy<IExtension, IExtensionMetadata>> extensions)
-    {
-        this.mefAutoLoaded = mefAutoLoaded.OrderBy(a => a.Metadata.Order).ToArray();
-        this.extensions = extensions.OrderBy(a => a.Metadata.Order).ToArray();
     }
 
     public void LoadExtensions(Collection<IResourceDictionary> mergedDictionaries)
@@ -77,7 +67,7 @@ sealed class ExtensionService : IExtensionService
         // It's not an extension but it needs to show stuff in the options dialog box
         AddMergedDictionary(mergedDictionaries);
 
-        foreach (var m in extensions)
+        foreach (var m in _extensions)
         foreach (var _ in m.Value.MergedResourceDictionaries)
             AddMergedDictionary(mergedDictionaries);
 
@@ -94,7 +84,7 @@ sealed class ExtensionService : IExtensionService
 
     void NotifyExtensions(ExtensionEvent @event, object? obj)
     {
-        foreach (var m in extensions)
+        foreach (var m in _extensions)
             m.Value.OnEvent(@event, obj);
     }
 

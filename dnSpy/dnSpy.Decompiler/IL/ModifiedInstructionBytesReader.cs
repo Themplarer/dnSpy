@@ -23,42 +23,48 @@ using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 using dnSpy.Contracts.Decompiler;
 
-namespace dnSpy.Decompiler.IL {
-	sealed class ModifiedInstructionBytesReader : IInstructionBytesReader {
-		readonly ITokenResolver resolver;
-		readonly IList<Instruction> instrs;
-		int instrIndex;
-		readonly List<short> instrBytes = new List<short>(10);
-		int byteIndex;
+namespace dnSpy.Decompiler.IL;
 
-		public bool IsOriginalBytes => false;
+sealed class ModifiedInstructionBytesReader : IInstructionBytesReader
+{
+    private readonly ITokenResolver _resolver;
+    private readonly List<short> _instrBytes = new(10);
+    private readonly IList<Instruction> _instructions;
+    private int _instrIndex;
+    private int _byteIndex;
 
-		public ModifiedInstructionBytesReader(MethodDef method) {
-			resolver = method.Module;
-			instrs = method.Body.Instructions;
-		}
+    public bool IsOriginalBytes => false;
 
-		public int ReadByte() {
-			if (byteIndex >= instrBytes.Count)
-				InitializeNextInstruction();
-			return instrBytes[byteIndex++];
-		}
+    public ModifiedInstructionBytesReader(MethodDef method)
+    {
+        _resolver = method.Module;
+        _instructions = method.Body.Instructions;
+    }
 
-		void InitializeNextInstruction() {
-			if (instrIndex >= instrs.Count)
-				throw new InvalidOperationException();
-			var instr = instrs[instrIndex++];
+    public int ReadByte()
+    {
+        if (_byteIndex >= _instrBytes.Count)
+            InitializeNextInstruction();
 
-			byteIndex = 0;
-			instrBytes.Clear();
+        return _instrBytes[_byteIndex++];
+    }
 
-			InstructionUtils.AddOpCode(instrBytes, instr.OpCode.Code);
-			InstructionUtils.AddOperand(instrBytes, resolver, instr.Offset + (uint)instr.OpCode.Size, instr.OpCode, instr.Operand);
-		}
+    void InitializeNextInstruction()
+    {
+        if (_instrIndex >= _instructions.Count)
+            throw new InvalidOperationException();
 
-		public void SetInstruction(int index, uint offset) {
-			instrIndex = index;
-			InitializeNextInstruction();
-		}
-	}
+        var instr = _instructions[_instrIndex++];
+        _byteIndex = 0;
+        _instrBytes.Clear();
+
+        InstructionUtils.AddOpCode(_instrBytes, instr.OpCode.Code);
+        InstructionUtils.AddOperand(_instrBytes, _resolver, instr.Offset + (uint)instr.OpCode.Size, instr.OpCode, instr.Operand);
+    }
+
+    public void SetInstruction(int index, uint offset)
+    {
+        _instrIndex = index;
+        InitializeNextInstruction();
+    }
 }

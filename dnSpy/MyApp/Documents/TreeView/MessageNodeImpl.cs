@@ -24,26 +24,34 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class MessageNodeImpl : MessageNode {
-		public override Guid Guid { get; }
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => imgRef;
-		public override string Message { get; }
-		public override ITreeNodeGroup? TreeNodeGroup { get; }
+namespace dnSpy.Documents.TreeView;
 
-		readonly ImageReference imgRef;
+sealed class MessageNodeImpl : MessageNode
+{
+    public override Guid Guid { get; }
 
-		public MessageNodeImpl(ITreeNodeGroup treeNodeGroup, Guid guid, ImageReference imgRef, string msg) {
-			TreeNodeGroup = treeNodeGroup;
-			Guid = guid;
-			this.imgRef = imgRef;
-			Message = msg;
-		}
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) =>
-			output.Write(BoxedTextColor.Text, Message);
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
-			filter.GetResultOther(this).FilterType;
-	}
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => imgRef;
+
+    public override string Message { get; }
+
+    public override ITreeNodeGroup? TreeNodeGroup { get; }
+
+    readonly ImageReference imgRef;
+
+    public MessageNodeImpl(ITreeNodeGroup treeNodeGroup, Guid guid, ImageReference imgRef, string msg, IDocumentTreeNodeDataContext context)
+        : base(context)
+    {
+        TreeNodeGroup = treeNodeGroup;
+        Guid = guid;
+        this.imgRef = imgRef;
+        Message = msg;
+    }
+
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) =>
+        output.Write(BoxedTextColor.Text, Message);
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
+        filter.GetResultOther(this).FilterType;
 }

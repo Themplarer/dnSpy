@@ -20,22 +20,24 @@
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A derived type
-	/// </summary>
-	public abstract class DerivedTypeNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the type
-		/// </summary>
-		public abstract TypeDef TypeDef { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		IMDTokenProvider? IMDTokenNode.Reference => TypeDef;
+/// <summary>
+/// A derived type
+/// </summary>
+public abstract class DerivedTypeNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the type
+    /// </summary>
+    public abstract TypeDef TypeDef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		protected DerivedTypeNode() {
-		}
-	}
+    IMDTokenProvider IMDTokenNode.Reference => TypeDef;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    protected DerivedTypeNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
 }

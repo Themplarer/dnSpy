@@ -26,74 +26,74 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Documents.TreeView
+namespace dnSpy.Documents.TreeView;
+
+sealed class TypeNodeImpl : TypeNode
 {
-    sealed class TypeNodeImpl : TypeNode
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.TYPE_NODE_GUID);
+
+    public override NodePathName NodePathName => new NodePathName(Guid, TypeDef.Namespace + "." + TypeDef.Name);
+
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) =>
+        dnImgMgr.GetImageReference(TypeDef);
+
+    public override ITreeNodeGroup? TreeNodeGroup { get; }
+
+    public TypeNodeImpl(ITreeNodeGroup treeNodeGroup, TypeDef type, IDocumentTreeNodeDataContext context)
+        : base(type, context) => TreeNodeGroup = treeNodeGroup;
+
+    public override void Initialize() => TreeNode.LazyLoading = true;
+
+    public override IEnumerable<TreeNodeData> CreateChildren()
     {
-        public override Guid Guid => new Guid(DocumentTreeViewConstants.TYPE_NODE_GUID);
+        yield return new BaseTypeFolderNodeImpl(
+            Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.BaseTypeFolderTreeNodeGroupType), TypeDef,
+            Context);
+        // yield return new DerivedTypesFolderNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.DerivedTypesFolderTreeNodeGroupType), TypeDef);
 
-        public override NodePathName NodePathName => new NodePathName(Guid, TypeDef.Namespace + "." + TypeDef.Name);
+        var hash = TypeDef.GetPropertyAndEventMethods();
 
-        protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) =>
-            dnImgMgr.GetImageReference(TypeDef);
-
-        public override ITreeNodeGroup? TreeNodeGroup { get; }
-
-        public TypeNodeImpl(ITreeNodeGroup treeNodeGroup, TypeDef type)
-            : base(type) => TreeNodeGroup = treeNodeGroup;
-
-        public override void Initialize() => TreeNode.LazyLoading = true;
-
-        public override IEnumerable<TreeNodeData> CreateChildren()
+        foreach (var m in TypeDef.Methods)
         {
-            yield return new BaseTypeFolderNodeImpl(
-                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.BaseTypeFolderTreeNodeGroupType), TypeDef);
-            // yield return new DerivedTypesFolderNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.DerivedTypesFolderTreeNodeGroupType), TypeDef);
-
-            var hash = TypeDef.GetPropertyAndEventMethods();
-
-            foreach (var m in TypeDef.Methods)
-            {
-                if (!hash.Contains(m))
-                    yield return new MethodNodeImpl(
-                        Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.MethodTreeNodeGroupType), m);
-            }
-
-            foreach (var p in TypeDef.Properties)
-                yield return new PropertyNodeImpl(
-                    Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.PropertyTreeNodeGroupType), p);
-            foreach (var e in TypeDef.Events)
-                yield return new EventNodeImpl(
-                    Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.EventTreeNodeGroupType), e);
-            foreach (var f in TypeDef.Fields)
-                yield return new FieldNodeImpl(
-                    Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.FieldTreeNodeGroupType), f);
-            foreach (var t in TypeDef.NestedTypes)
-                yield return new TypeNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.TypeTreeNodeGroupType),
-                    t);
+            if (!hash.Contains(m))
+                yield return new MethodNodeImpl(
+                    Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.MethodTreeNodeGroupType), m, Context);
         }
 
-        protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
-        {
-            if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
-            {
-                WriteMemberRef(output, decompiler, TypeDef);
-                output.WriteLine();
-                WriteFilename(output);
-            }
-            else
-                new NodeFormatter().Write(output, decompiler, TypeDef, GetShowToken(options));
-        }
+        foreach (var p in TypeDef.Properties)
+            yield return new PropertyNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.PropertyTreeNodeGroupType), p, Context);
+        foreach (var e in TypeDef.Events)
+            yield return new EventNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.EventTreeNodeGroupType), e, Context);
+        foreach (var f in TypeDef.Fields)
+            yield return new FieldNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.FieldTreeNodeGroupType), f, Context);
+        foreach (var t in TypeDef.NestedTypes)
+            yield return new TypeNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.TypeTreeNodeGroupType),
+                t, Context);
+    }
 
-        public override FilterType GetFilterType(IDocumentTreeNodeFilter filter)
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
         {
-            var res = filter.GetResult(TypeDef);
-            if (res.FilterType != FilterType.Default)
-                return res.FilterType;
-            if (Context.Decompiler.ShowMember(TypeDef))
-                return FilterType.Visible;
-
-            return FilterType.Hide;
+            WriteMemberRef(output, decompiler, TypeDef);
+            output.WriteLine();
+            WriteFilename(output);
         }
+        else
+            new NodeFormatter().Write(output, decompiler, TypeDef, GetShowToken(options));
+    }
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter)
+    {
+        var res = filter.GetResult(TypeDef);
+        if (res.FilterType != FilterType.Default)
+            return res.FilterType;
+        if (Context.Decompiler.ShowMember(TypeDef))
+            return FilterType.Visible;
+
+        return FilterType.Hide;
     }
 }

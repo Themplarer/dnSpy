@@ -48,6 +48,11 @@ namespace dnSpy.Contracts.Decompiler {
 		int IDecompilerOutput.NextPosition => offset + (addIndent ? indenter.String.Length : 0);
 
 		bool IDecompilerOutput.UsesCustomData => false;
+
+		public void Clear()
+		{
+		}
+
 		void IDecompilerOutput.AddCustomData<TData>(string id, TData data) { }
 		void IDecompilerOutput.IncreaseIndent() => indenter.IncreaseIndent();
 		void IDecompilerOutput.DecreaseIndent() => indenter.DecreaseIndent();

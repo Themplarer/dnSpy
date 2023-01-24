@@ -25,23 +25,28 @@ using dnSpy.Contracts.Documents.TreeView;
 using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	sealed class ImageOptionalHeader32Node : HexNode {
-		protected override ImageReference IconReference => DsImages.BinaryFile;
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.IMGOPTHEADER32_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		public override object VMObject => imageOptionalHeader32VM;
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected override IEnumerable<HexVM> HexVMs {
-			get { yield return imageOptionalHeader32VM; }
-		}
+sealed class ImageOptionalHeader32Node : HexNode
+{
+    protected override ImageReference IconReference => DsImages.BinaryFile;
 
-		readonly ImageOptionalHeader32VM imageOptionalHeader32VM;
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.IMGOPTHEADER32_NODE_GUID);
 
-		public ImageOptionalHeader32Node(ImageOptionalHeader32VM optHdr)
-			: base(optHdr.Span) => imageOptionalHeader32VM = optHdr;
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
-			output.Write(BoxedTextColor.HexPeOptionalHeader32, dnSpy_AsmEditor_Resources.HexNode_OptHeader32);
-	}
+    public override object VMObject => imageOptionalHeader32VM;
+
+    protected override IEnumerable<HexVM> HexVMs
+    {
+        get { yield return imageOptionalHeader32VM; }
+    }
+
+    readonly ImageOptionalHeader32VM imageOptionalHeader32VM;
+
+    public ImageOptionalHeader32Node(ImageOptionalHeader32VM optHdr, IDocumentTreeNodeDataContext context)
+        : base(optHdr.Span, context) => imageOptionalHeader32VM = optHdr;
+
+    protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
+        output.Write(BoxedTextColor.HexPeOptionalHeader32, dnSpy_AsmEditor_Resources.HexNode_OptHeader32);
 }

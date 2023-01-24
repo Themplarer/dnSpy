@@ -25,28 +25,36 @@ using dnSpy.Contracts.Documents.TreeView;
 using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	sealed class ImageCor20HeaderNode : HexNode {
-		protected override ImageReference IconReference => DsImages.BinaryFile;
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.IMGCOR20HEADER_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		public override object VMObject => imageCor20HeaderVM;
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected override IEnumerable<HexVM> HexVMs {
-			get { yield return imageCor20HeaderVM; }
-		}
-		readonly ImageCor20HeaderVM imageCor20HeaderVM;
+sealed class ImageCor20HeaderNode : HexNode
+{
+    protected override ImageReference IconReference => DsImages.BinaryFile;
 
-		public static ImageCor20HeaderNode? Create(ImageCor20HeaderVM? cor20) {
-			if (cor20 is not null)
-				return new ImageCor20HeaderNode(cor20);
-			return null;
-		}
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.IMGCOR20HEADER_NODE_GUID);
 
-		public ImageCor20HeaderNode(ImageCor20HeaderVM cor20)
-			: base(cor20.Span) => imageCor20HeaderVM = cor20;
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
-			output.Write(BoxedTextColor.HexCor20Header, dnSpy_AsmEditor_Resources.HexNode_Cor20_Header);
-	}
+    public override object VMObject => imageCor20HeaderVM;
+
+    protected override IEnumerable<HexVM> HexVMs
+    {
+        get { yield return imageCor20HeaderVM; }
+    }
+
+    readonly ImageCor20HeaderVM imageCor20HeaderVM;
+
+    public static ImageCor20HeaderNode? Create(ImageCor20HeaderVM? cor20, IDocumentTreeNodeDataContext context)
+    {
+        if (cor20 is not null)
+            return new ImageCor20HeaderNode(cor20, context);
+
+        return null;
+    }
+
+    public ImageCor20HeaderNode(ImageCor20HeaderVM cor20, IDocumentTreeNodeDataContext context)
+        : base(cor20.Span, context) => imageCor20HeaderVM = cor20;
+
+    protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
+        output.Write(BoxedTextColor.HexCor20Header, dnSpy_AsmEditor_Resources.HexNode_Cor20_Header);
 }

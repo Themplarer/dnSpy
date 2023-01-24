@@ -22,204 +22,223 @@ using System.Collections.Generic;
 using dnlib.DotNet;
 using dnlib.DotNet.Emit;
 
-namespace dnSpy.Decompiler.IL {
-	static class InstructionUtils {
-		public static void AddOpCode(IList<short> instrs, Code code) {
-			if ((uint)code <= 0xFF)
-				instrs.Add((byte)code);
-			else if (((uint)code >> 8) == 0xFE) {
-				instrs.Add((byte)((uint)code >> 8));
-				instrs.Add(unchecked((byte)code));
-			}
-			else if (code == Code.UNKNOWN1)
-				instrs.AddUnknownByte();
-			else if (code == Code.UNKNOWN2)
-				instrs.AddUnknownInt16();
-			else
-				throw new InvalidOperationException();
-		}
+namespace dnSpy.Decompiler.IL;
 
-		static void AddUnknownByte(this IList<short> instrs) => instrs.Add(-1);
+static class InstructionUtils
+{
+    public static void AddOpCode(IList<short> instrs, Code code)
+    {
+        if ((uint)code <= 0xFF)
+            instrs.Add((byte)code);
+        else if ((uint)code >> 8 == 0xFE)
+        {
+            instrs.Add((byte)((uint)code >> 8));
+            instrs.Add(unchecked((byte)code));
+        }
+        else if (code == Code.UNKNOWN1)
+            instrs.AddUnknownByte();
+        else if (code == Code.UNKNOWN2)
+            instrs.AddUnknownInt16();
+        else
+            throw new InvalidOperationException();
+    }
 
-		static void AddUnknownInt16(this IList<short> instrs) {
-			instrs.Add(-1);
-			instrs.Add(-1);
-		}
+    static void AddUnknownByte(this IList<short> instrs) => instrs.Add(-1);
 
-		static void AddUnknownInt32(this IList<short> instrs) {
-			instrs.Add(-1);
-			instrs.Add(-1);
-			instrs.Add(-1);
-			instrs.Add(-1);
-		}
+    static void AddUnknownInt16(this IList<short> instrs)
+    {
+        instrs.Add(-1);
+        instrs.Add(-1);
+    }
 
-		static void AddUnknownInt64(this IList<short> instrs) {
-			instrs.AddUnknownInt32();
-			instrs.AddUnknownInt32();
-		}
+    static void AddUnknownInt32(this IList<short> instrs)
+    {
+        instrs.Add(-1);
+        instrs.Add(-1);
+        instrs.Add(-1);
+        instrs.Add(-1);
+    }
 
-		static void AddInt16(this IList<short> instrs, short val) {
-			instrs.Add(unchecked((byte)val));
-			instrs.Add(unchecked((byte)(val >> 8)));
-		}
+    static void AddUnknownInt64(this IList<short> instrs)
+    {
+        instrs.AddUnknownInt32();
+        instrs.AddUnknownInt32();
+    }
 
-		static void AddInt32(this IList<short> instrs, int val) {
-			instrs.Add(unchecked((byte)val));
-			instrs.Add(unchecked((byte)(val >> 8)));
-			instrs.Add(unchecked((byte)(val >> 16)));
-			instrs.Add(unchecked((byte)(val >> 24)));
-		}
+    static void AddInt16(this IList<short> instrs, short val)
+    {
+        instrs.Add(unchecked((byte)val));
+        instrs.Add(unchecked((byte)(val >> 8)));
+    }
 
-		static void AddInt64(this IList<short> instrs, long val) {
-			instrs.Add(unchecked((byte)val));
-			instrs.Add(unchecked((byte)(val >> 8)));
-			instrs.Add(unchecked((byte)(val >> 16)));
-			instrs.Add(unchecked((byte)(val >> 24)));
-			instrs.Add(unchecked((byte)(val >> 32)));
-			instrs.Add(unchecked((byte)(val >> 40)));
-			instrs.Add(unchecked((byte)(val >> 48)));
-			instrs.Add(unchecked((byte)(val >> 56)));
-		}
+    static void AddInt32(this IList<short> instrs, int val)
+    {
+        instrs.Add(unchecked((byte)val));
+        instrs.Add(unchecked((byte)(val >> 8)));
+        instrs.Add(unchecked((byte)(val >> 16)));
+        instrs.Add(unchecked((byte)(val >> 24)));
+    }
 
-		static void AddSingle(this IList<short> instrs, float val) {
-			foreach (var b in BitConverter.GetBytes(val))
-				instrs.Add(b);
-		}
+    static void AddInt64(this IList<short> instrs, long val)
+    {
+        instrs.Add(unchecked((byte)val));
+        instrs.Add(unchecked((byte)(val >> 8)));
+        instrs.Add(unchecked((byte)(val >> 16)));
+        instrs.Add(unchecked((byte)(val >> 24)));
+        instrs.Add(unchecked((byte)(val >> 32)));
+        instrs.Add(unchecked((byte)(val >> 40)));
+        instrs.Add(unchecked((byte)(val >> 48)));
+        instrs.Add(unchecked((byte)(val >> 56)));
+    }
 
-		static void AddDouble(this IList<short> instrs, double val) {
-			foreach (var b in BitConverter.GetBytes(val))
-				instrs.Add(b);
-		}
+    static void AddSingle(this IList<short> instrs, float val)
+    {
+        foreach (var b in BitConverter.GetBytes(val))
+            instrs.Add(b);
+    }
 
-		static void AddToken(this IList<short> instrs, ITokenResolver resolver, uint token) {
-			if (resolver is null || resolver.ResolveToken(token) is null)
-				instrs.AddUnknownInt32();
-			else
-				instrs.AddInt32(unchecked((int)token));
-		}
+    static void AddDouble(this IList<short> instrs, double val)
+    {
+        foreach (var b in BitConverter.GetBytes(val))
+            instrs.Add(b);
+    }
 
-		public static void AddOperand(IList<short> instrs, ITokenResolver resolver, uint offset, OpCode opCode, object operand) {
-			Instruction? target;
-			IVariable? variable;
-			switch (opCode.OperandType) {
-			case OperandType.InlineBrTarget:
-				target = operand as Instruction;
-				if (target is null)
-					instrs.AddUnknownInt32();
-				else
-					instrs.AddInt32(unchecked((int)target.Offset - (int)(offset + 4)));
-				break;
+    static void AddToken(this IList<short> instrs, ITokenResolver resolver, uint token)
+    {
+        if (resolver?.ResolveToken(token) is null)
+            instrs.AddUnknownInt32();
+        else
+            instrs.AddInt32(unchecked((int)token));
+    }
 
-			case OperandType.InlineField:
-			case OperandType.InlineMethod:
-			case OperandType.InlineTok:
-			case OperandType.InlineType:
-				var tok = operand as ITokenOperand;
-				instrs.AddToken(resolver, tok is null ? 0 : tok.MDToken.Raw);
-				break;
+    public static void AddOperand(IList<short> instrs, ITokenResolver resolver, uint offset, OpCode opCode, object operand)
+    {
+        Instruction? target;
+        IVariable? variable;
 
-			case OperandType.InlineSig:
-				var msig = operand as MethodSig;
-				instrs.AddToken(resolver, msig is null ? 0 : msig.OriginalToken);
-				break;
+        switch (opCode.OperandType)
+        {
+            case OperandType.InlineBrTarget:
+                target = operand as Instruction;
+                if (target is null)
+                    instrs.AddUnknownInt32();
+                else
+                    instrs.AddInt32(unchecked((int)target.Offset - (int)(offset + 4)));
+                break;
 
-			case OperandType.InlineString:
-				instrs.AddUnknownInt32();
-				break;
+            case OperandType.InlineField:
+            case OperandType.InlineMethod:
+            case OperandType.InlineTok:
+            case OperandType.InlineType:
+                var tok = operand as ITokenOperand;
+                instrs.AddToken(resolver, tok is null ? 0 : tok.MDToken.Raw);
+                break;
 
-			case OperandType.InlineI:
-				if (operand is int)
-					instrs.AddInt32((int)operand);
-				else
-					instrs.AddUnknownInt32();
-				break;
+            case OperandType.InlineSig:
+                instrs.AddToken(resolver, (operand as MethodSig)?.OriginalToken ?? 0);
+                break;
 
-			case OperandType.InlineI8:
-				if (operand is long)
-					instrs.AddInt64((long)operand);
-				else
-					instrs.AddUnknownInt64();
-				break;
+            case OperandType.InlineString:
+                instrs.AddUnknownInt32();
+                break;
 
-			case OperandType.InlineR:
-				if (operand is double)
-					instrs.AddDouble((double)operand);
-				else
-					instrs.AddUnknownInt64();
-				break;
+            case OperandType.InlineI:
+                if (operand is int i)
+                    instrs.AddInt32(i);
+                else
+                    instrs.AddUnknownInt32();
+                break;
 
-			case OperandType.ShortInlineR:
-				if (operand is float)
-					instrs.AddSingle((float)operand);
-				else
-					instrs.AddUnknownInt32();
-				break;
+            case OperandType.InlineI8:
+                if (operand is long l)
+                    instrs.AddInt64(l);
+                else
+                    instrs.AddUnknownInt64();
+                break;
 
-			case OperandType.InlineSwitch:
-				var targets = operand as IList<Instruction>;
-				if (targets is null)
-					instrs.AddUnknownInt32();
-				else {
-					uint offsetAfter = offset + 4 + (uint)targets.Count * 4;
-					instrs.AddInt32(targets.Count);
-					foreach (var instr in targets) {
-						if (instr is null)
-							instrs.AddUnknownInt32();
-						else
-							instrs.AddInt32(unchecked((int)instr.Offset - (int)offsetAfter));
-					}
-				}
-				break;
+            case OperandType.InlineR:
+                if (operand is double d)
+                    instrs.AddDouble(d);
+                else
+                    instrs.AddUnknownInt64();
+                break;
 
-			case OperandType.InlineVar:
-				variable = operand as IVariable;
-				if (variable is null)
-					instrs.AddUnknownInt16();
-				else if (ushort.MinValue <= variable.Index && variable.Index <= ushort.MaxValue)
-					instrs.AddInt16(unchecked((short)variable.Index));
-				else
-					instrs.AddUnknownInt16();
-				break;
+            case OperandType.ShortInlineR:
+                if (operand is float f)
+                    instrs.AddSingle(f);
+                else
+                    instrs.AddUnknownInt32();
+                break;
 
-			case OperandType.ShortInlineVar:
-				variable = operand as IVariable;
-				if (variable is null)
-					instrs.AddUnknownByte();
-				else if (byte.MinValue <= variable.Index && variable.Index <= byte.MaxValue)
-					instrs.Add((byte)variable.Index);
-				else
-					instrs.AddUnknownByte();
-				break;
+            case OperandType.InlineSwitch:
 
-			case OperandType.ShortInlineBrTarget:
-				target = operand as Instruction;
-				if (target is null)
-					instrs.AddUnknownByte();
-				else {
-					int displ = unchecked((int)target.Offset - (int)(offset + 1));
-					if (sbyte.MinValue <= displ && displ <= sbyte.MaxValue)
-						instrs.Add((short)(displ & 0xFF));
-					else
-						instrs.AddUnknownByte();
-				}
-				break;
+                if (operand is not IList<Instruction> targets)
+                    instrs.AddUnknownInt32();
+                else
+                {
+                    var offsetAfter = offset + 4 + (uint)targets.Count * 4;
+                    instrs.AddInt32(targets.Count);
 
-			case OperandType.ShortInlineI:
-				if (operand is sbyte)
-					instrs.Add((short)((sbyte)operand & 0xFF));
-				else if (operand is byte)
-					instrs.Add((short)((byte)operand & 0xFF));
-				else
-					instrs.AddUnknownByte();
-				break;
+                    foreach (var instr in targets)
+                        if (instr is null)
+                            instrs.AddUnknownInt32();
+                        else
+                            instrs.AddInt32(unchecked((int)instr.Offset - (int)offsetAfter));
+                }
 
-			case OperandType.InlineNone:
-			case OperandType.InlinePhi:
-				break;
+                break;
 
-			default:
-				throw new InvalidOperationException();
-			}
-		}
-	}
+            case OperandType.InlineVar:
+                variable = operand as IVariable;
+                if (variable is null)
+                    instrs.AddUnknownInt16();
+                else if (variable.Index is >= ushort.MinValue and <= ushort.MaxValue)
+                    instrs.AddInt16(unchecked((short)variable.Index));
+                else
+                    instrs.AddUnknownInt16();
+                break;
+
+            case OperandType.ShortInlineVar:
+                variable = operand as IVariable;
+                if (variable is null)
+                    instrs.AddUnknownByte();
+                else if (variable.Index is >= byte.MinValue and <= byte.MaxValue)
+                    instrs.Add((byte)variable.Index);
+                else
+                    instrs.AddUnknownByte();
+                break;
+
+            case OperandType.ShortInlineBrTarget:
+                target = operand as Instruction;
+
+                if (target is null)
+                    instrs.AddUnknownByte();
+                else
+                {
+                    var displ = unchecked((int)target.Offset - (int)(offset + 1));
+                    if (displ is >= sbyte.MinValue and <= sbyte.MaxValue)
+                        instrs.Add((short)(displ & 0xFF));
+                    else
+                        instrs.AddUnknownByte();
+                }
+
+                break;
+
+            case OperandType.ShortInlineI:
+                if (operand is sbyte s)
+                    instrs.Add((short)(s & 0xFF));
+                else if (operand is byte b)
+                    instrs.Add((short)(b & 0xFF));
+                else
+                    instrs.AddUnknownByte();
+                break;
+
+            case OperandType.InlineNone:
+            case OperandType.InlinePhi:
+                break;
+
+            default:
+                throw new InvalidOperationException();
+        }
+    }
 }

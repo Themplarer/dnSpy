@@ -17,20 +17,22 @@
     along with dnSpy.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// Contains the base type (if any) and all interfaces the type implements
-	/// </summary>
-	public abstract class BaseTypeFolderNode : DocumentTreeNodeData {
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		protected BaseTypeFolderNode() {
-		}
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		/// <summary>
-		/// Invalidates all children
-		/// </summary>
-		public abstract void InvalidateChildren();
-	}
+/// <summary>
+/// Contains the base type (if any) and all interfaces the type implements
+/// </summary>
+public abstract class BaseTypeFolderNode : DocumentTreeNodeData
+{
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    protected BaseTypeFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
+
+    /// <summary>
+    /// Invalidates all children
+    /// </summary>
+    public abstract void InvalidateChildren();
 }

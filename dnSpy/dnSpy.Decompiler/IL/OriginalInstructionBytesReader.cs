@@ -21,31 +21,31 @@ using dnlib.DotNet;
 using dnlib.IO;
 using dnSpy.Contracts.Decompiler;
 
-namespace dnSpy.Decompiler.IL {
-	sealed class OriginalInstructionBytesReader : IInstructionBytesReader {
-		readonly bool hasReader;
-		DataReader reader;
+namespace dnSpy.Decompiler.IL;
 
-		public bool IsOriginalBytes => true;
+sealed class OriginalInstructionBytesReader : IInstructionBytesReader
+{
+    readonly bool hasReader;
+    DataReader reader;
 
-		public OriginalInstructionBytesReader(MethodDef method) {
-			//TODO: This fails and returns null if it's a CorMethodDef!
-			//TODO: Support CorModuleDef
-			if (method.Module is ModuleDefMD m) {
-				reader = m.Metadata.PEImage.CreateReader(method.RVA + method.Body.HeaderSize);
-				hasReader = true;
-			}
-		}
+    public bool IsOriginalBytes => true;
 
-		public int ReadByte() {
-			if (hasReader)
-				return reader.ReadByte();
-			return -1;
-		}
+    public OriginalInstructionBytesReader(MethodDef method)
+    {
+        //TODO: This fails and returns null if it's a CorMethodDef!
+        //TODO: Support CorModuleDef
+        if (method.Module is ModuleDefMD m)
+        {
+            reader = m.Metadata.PEImage.CreateReader(method.RVA + method.Body.HeaderSize);
+            hasReader = true;
+        }
+    }
 
-		public void SetInstruction(int index, uint offset) {
-			if (hasReader)
-				reader.Position = offset;
-		}
-	}
+    public int ReadByte() => hasReader ? reader.ReadByte() : -1;
+
+    public void SetInstruction(int index, uint offset)
+    {
+        if (hasReader)
+            reader.Position = offset;
+    }
 }

@@ -30,70 +30,89 @@ using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 using dnSpy.Decompiler;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class ModuleDocumentNodeImpl : ModuleDocumentNode {
-		public ModuleDocumentNodeImpl(IDsDotNetDocument document)
-			: base(document) {
-		}
+namespace dnSpy.Documents.TreeView;
 
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.MODULE_NODE_GUID);
+sealed class ModuleDocumentNodeImpl : ModuleDocumentNode
+{
+    public ModuleDocumentNodeImpl(IDsDotNetDocument document, IDocumentTreeNodeDataContext context)
+        : base(document, context)
+    {
+    }
 
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) =>
-			dnImgMgr.GetImageReference(Document.ModuleDef!);
-		public override void Initialize() => TreeNode.LazyLoading = true;
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.MODULE_NODE_GUID);
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			Debug2.Assert(Document.ModuleDef is not null);
-			foreach (var document in Document.Children)
-				yield return Context.DocumentTreeView.CreateNode(this, document);
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) =>
+        dnImgMgr.GetImageReference(Document.ModuleDef!);
 
-			yield return new ResourcesFolderNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ResourcesFolderTreeNodeGroupModule), Document.ModuleDef);
-			yield return new ReferencesFolderNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ReferencesFolderTreeNodeGroupModule), this);
-			yield return new TypeReferencesFolderNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ReferencesFolderTreeNodeGroupModule), this);
+    public override void Initialize() => TreeNode.LazyLoading = true;
 
-			var nsDict = new Dictionary<string, List<TypeDef>>(StringComparer.Ordinal);
-			foreach (var td in Document.ModuleDef.Types) {
-				var ns = UTF8String.ToSystemStringOrEmpty(td.Namespace);
-				if (!nsDict.TryGetValue(ns, out var list))
-					nsDict.Add(ns, list = new List<TypeDef>());
-				list.Add(td);
-			}
-			foreach (var kv in nsDict)
-				yield return new NamespaceNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.NamespaceTreeNodeGroupModule), kv.Key, kv.Value);
-		}
+    public override IEnumerable<TreeNodeData> CreateChildren()
+    {
+        Debug.Assert(Document.ModuleDef is not null);
+        foreach (var document in Document.Children)
+            yield return Context.DocumentTreeView.CreateNode(this, document);
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			Debug2.Assert(Document.ModuleDef is not null);
-			if ((options & DocumentNodeWriteOptions.ToolTip) == 0)
-				new NodeFormatter().Write(output, decompiler, Document.ModuleDef, false);
-			else {
-				output.WriteModule(Document.ModuleDef.Name);
+        yield return new ResourcesFolderNodeImpl(
+            Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ResourcesFolderTreeNodeGroupModule),
+            Document.ModuleDef, Context);
+        yield return new ReferencesFolderNodeImpl(
+            Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ReferencesFolderTreeNodeGroupModule), this, Context);
+        yield return new TypeReferencesFolderNodeImpl(
+            Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ReferencesFolderTreeNodeGroupModule), this, Context);
 
-				output.WriteLine();
-				output.Write(BoxedTextColor.Text, TargetFrameworkInfo.Create(Document.ModuleDef).ToString());
+        var nsDict = new Dictionary<string, List<TypeDef>>(StringComparer.Ordinal);
 
-				output.WriteLine();
-				output.Write(BoxedTextColor.Text, TargetFrameworkUtils.GetArchString(Document.ModuleDef));
+        foreach (var td in Document.ModuleDef.Types)
+        {
+            var ns = UTF8String.ToSystemStringOrEmpty(td.Namespace);
+            if (!nsDict.TryGetValue(ns, out var list))
+                nsDict.Add(ns, list = new List<TypeDef>());
+            list.Add(td);
+        }
 
-				output.WriteLine();
-				output.WriteFilename(Document.Filename);
-			}
-		}
+        foreach (var kv in nsDict)
+            yield return new NamespaceNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.NamespaceTreeNodeGroupModule), kv.Key, kv.Value,
+                Context);
+    }
 
-		public override NamespaceNode? FindNode(string? ns) {
-			if (ns is null)
-				return null;
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        Debug.Assert(Document.ModuleDef is not null);
 
-			TreeNode.EnsureChildrenLoaded();
-			foreach (var n in TreeNode.DataChildren.OfType<NamespaceNode>()) {
-				if (n.Name == ns)
-					return n;
-			}
+        if ((options & DocumentNodeWriteOptions.ToolTip) == 0)
+            new NodeFormatter().Write(output, decompiler, Document.ModuleDef, false);
+        else
+        {
+            output.WriteModule(Document.ModuleDef.Name);
 
-			return null;
-		}
+            output.WriteLine();
+            output.Write(BoxedTextColor.Text, TargetFrameworkInfo.Create(Document.ModuleDef).ToString());
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
-			filter.GetResult(Document.ModuleDef!).FilterType;
-	}
+            output.WriteLine();
+            output.Write(BoxedTextColor.Text, TargetFrameworkUtils.GetArchString(Document.ModuleDef));
+
+            output.WriteLine();
+            output.WriteFilename(Document.Filename);
+        }
+    }
+
+    public override NamespaceNode? FindNode(string? ns)
+    {
+        if (ns is null)
+            return null;
+
+        TreeNode.EnsureChildrenLoaded();
+
+        foreach (var n in TreeNode.DataChildren.OfType<NamespaceNode>())
+        {
+            if (n.Name == ns)
+                return n;
+        }
+
+        return null;
+    }
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
+        filter.GetResult(Document.ModuleDef!).FilterType;
 }

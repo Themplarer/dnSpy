@@ -20,21 +20,22 @@
 using System.Diagnostics;
 using dnlib.PE;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A PE file (but not a .NET file)
-	/// </summary>
-	public abstract class PEDocumentNode : DsDocumentNode {
-		/// <summary>
-		/// true if it's an .exe file, false if it's a .dll file
-		/// </summary>
-		public bool IsExe => (Document.PEImage!.ImageNTHeaders.FileHeader.Characteristics & Characteristics.Dll) == 0;
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="document">Document</param>
-		protected PEDocumentNode(IDsDocument document)
-			: base(document) => Debug2.Assert(document.PEImage is not null && document.ModuleDef is null);
-	}
+/// <summary>
+/// A PE file (but not a .NET file)
+/// </summary>
+public abstract class PEDocumentNode : DsDocumentNode
+{
+    /// <summary>
+    /// true if it's an .exe file, false if it's a .dll file
+    /// </summary>
+    public bool IsExe => (Document.PEImage!.ImageNTHeaders.FileHeader.Characteristics & Characteristics.Dll) == 0;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="document">Document</param>
+    protected PEDocumentNode(IDsDocument document, IDocumentTreeNodeDataContext context) : base(document, context) =>
+        Debug.Assert(document.PEImage is not null && document.ModuleDef is null);
 }

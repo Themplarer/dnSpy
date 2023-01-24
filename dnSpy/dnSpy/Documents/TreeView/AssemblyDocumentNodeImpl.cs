@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using dnSpy.Contracts.Decompiler;
 using dnSpy.Contracts.Documents;
 using dnSpy.Contracts.Documents.TreeView;
@@ -28,38 +29,44 @@ using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 using dnSpy.Decompiler;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class AssemblyDocumentNodeImpl : AssemblyDocumentNode {
-		public AssemblyDocumentNodeImpl(IDsDotNetDocument document)
-			: base(document) => Debug2.Assert(document.AssemblyDef is not null);
+namespace dnSpy.Documents.TreeView;
 
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.ASSEMBLY_NODE_GUID);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => dnImgMgr.GetImageReference(Document.AssemblyDef!);
-		public override void Initialize() => TreeNode.LazyLoading = true;
+sealed class AssemblyDocumentNodeImpl : AssemblyDocumentNode
+{
+    public AssemblyDocumentNodeImpl(IDsDotNetDocument document, IDocumentTreeNodeDataContext context)
+        : base(document, context) =>
+        Debug.Assert(document.AssemblyDef is not null);
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			foreach (var document in Document.Children)
-				yield return Context.DocumentTreeView.CreateNode(this, document);
-		}
+    public override Guid Guid => new(DocumentTreeViewConstants.ASSEMBLY_NODE_GUID);
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			Debug2.Assert(Document.AssemblyDef is not null);
-			if ((options & DocumentNodeWriteOptions.ToolTip) == 0)
-				new NodeFormatter().Write(output, decompiler, Document.AssemblyDef, false, Context.ShowAssemblyVersion, Context.ShowAssemblyPublicKeyToken);
-			else {
-				output.Write(Document.AssemblyDef);
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => dnImgMgr.GetImageReference(Document.AssemblyDef!);
 
-				output.WriteLine();
-				output.Write(BoxedTextColor.Text, TargetFrameworkInfo.Create(Document.AssemblyDef.ManifestModule).ToString());
+    public override void Initialize() => TreeNode.LazyLoading = true;
 
-				output.WriteLine();
-				output.Write(BoxedTextColor.Text, TargetFrameworkUtils.GetArchString(Document.AssemblyDef.ManifestModule));
+    public override IEnumerable<TreeNodeData> CreateChildren() =>
+        Document.Children.Select(document => Context.DocumentTreeView.CreateNode(this, document));
 
-				output.WriteLine();
-				output.WriteFilename(Document.Filename);
-			}
-		}
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        Debug2.Assert(Document.AssemblyDef is not null);
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResult(Document.AssemblyDef!).FilterType;
-	}
+        if ((options & DocumentNodeWriteOptions.ToolTip) == 0)
+        {
+            new NodeFormatter().Write(output, decompiler, Document.AssemblyDef, false, Context.ShowAssemblyVersion, Context.ShowAssemblyPublicKeyToken);
+            return;
+        }
+
+        output.Write(Document.AssemblyDef);
+
+        output.WriteLine();
+        output.Write(BoxedTextColor.Text, TargetFrameworkInfo.Create(Document.AssemblyDef.ManifestModule).ToString());
+
+        output.WriteLine();
+        output.Write(BoxedTextColor.Text, TargetFrameworkUtils.GetArchString(Document.AssemblyDef.ManifestModule));
+
+        output.WriteLine();
+        output.WriteFilename(Document.Filename);
+    }
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResult(Document.AssemblyDef!).FilterType;
 }

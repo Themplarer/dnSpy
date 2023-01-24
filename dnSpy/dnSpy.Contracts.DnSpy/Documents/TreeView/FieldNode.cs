@@ -21,22 +21,24 @@ using System;
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A field node
-	/// </summary>
-	public abstract class FieldNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the field
-		/// </summary>
-		public FieldDef FieldDef { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		IMDTokenProvider? IMDTokenNode.Reference => FieldDef;
+/// <summary>
+/// A field node
+/// </summary>
+public abstract class FieldNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the field
+    /// </summary>
+    public FieldDef FieldDef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="field">Field</param>
-		protected FieldNode(FieldDef field) => FieldDef = field ?? throw new ArgumentNullException(nameof(field));
-	}
+    IMDTokenProvider IMDTokenNode.Reference => FieldDef;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="field">Field</param>
+    protected FieldNode(FieldDef field, IDocumentTreeNodeDataContext context) : base(context) =>
+        FieldDef = field ?? throw new ArgumentNullException(nameof(field));
 }

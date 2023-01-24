@@ -25,23 +25,28 @@ using dnSpy.Contracts.Documents.TreeView;
 using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	sealed class StorageHeaderNode : HexNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.STRGHEADER_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		public override object VMObject => storageHeaderVM;
-		protected override ImageReference IconReference => DsImages.BinaryFile;
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected override IEnumerable<HexVM> HexVMs {
-			get { yield return storageHeaderVM; }
-		}
+sealed class StorageHeaderNode : HexNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.STRGHEADER_NODE_GUID);
 
-		readonly StorageHeaderVM storageHeaderVM;
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		public StorageHeaderNode(StorageHeaderVM storageHeader)
-			: base(storageHeader.Span) => storageHeaderVM = storageHeader;
+    public override object VMObject => storageHeaderVM;
 
-		protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
-			output.Write(BoxedTextColor.HexStorageHeader, dnSpy_AsmEditor_Resources.HexNode_StorageHeader);
-	}
+    protected override ImageReference IconReference => DsImages.BinaryFile;
+
+    protected override IEnumerable<HexVM> HexVMs
+    {
+        get { yield return storageHeaderVM; }
+    }
+
+    readonly StorageHeaderVM storageHeaderVM;
+
+    public StorageHeaderNode(StorageHeaderVM storageHeader, IDocumentTreeNodeDataContext context)
+        : base(storageHeader.Span, context) => storageHeaderVM = storageHeader;
+
+    protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
+        output.Write(BoxedTextColor.HexStorageHeader, dnSpy_AsmEditor_Resources.HexNode_StorageHeader);
 }

@@ -28,85 +28,90 @@ using dnSpy.Contracts.Hex;
 using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	abstract class HexNode : DocumentTreeNodeData, IDecompileSelf {
-		protected abstract IEnumerable<HexVM> HexVMs { get; }
-		public abstract object VMObject { get; }
-		public virtual bool IsVirtualizingCollectionVM => false;
-		public HexSpan Span { get; }
-		protected sealed override ImageReference GetIcon(IDotNetImageService dnImgMgr) => IconReference;
-		protected abstract ImageReference IconReference { get; }
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected virtual IEnumerable<HexSpan> Spans {
-			get { yield return Span; }
-		}
+abstract class HexNode : DocumentTreeNodeData, IDecompileSelf
+{
+    protected abstract IEnumerable<HexVM> HexVMs { get; }
 
-		protected HexNode(HexSpan span) => Span = span;
+    public abstract object VMObject { get; }
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResultOther(this).FilterType;
+    public virtual bool IsVirtualizingCollectionVM => false;
 
-		public bool Decompile(IDecompileNodeContext context) {
-			context.ContentTypeString = context.Decompiler.ContentTypeString;
-			context.Decompiler.WriteCommentLine(context.Output, $"{Span.Start.ToUInt64():X8} - {Span.End.ToUInt64() - 1:X8} {ToString()}");
-			DecompileFields(context.Decompiler, context.Output);
-			(context.Output as IDocumentViewerOutput)?.DisableCaching();
-			return true;
-		}
+    public HexSpan Span { get; }
 
-		protected virtual void DecompileFields(IDecompiler decompiler, IDecompilerOutput output) {
-			foreach (var vm in HexVMs) {
-				decompiler.WriteCommentLine(output, string.Empty);
-				decompiler.WriteCommentLine(output, $"{vm.Name}:");
-				foreach (var field in vm.HexFields)
-					decompiler.WriteCommentLine(output, $"{field.Span.Start.ToUInt64():X8} - {field.Span.End.ToUInt64() - 1:X8} {field.FormattedValue} = {field.Name}");
-			}
-		}
+    protected sealed override ImageReference GetIcon(IDotNetImageService dnImgMgr) => IconReference;
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			WriteCore(output, options);
-			if ((options & DocumentNodeWriteOptions.ToolTip) != 0) {
-				output.WriteLine();
-				WriteFilename(output);
-			}
-		}
+    protected abstract ImageReference IconReference { get; }
 
-		protected abstract void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options);
+    protected virtual IEnumerable<HexSpan> Spans
+    {
+        get { yield return Span; }
+    }
 
-		public virtual void OnBufferChanged(NormalizedHexChangeCollection changes) {
-			if (!changes.OverlapsWith(Span))
-				return;
+    protected HexNode(HexSpan span, IDocumentTreeNodeDataContext context) : base(context) => Span = span;
 
-			foreach (var vm in HexVMs)
-				vm.OnBufferChanged(changes);
-		}
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResultOther(this).FilterType;
 
-		public HexNode? FindNode(HexVM structure, HexField field) {
-			Debug.Assert(!(structure is MetadataTableRecordVM), "Use " + nameof(PENode) + "'s method instead");
-			bool found = false;
-			foreach (var span in Spans) {
-				if (span.Contains(field.Span)) {
-					found = true;
-					break;
-				}
-			}
-			if (!found)
-				return null;
+    public bool Decompile(IDecompileNodeContext context)
+    {
+        context.ContentTypeString = context.Decompiler.ContentTypeString;
+        context.Decompiler.WriteCommentLine(context.Output, $"{Span.Start.ToUInt64():X8} - {Span.End.ToUInt64() - 1:X8} {ToString()}");
+        DecompileFields(context.Decompiler, context.Output);
+        (context.Output as IDocumentViewerOutput)?.DisableCaching();
+        return true;
+    }
 
-			foreach (var vm in HexVMs) {
-				foreach (var f in vm.HexFields) {
-					if (f == field)
-						return this;
-				}
-			}
+    protected virtual void DecompileFields(IDecompiler decompiler, IDecompilerOutput output)
+    {
+        foreach (var vm in HexVMs)
+        {
+            decompiler.WriteCommentLine(output, string.Empty);
+            decompiler.WriteCommentLine(output, $"{vm.Name}:");
+            foreach (var field in vm.HexFields)
+                decompiler.WriteCommentLine(output,
+                    $"{field.Span.Start.ToUInt64():X8} - {field.Span.End.ToUInt64() - 1:X8} {field.FormattedValue} = {field.Name}");
+        }
+    }
 
-			TreeNode.EnsureChildrenLoaded();
-			foreach (var child in TreeNode.DataChildren.OfType<HexNode>()) {
-				var node = child.FindNode(structure, field);
-				if (node is not null)
-					return node;
-			}
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        WriteCore(output, options);
 
-			return null;
-		}
-	}
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
+        {
+            output.WriteLine();
+            WriteFilename(output);
+        }
+    }
+
+    protected abstract void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options);
+
+    public virtual void OnBufferChanged(NormalizedHexChangeCollection changes)
+    {
+        if (!changes.OverlapsWith(Span))
+            return;
+
+        foreach (var vm in HexVMs)
+            vm.OnBufferChanged(changes);
+    }
+
+    public HexNode? FindNode(HexVM structure, HexField field)
+    {
+        Debug.Assert(structure is not MetadataTableRecordVM, "Use " + nameof(PENode) + "'s method instead");
+        var found = Spans.Any(span => span.Contains(field.Span));
+
+        if (!found)
+            return null;
+
+        if (HexVMs.Any(vm => vm.HexFields.Any(f => f == field)))
+            return this;
+
+        TreeNode.EnsureChildrenLoaded();
+
+        return TreeNode.DataChildren
+            .OfType<HexNode>()
+            .Select(child => child.FindNode(structure, field))
+            .FirstOrDefault(node => node is not null);
+    }
 }

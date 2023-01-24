@@ -27,23 +27,21 @@ namespace MyApp.Documents.TreeView;
 [ExportDsDocumentNodeProvider(Order = double.MaxValue)]
 sealed class DefaultDsDocumentNodeProvider : IDsDocumentNodeProvider
 {
-    public DsDocumentNode? Create(IDocumentTreeView documentTreeView, DsDocumentNode? owner, IDsDocument document)
+    public DsDocumentNode? Create(IDocumentTreeView documentTreeView, DsDocumentNode? owner, IDsDocument document, IDocumentTreeNodeDataContext context)
     {
         if (document is IDsDotNetDocument dnDocument)
         {
-            Debug2.Assert(document.ModuleDef is not null);
+            Debug.Assert(document.ModuleDef is not null);
 
-            if (document.AssemblyDef is null || owner is not null)
-                return new ModuleDocumentNodeImpl(dnDocument);
-
-            return new AssemblyDocumentNodeImpl(dnDocument);
+            return document.AssemblyDef is null || owner is not null
+                ? new ModuleDocumentNodeImpl(dnDocument, context)
+                : new AssemblyDocumentNodeImpl(dnDocument, context);
         }
 
-        Debug2.Assert(document.AssemblyDef is null && document.ModuleDef is null);
+        Debug.Assert(document.AssemblyDef is null && document.ModuleDef is null);
 
-        if (document.PEImage is not null)
-            return new PEDocumentNodeImpl(document);
-
-        return null;
+        return document.PEImage is not null
+            ? new PEDocumentNodeImpl(document, context) 
+            : null;
     }
 }

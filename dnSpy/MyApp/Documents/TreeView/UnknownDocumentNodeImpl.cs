@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using dnSpy.Contracts.Decompiler;
 using dnSpy.Contracts.Documents;
 using dnSpy.Contracts.Documents.TreeView;
@@ -27,20 +28,21 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace MyApp.Documents.TreeView {
-	public sealed class UnknownDocumentNodeImpl : UnknownDocumentNode {
-		public UnknownDocumentNodeImpl(IDsDocument document)
-			: base(document) => Debug2.Assert(document.PEImage is null && document.ModuleDef is null);
+namespace MyApp.Documents.TreeView;
 
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.UNKNOWN_DOCUMENT_NODE_GUID);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => DsImages.AssemblyError;
+public sealed class UnknownDocumentNodeImpl : UnknownDocumentNode
+{
+    public UnknownDocumentNodeImpl(IDsDocument document, IDocumentTreeNodeDataContext context)
+        : base(document, context) =>
+        Debug.Assert(document.PEImage is null && document.ModuleDef is null);
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			foreach (var document in Document.Children)
-				yield return Context.DocumentTreeView.CreateNode(this, document);
-		}
+    public override Guid Guid => new(DocumentTreeViewConstants.UNKNOWN_DOCUMENT_NODE_GUID);
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) =>
-			new NodeFormatter().Write(output, decompiler, Document);
-	}
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => DsImages.AssemblyError;
+
+    public override IEnumerable<TreeNodeData> CreateChildren() =>
+        Document.Children.Select(document => Context.DocumentTreeView.CreateNode(this, document));
+
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) =>
+        new NodeFormatter().Write(output, decompiler, Document);
 }

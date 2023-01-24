@@ -20,34 +20,33 @@
 using System.Diagnostics;
 using MyApp.Themes;
 
-namespace dnSpy.Themes {
-	[DebuggerDisplay("{ColorInfo.ColorType}")]
-	sealed class Color {
-		/// <summary>
-		/// Color info
-		/// </summary>
-		public readonly ColorInfo ColorInfo;
+namespace dnSpy.Themes;
 
-		/// <summary>
-		/// Original color with no inherited properties. If this one or any of its properties
-		/// get modified, <see cref="Theme.RecalculateInheritedColorProperties()"/> must be
-		/// called.
-		/// </summary>
-		public ThemeColor OriginalColor;
+[DebuggerDisplay("{ColorInfo.ColorType}")]
+sealed class Color
+{
+    public Color(ColorInfo colorInfo) => ColorInfo = colorInfo;
 
-		/// <summary>
-		/// Color with inherited properties, but doesn't include inherited default text (because
-		/// it messes up with selection in text editor). See also <see cref="InheritedColor"/>
-		/// </summary>
-		public ThemeColor TextInheritedColor;
+    /// <summary>
+    /// Color info
+    /// </summary>
+    public readonly ColorInfo ColorInfo;
 
-		/// <summary>
-		/// Color with inherited properties. See also <see cref="TextInheritedColor"/>
-		/// </summary>
-		public ThemeColor InheritedColor;
+    /// <summary>
+    /// Original color with no inherited properties. If this one or any of its properties
+    /// get modified, <see cref="Theme.RecalculateInheritedColorProperties()"/> must be
+    /// called.
+    /// </summary>
+    public ThemeColor OriginalColor = null!;
 
-#pragma warning disable CS8618 // Non-nullable field is uninitialized.
-		public Color(ColorInfo colorInfo) => ColorInfo = colorInfo;
-#pragma warning restore CS8618 // Non-nullable field is uninitialized.
-	}
+    /// <summary>
+    /// Color with inherited properties, but doesn't include inherited default text (because
+    /// it messes up with selection in text editor). See also <see cref="InheritedColor"/>
+    /// </summary>
+    public ThemeColor TextInheritedColor = null!;
+
+    /// <summary>
+    /// Color with inherited properties. See also <see cref="TextInheritedColor"/>
+    /// </summary>
+    public ThemeColor InheritedColor = null!;
 }

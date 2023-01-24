@@ -26,44 +26,60 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class BaseTypeFolderNodeImpl : BaseTypeFolderNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.BASETYPEFOLDER_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => DsImages.FolderClosed;
-		protected override ImageReference? GetExpandedIcon(IDotNetImageService dnImgMgr) => DsImages.FolderOpened;
-		public override ITreeNodeGroup? TreeNodeGroup { get; }
+namespace dnSpy.Documents.TreeView;
 
-		readonly TypeDef type;
+sealed class BaseTypeFolderNodeImpl : BaseTypeFolderNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.BASETYPEFOLDER_NODE_GUID);
 
-		public BaseTypeFolderNodeImpl(ITreeNodeGroup treeNodeGroup, TypeDef type) {
-			TreeNodeGroup = treeNodeGroup;
-			this.type = type;
-		}
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		public override void Initialize() => TreeNode.LazyLoading = true;
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => DsImages.FolderClosed;
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			if (type.BaseType is not null)
-				yield return new BaseTypeNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.BaseTypeTreeNodeGroupBaseType), type.BaseType, true);
-			foreach (var iface in type.Interfaces)
-				yield return new BaseTypeNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.InterfaceBaseTypeTreeNodeGroupBaseType), iface.Interface, false);
-		}
+    protected override ImageReference? GetExpandedIcon(IDotNetImageService dnImgMgr) => DsImages.FolderOpened;
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			output.Write(BoxedTextColor.Text, "dnSpy_Resources.BaseTypeFolder"); // todo
-			if ((options & DocumentNodeWriteOptions.ToolTip) != 0) {
-				output.WriteLine();
-				WriteFilename(output);
-			}
-		}
+    public override ITreeNodeGroup? TreeNodeGroup { get; }
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
-			filter.GetResult(this).FilterType;
+    readonly TypeDef type;
 
-		public override void InvalidateChildren() {
-			TreeNode.Children.Clear();
-			TreeNode.LazyLoading = true;
-		}
-	}
+    public BaseTypeFolderNodeImpl(ITreeNodeGroup treeNodeGroup, TypeDef type, IDocumentTreeNodeDataContext context) : base(context)
+    {
+        TreeNodeGroup = treeNodeGroup;
+        this.type = type;
+    }
+
+    public override void Initialize() => TreeNode.LazyLoading = true;
+
+    public override IEnumerable<TreeNodeData> CreateChildren()
+    {
+        if (type.BaseType is not null)
+            yield return new BaseTypeNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.BaseTypeTreeNodeGroupBaseType), type.BaseType,
+                true, Context);
+
+        foreach (var iface in type.Interfaces)
+            yield return new BaseTypeNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.InterfaceBaseTypeTreeNodeGroupBaseType),
+                iface.Interface, false, Context);
+    }
+
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        output.Write(BoxedTextColor.Text, "dnSpy_Resources.BaseTypeFolder"); // todo
+
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
+        {
+            output.WriteLine();
+            WriteFilename(output);
+        }
+    }
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) =>
+        filter.GetResult(this).FilterType;
+
+    public override void InvalidateChildren()
+    {
+        TreeNode.Children.Clear();
+        TreeNode.LazyLoading = true;
+    }
 }

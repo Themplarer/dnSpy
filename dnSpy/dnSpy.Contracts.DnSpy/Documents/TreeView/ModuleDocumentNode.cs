@@ -21,37 +21,37 @@ using System.Diagnostics;
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
+namespace dnSpy.Contracts.Documents.TreeView;
+
+/// <summary>
+/// A .NET module file
+/// </summary>
+public abstract class ModuleDocumentNode : DsDocumentNode, IMDTokenNode {
 	/// <summary>
-	/// A .NET module file
+	/// Gets the <see cref="IDsDocument"/> instance
 	/// </summary>
-	public abstract class ModuleDocumentNode : DsDocumentNode, IMDTokenNode {
-		/// <summary>
-		/// Gets the <see cref="IDsDocument"/> instance
-		/// </summary>
-		public new IDsDotNetDocument Document => (IDsDotNetDocument)base.Document;
+	public new IDsDotNetDocument Document => (IDsDotNetDocument)base.Document;
 
-		IMDTokenProvider? IMDTokenNode.Reference => Document.ModuleDef;
+	IMDTokenProvider? IMDTokenNode.Reference => Document.ModuleDef;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="document">Document</param>
-		protected ModuleDocumentNode(IDsDotNetDocument document)
-			: base(document) => Debug2.Assert(document.ModuleDef is not null);
+	/// <summary>
+	/// Constructor
+	/// </summary>
+	/// <param name="document">Document</param>
+	protected ModuleDocumentNode(IDsDotNetDocument document, IDocumentTreeNodeDataContext context) : base(document, context) => 
+		Debug.Assert(document.ModuleDef is not null);
 
-		/// <summary>
-		/// Creates a <see cref="NamespaceNode"/>
-		/// </summary>
-		/// <param name="name">Name</param>
-		/// <returns></returns>
-		public NamespaceNode Create(string name) => Context.DocumentTreeView.Create(name);
+	/// <summary>
+	/// Creates a <see cref="NamespaceNode"/>
+	/// </summary>
+	/// <param name="name">Name</param>
+	/// <returns></returns>
+	public NamespaceNode Create(string name) => Context.DocumentTreeView.Create(name);
 
-		/// <summary>
-		/// Returns an existing <see cref="NamespaceNode"/> instance or null
-		/// </summary>
-		/// <param name="ns">Namespace</param>
-		/// <returns></returns>
-		public abstract NamespaceNode? FindNode(string? ns);
-	}
+	/// <summary>
+	/// Returns an existing <see cref="NamespaceNode"/> instance or null
+	/// </summary>
+	/// <param name="ns">Namespace</param>
+	/// <returns></returns>
+	public abstract NamespaceNode? FindNode(string? ns);
 }

@@ -26,41 +26,54 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class ResourcesFolderNodeImpl : ResourcesFolderNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.RESOURCES_FOLDER_NODE_GUID);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => DsImages.FolderClosed;
-		protected override ImageReference? GetExpandedIcon(IDotNetImageService dnImgMgr) => DsImages.FolderOpened;
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		public override void Initialize() => TreeNode.LazyLoading = true;
-		public override ITreeNodeGroup? TreeNodeGroup { get; }
+namespace dnSpy.Documents.TreeView;
 
-		readonly ModuleDef module;
+sealed class ResourcesFolderNodeImpl : ResourcesFolderNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.RESOURCES_FOLDER_NODE_GUID);
 
-		public ResourcesFolderNodeImpl(ITreeNodeGroup treeNodeGroup, ModuleDef module) {
-			TreeNodeGroup = treeNodeGroup;
-			this.module = module;
-		}
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => DsImages.FolderClosed;
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			output.Write(BoxedTextColor.Text, "dnSpy_Resources.ResourcesFolder"); // todo
-			if ((options & DocumentNodeWriteOptions.ToolTip) != 0) {
-				output.WriteLine();
-				WriteFilename(output);
-			}
-		}
+    protected override ImageReference? GetExpandedIcon(IDotNetImageService dnImgMgr) => DsImages.FolderOpened;
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			var treeNodeGroup = Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ResourceTreeNodeGroup);
-			foreach (var resource in module.Resources)
-				yield return Context.ResourceNodeFactory.Create(module, resource, treeNodeGroup);
-		}
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) {
-			var res = filter.GetResult(this);
-			if (res.FilterType != FilterType.Default)
-				return res.FilterType;
-			return FilterType.CheckChildren;
-		}
-	}
+    public override void Initialize() => TreeNode.LazyLoading = true;
+
+    public override ITreeNodeGroup? TreeNodeGroup { get; }
+
+    readonly ModuleDef module;
+
+    public ResourcesFolderNodeImpl(ITreeNodeGroup treeNodeGroup, ModuleDef module, IDocumentTreeNodeDataContext context) : base(context)
+    {
+        TreeNodeGroup = treeNodeGroup;
+        this.module = module;
+    }
+
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        output.Write(BoxedTextColor.Text, "dnSpy_Resources.ResourcesFolder"); // todo
+
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
+        {
+            output.WriteLine();
+            WriteFilename(output);
+        }
+    }
+
+    public override IEnumerable<TreeNodeData> CreateChildren()
+    {
+        var treeNodeGroup = Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.ResourceTreeNodeGroup);
+
+        foreach (var resource in module.Resources)
+            yield return Context.ResourceNodeFactory.Create(module, resource, treeNodeGroup, Context);
+    }
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter)
+    {
+        var res = filter.GetResult(this);
+        return res.FilterType != FilterType.Default
+            ? res.FilterType
+            : FilterType.CheckChildren;
+    }
 }

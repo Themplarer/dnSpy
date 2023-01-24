@@ -19,32 +19,35 @@
 
 using System;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A document node
-	/// </summary>
-	public abstract class DsDocumentNode : DocumentTreeNodeData {
-		/// <summary>
-		/// Gets the <see cref="IDsDocument"/> instance
-		/// </summary>
-		public IDsDocument Document { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="document">Document</param>
-		protected DsDocumentNode(IDsDocument document) => Document = document ?? throw new ArgumentNullException(nameof(document));
+/// <summary>
+/// A document node
+/// </summary>
+public abstract class DsDocumentNode : DocumentTreeNodeData
+{
+    /// <summary>
+    /// Gets the <see cref="IDsDocument"/> instance
+    /// </summary>
+    public IDsDocument Document { get; }
 
-		/// <summary>
-		/// Gets the node path name
-		/// </summary>
-		public sealed override NodePathName NodePathName => new NodePathName(Guid, (Document.Filename ?? string.Empty).ToUpperInvariant());
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="document">Document</param>
+    /// <param name="context">Context</param>
+    protected DsDocumentNode(IDsDocument document, IDocumentTreeNodeDataContext context) : base(context) =>
+        Document = document ?? throw new ArgumentNullException(nameof(document));
 
-		/// <summary>
-		/// Gets the <see cref="FilterType"/> to filter this instance
-		/// </summary>
-		/// <param name="filter">Filter to call</param>
-		/// <returns></returns>
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResult(Document).FilterType;
-	}
+    /// <summary>
+    /// Gets the node path name
+    /// </summary>
+    public sealed override NodePathName NodePathName => new NodePathName(Guid, (Document.Filename ?? string.Empty).ToUpperInvariant());
+
+    /// <summary>
+    /// Gets the <see cref="FilterType"/> to filter this instance
+    /// </summary>
+    /// <param name="filter">Filter to call</param>
+    /// <returns></returns>
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResult(Document).FilterType;
 }

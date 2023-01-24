@@ -23,14 +23,13 @@ using dnSpy.Contracts.Decompiler;
 using dnSpy.Decompiler.ILSpy.Core.CSharp;
 using dnSpy.Decompiler.ILSpy.Core.Settings;
 
-namespace dnSpy.Decompiler.ILSpy.CSharp {
-	[Export(typeof(IDecompilerCreator))]
-	sealed class MyDecompilerCreator : IDecompilerCreator {
-		readonly DecompilerSettingsService decompilerSettingsService;
+namespace dnSpy.Decompiler.ILSpy.CSharp;
 
-		[ImportingConstructor]
-		MyDecompilerCreator(DecompilerSettingsService decompilerSettingsService) => this.decompilerSettingsService = decompilerSettingsService;
+public sealed class MyDecompilerCreator : IDecompilerCreator
+{
+    readonly DecompilerSettingsService decompilerSettingsService;
 
-		public IEnumerable<IDecompiler> Create() => new DecompilerProvider(decompilerSettingsService).Create();
-	}
+    public MyDecompilerCreator(DecompilerSettingsService decompilerSettingsService) => this.decompilerSettingsService = decompilerSettingsService;
+
+    public IEnumerable<IDecompiler> Create() => new DecompilerProvider(decompilerSettingsService).Create();
 }

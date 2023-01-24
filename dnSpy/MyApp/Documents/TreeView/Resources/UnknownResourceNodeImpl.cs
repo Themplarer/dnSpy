@@ -32,8 +32,8 @@ sealed class UnknownResourceNodeImpl : UnknownResourceNode, IDecompileSelf
 {
     public override Guid Guid => new Guid(DocumentTreeViewConstants.UNKNOWN_RESOURCE_NODE_GUID);
 
-    public UnknownResourceNodeImpl(ITreeNodeGroup treeNodeGroup, Resource resource)
-        : base(treeNodeGroup, resource)
+    public UnknownResourceNodeImpl(ITreeNodeGroup treeNodeGroup, Resource resource, IDocumentTreeNodeDataContext context)
+        : base(treeNodeGroup, resource, context)
     {
     }
 

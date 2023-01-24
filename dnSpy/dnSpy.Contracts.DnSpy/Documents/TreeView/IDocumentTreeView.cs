@@ -207,5 +207,7 @@ namespace dnSpy.Contracts.Documents.TreeView {
 		/// true if <see cref="SortTopNodes()"/> can be called
 		/// </summary>
 		bool CanSortTopNodes { get; }
+
+		DsDocumentNode CreateNodeFromDocs(IReadOnlyList<IDsDocument> documents);
 	}
 }

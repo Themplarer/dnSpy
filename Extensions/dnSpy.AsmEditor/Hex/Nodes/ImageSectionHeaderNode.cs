@@ -26,41 +26,49 @@ using dnSpy.Contracts.Hex;
 using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	sealed class ImageSectionHeaderNode : HexNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.IMGSECTHEADER_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid, SectionNumber.ToString());
-		public override object VMObject => imageSectionHeaderVM;
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected override IEnumerable<HexVM> HexVMs {
-			get { yield return imageSectionHeaderVM; }
-		}
+sealed class ImageSectionHeaderNode : HexNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.IMGSECTHEADER_NODE_GUID);
 
-		protected override ImageReference IconReference => DsImages.BinaryFile;
-		public int SectionNumber { get; }
+    public override NodePathName NodePathName => new NodePathName(Guid, SectionNumber.ToString());
 
-		readonly ImageSectionHeaderVM imageSectionHeaderVM;
+    public override object VMObject => imageSectionHeaderVM;
 
-		public ImageSectionHeaderNode(ImageSectionHeaderVM sectHdr, int sectionNumber)
-			: base(sectHdr.Span) {
-			SectionNumber = sectionNumber;
-			imageSectionHeaderVM = sectHdr;
-		}
+    protected override IEnumerable<HexVM> HexVMs
+    {
+        get { yield return imageSectionHeaderVM; }
+    }
 
-		public override void OnBufferChanged(NormalizedHexChangeCollection changes) {
-			base.OnBufferChanged(changes);
-			if (changes.OverlapsWith(imageSectionHeaderVM.NameVM.Span))
-				TreeNode.RefreshUI();
-		}
+    protected override ImageReference IconReference => DsImages.BinaryFile;
 
-		protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) {
-			output.Write(BoxedTextColor.HexPeSection, dnSpy_AsmEditor_Resources.HexNode_PE_Section);
-			output.WriteSpace();
-			output.Write(BoxedTextColor.Operator, "#");
-			output.Write(BoxedTextColor.Number, SectionNumber.ToString());
-			output.Write(BoxedTextColor.Punctuation, ":");
-			output.WriteSpace();
-			output.Write(BoxedTextColor.HexPeSectionName, imageSectionHeaderVM.NameVM.String);
-		}
-	}
+    public int SectionNumber { get; }
+
+    readonly ImageSectionHeaderVM imageSectionHeaderVM;
+
+    public ImageSectionHeaderNode(ImageSectionHeaderVM sectHdr, int sectionNumber, IDocumentTreeNodeDataContext context)
+        : base(sectHdr.Span, context)
+    {
+        SectionNumber = sectionNumber;
+        imageSectionHeaderVM = sectHdr;
+    }
+
+    public override void OnBufferChanged(NormalizedHexChangeCollection changes)
+    {
+        base.OnBufferChanged(changes);
+        if (changes.OverlapsWith(imageSectionHeaderVM.NameVM.Span))
+            TreeNode.RefreshUI();
+    }
+
+    protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options)
+    {
+        output.Write(BoxedTextColor.HexPeSection, dnSpy_AsmEditor_Resources.HexNode_PE_Section);
+        output.WriteSpace();
+        output.Write(BoxedTextColor.Operator, "#");
+        output.Write(BoxedTextColor.Number, SectionNumber.ToString());
+        output.Write(BoxedTextColor.Punctuation, ":");
+        output.WriteSpace();
+        output.Write(BoxedTextColor.HexPeSectionName, imageSectionHeaderVM.NameVM.String);
+    }
 }

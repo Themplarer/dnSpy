@@ -20,31 +20,34 @@
 using dnlib.DotNet.Emit;
 using dnSpy.Contracts.Decompiler.XmlDoc;
 
-namespace dnSpy.Decompiler.IL {
-	public static class ILLanguageHelper {
-		static readonly string[] cachedOpCodeDocs = new string[0x200];
-		public static string? GetOpCodeDocumentation(OpCode code) {
-			int index = (int)code.Code;
-			int hi = index >> 8;
-			if (hi == 0xFE)
-				index -= 0xFD00;
-			else if (hi != 0)
-				return null;
-			var s = cachedOpCodeDocs[index];
-			if (s is not null)
-				return s;
+namespace dnSpy.Decompiler.IL;
 
-			var docProvider = XmlDocLoader.MscorlibDocumentation;
-			if (docProvider is not null) {
-				string? docXml = docProvider.GetDocumentation("F:System.Reflection.Emit.OpCodes." + code.Code.ToString());
-				if (docXml is not null) {
-					XmlDocRenderer renderer = new XmlDocRenderer();
-					renderer.AddXmlDocumentation(docXml);
-					return cachedOpCodeDocs[index] = renderer.ToString();
-				}
-			}
+public static class ILLanguageHelper
+{
+    private static readonly string[] CachedOpCodeDocs = new string[0x200];
 
-			return null;
-		}
-	}
+    public static string? GetOpCodeDocumentation(OpCode code)
+    {
+        var index = (int)code.Code;
+        var hi = index >> 8;
+
+        if (hi == 0xFE)
+            index -= 0xFD00;
+        else if (hi != 0)
+            return null;
+
+        var s = CachedOpCodeDocs[index];
+
+        if (s is not null)
+            return s;
+
+        var docProvider = XmlDocLoader.MscorlibDocumentation;
+        var docXml = docProvider?.GetDocumentation("F:System.Reflection.Emit.OpCodes." + code.Code);
+
+        if (docXml == null) return null;
+
+        var renderer = new XmlDocRenderer();
+        renderer.AddXmlDocumentation(docXml);
+        return CachedOpCodeDocs[index] = renderer.ToString();
+    }
 }

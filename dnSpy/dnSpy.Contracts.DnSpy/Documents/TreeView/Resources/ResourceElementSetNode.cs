@@ -21,23 +21,25 @@ using dnlib.DotNet;
 using dnlib.DotNet.Resources;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// A resource node created from a <see cref="ResourceElementSet"/>
-	/// </summary>
-	public abstract class ResourceElementSetNode : ResourceNode {
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="treeNodeGroup">Treenode group</param>
-		/// <param name="resource">Resource</param>
-		protected ResourceElementSetNode(ITreeNodeGroup treeNodeGroup, Resource resource)
-			: base(treeNodeGroup, resource) {
-		}
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
 
-		/// <summary>
-		/// Regenerate the <see cref="EmbeddedResource"/>. Used by the assembly editor.
-		/// </summary>
-		public abstract void RegenerateEmbeddedResource();
-	}
+/// <summary>
+/// A resource node created from a <see cref="ResourceElementSet"/>
+/// </summary>
+public abstract class ResourceElementSetNode : ResourceNode
+{
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="treeNodeGroup">Treenode group</param>
+    /// <param name="resource">Resource</param>
+    protected ResourceElementSetNode(ITreeNodeGroup treeNodeGroup, Resource resource, IDocumentTreeNodeDataContext context)
+        : base(treeNodeGroup, resource, context)
+    {
+    }
+
+    /// <summary>
+    /// Regenerate the <see cref="EmbeddedResource"/>. Used by the assembly editor.
+    /// </summary>
+    public abstract void RegenerateEmbeddedResource();
 }

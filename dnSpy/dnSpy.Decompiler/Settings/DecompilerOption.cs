@@ -20,24 +20,31 @@
 using System;
 using dnSpy.Contracts.Decompiler;
 
-namespace dnSpy.Decompiler.Settings {
-	public sealed class DecompilerOption<T> : IDecompilerOption {
-		public string? Description { get; set; }
-		public string? Name { get; set; }
-		public Guid Guid { get; }
-		public Type Type => typeof(T);
+namespace dnSpy.Decompiler.Settings;
 
-		public object Value {
-			get { return getter()!; }
-			set { setter((T)value); }
-		}
-		readonly Func<T> getter;
-		readonly Action<T> setter;
+public sealed class DecompilerOption<T> : IDecompilerOption
+{
+    public string? Description { get; set; }
 
-		public DecompilerOption(Guid guid, Func<T> getter, Action<T> setter) {
-			Guid = guid;
-			this.getter = getter ?? throw new ArgumentNullException(nameof(getter));
-			this.setter = setter ?? throw new ArgumentNullException(nameof(setter));
-		}
-	}
+    public string? Name { get; set; }
+
+    public Guid Guid { get; }
+
+    public Type Type => typeof(T);
+
+    public object Value
+    {
+        get => _getter()!;
+        set => _setter((T)value);
+    }
+
+    private readonly Func<T> _getter;
+    private readonly Action<T> _setter;
+
+    public DecompilerOption(Guid guid, Func<T> getter, Action<T> setter)
+    {
+        Guid = guid;
+        _getter = getter ?? throw new ArgumentNullException(nameof(getter));
+        _setter = setter ?? throw new ArgumentNullException(nameof(setter));
+    }
 }

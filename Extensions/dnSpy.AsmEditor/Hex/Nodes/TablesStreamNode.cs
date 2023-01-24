@@ -29,51 +29,64 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	sealed class TablesStreamNode : HexNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.TBLSSTREAM_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		public override object VMObject => tablesStreamVM;
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected override IEnumerable<HexVM> HexVMs {
-			get { yield return tablesStreamVM; }
-		}
+sealed class TablesStreamNode : HexNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.TBLSSTREAM_NODE_GUID);
 
-		protected override ImageReference IconReference => DsImages.Metadata;
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		readonly TablesStreamVM tablesStreamVM;
+    public override object VMObject => tablesStreamVM;
 
-		public TablesStreamNode(TablesStreamVM tablesStream)
-			: base(tablesStream.Span) {
-			tablesStreamVM = tablesStream;
+    protected override IEnumerable<HexVM> HexVMs
+    {
+        get { yield return tablesStreamVM; }
+    }
 
-			newChildren = new List<TreeNodeData>();
-			foreach (var mdTable in tablesStream.MetadataTables) {
-				if (mdTable is not null)
-					newChildren.Add(new MetadataTableNode(mdTable));
-			}
-		}
-		List<TreeNodeData>? newChildren;
+    protected override ImageReference IconReference => DsImages.Metadata;
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			foreach (var c in newChildren!)
-				yield return c;
-			newChildren = null;
-		}
+    readonly TablesStreamVM tablesStreamVM;
 
-		public override void OnBufferChanged(NormalizedHexChangeCollection changes) {
-			base.OnBufferChanged(changes);
+    public TablesStreamNode(TablesStreamVM tablesStream, IDocumentTreeNodeDataContext context)
+        : base(tablesStream.Span, context)
+    {
+        tablesStreamVM = tablesStream;
 
-			foreach (HexNode node in TreeNode.DataChildren)
-				node.OnBufferChanged(changes);
-		}
+        newChildren = new List<TreeNodeData>();
 
-		protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
-			output.Write(BoxedTextColor.HexTablesStream, dnSpy_AsmEditor_Resources.HexNode_TablesStream);
+        foreach (var mdTable in tablesStream.MetadataTables)
+        {
+            if (mdTable is not null)
+                newChildren.Add(new MetadataTableNode(mdTable, context));
+        }
+    }
 
-		public MetadataTableRecordNode? FindTokenNode(uint token) {
-			var mdTblNode = (MetadataTableNode?)TreeNode.DataChildren.FirstOrDefault(a => ((MetadataTableNode)a).TableInfo.Table == (Table)(token >> 24));
-			return mdTblNode?.FindTokenNode(token);
-		}
-	}
+    List<TreeNodeData>? newChildren;
+
+    public override IEnumerable<TreeNodeData> CreateChildren()
+    {
+        foreach (var c in newChildren!)
+            yield return c;
+
+        newChildren = null;
+    }
+
+    public override void OnBufferChanged(NormalizedHexChangeCollection changes)
+    {
+        base.OnBufferChanged(changes);
+
+        foreach (HexNode node in TreeNode.DataChildren)
+            node.OnBufferChanged(changes);
+    }
+
+    protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
+        output.Write(BoxedTextColor.HexTablesStream, dnSpy_AsmEditor_Resources.HexNode_TablesStream);
+
+    public MetadataTableRecordNode? FindTokenNode(uint token)
+    {
+        var mdTblNode =
+            (MetadataTableNode?)TreeNode.DataChildren.FirstOrDefault(a => ((MetadataTableNode)a).TableInfo.Table == (Table)(token >> 24));
+        return mdTblNode?.FindTokenNode(token);
+    }
 }

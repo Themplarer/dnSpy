@@ -25,23 +25,28 @@ using dnSpy.Contracts.Documents.TreeView;
 using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	sealed class StorageSignatureNode : HexNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.STRGSIG_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid);
-		public override object VMObject => storageSignatureVM;
-		protected override ImageReference IconReference => DsImages.BinaryFile;
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected override IEnumerable<HexVM> HexVMs {
-			get { yield return storageSignatureVM; }
-		}
+sealed class StorageSignatureNode : HexNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.STRGSIG_NODE_GUID);
 
-		readonly StorageSignatureVM storageSignatureVM;
+    public override NodePathName NodePathName => new NodePathName(Guid);
 
-		public StorageSignatureNode(StorageSignatureVM storageSig)
-			: base(storageSig.Span) => storageSignatureVM = storageSig;
+    public override object VMObject => storageSignatureVM;
 
-		protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
-			output.Write(BoxedTextColor.HexStorageSignature, dnSpy_AsmEditor_Resources.HexNode_StorageSignature);
-	}
+    protected override ImageReference IconReference => DsImages.BinaryFile;
+
+    protected override IEnumerable<HexVM> HexVMs
+    {
+        get { yield return storageSignatureVM; }
+    }
+
+    readonly StorageSignatureVM storageSignatureVM;
+
+    public StorageSignatureNode(StorageSignatureVM storageSig, IDocumentTreeNodeDataContext context)
+        : base(storageSig.Span, context) => storageSignatureVM = storageSig;
+
+    protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) =>
+        output.Write(BoxedTextColor.HexStorageSignature, dnSpy_AsmEditor_Resources.HexNode_StorageSignature);
 }

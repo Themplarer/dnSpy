@@ -21,29 +21,31 @@ using System;
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// An event node
-	/// </summary>
-	public abstract class EventNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the event
-		/// </summary>
-		public EventDef EventDef { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		IMDTokenProvider? IMDTokenNode.Reference => EventDef;
+/// <summary>
+/// An event node
+/// </summary>
+public abstract class EventNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the event
+    /// </summary>
+    public EventDef EventDef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="event">Event</param>
-		protected EventNode(EventDef @event) => EventDef = @event ?? throw new ArgumentNullException(nameof(@event));
+    IMDTokenProvider IMDTokenNode.Reference => EventDef;
 
-		/// <summary>
-		/// Creates a <see cref="MethodNode"/>, an adder, remover, invoker, or an other method
-		/// </summary>
-		/// <param name="method">Method</param>
-		/// <returns></returns>
-		public MethodNode Create(MethodDef method) => Context.DocumentTreeView.CreateEvent(method);
-	}
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="event">Event</param>
+    protected EventNode(EventDef @event, IDocumentTreeNodeDataContext context) : base(context) =>
+        EventDef = @event ?? throw new ArgumentNullException(nameof(@event));
+
+    /// <summary>
+    /// Creates a <see cref="MethodNode"/>, an adder, remover, invoker, or an other method
+    /// </summary>
+    /// <param name="method">Method</param>
+    /// <returns></returns>
+    public MethodNode Create(MethodDef method) => Context.DocumentTreeView.CreateEvent(method);
 }

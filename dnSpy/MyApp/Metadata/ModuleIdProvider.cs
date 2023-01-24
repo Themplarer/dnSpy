@@ -19,56 +19,55 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using dnlib.DotNet;
 using dnSpy.Contracts.Metadata;
 
-namespace dnSpy.Metadata {
-	[Export(typeof(IModuleIdProvider))]
-	sealed class ModuleIdProvider : IModuleIdProvider {
-		readonly Lazy<IModuleIdFactoryProvider, IModuleIdFactoryProviderMetadata>[] moduleIdFactoryProviders;
-		readonly ConditionalWeakTable<ModuleDef, StrongBox<ModuleId>> moduleDictionary;
-		readonly ConditionalWeakTable<ModuleDef, StrongBox<ModuleId>>.CreateValueCallback callbackCreateCore;
-		IModuleIdFactory[]? factories;
+namespace dnSpy.Metadata;
 
-		[ImportingConstructor]
-		ModuleIdProvider([ImportMany] IEnumerable<Lazy<IModuleIdFactoryProvider, IModuleIdFactoryProviderMetadata>> moduleIdFactoryProviders) {
-			this.moduleIdFactoryProviders = moduleIdFactoryProviders.OrderBy(a => a.Metadata.Order).ToArray();
-			moduleDictionary = new ConditionalWeakTable<ModuleDef, StrongBox<ModuleId>>();
-			callbackCreateCore = CreateCore;
-		}
+sealed class ModuleIdProvider : IModuleIdProvider
+{
+    private readonly Lazy<IModuleIdFactoryProvider, IModuleIdFactoryProviderMetadata>[] _moduleIdFactoryProviders;
+    private readonly ConditionalWeakTable<ModuleDef, StrongBox<ModuleId>> _moduleDictionary;
+    private readonly ConditionalWeakTable<ModuleDef, StrongBox<ModuleId>>.CreateValueCallback _callbackCreateCore;
+    private IModuleIdFactory[]? _factories;
 
-		public ModuleId Create(ModuleDef? module) {
-			if (module is null)
-				return new ModuleId();
-			var res = moduleDictionary.GetValue(module, callbackCreateCore).Value;
-			// Don't cache dynamic modules. The reason is that their ModuleIds could change,
-			// see CorDebug's DbgEngineImpl.UpdateDynamicModuleIds()
-			if (res.IsDynamic)
-				return CreateCore(module).Value;
-			return res;
-		}
+    public ModuleIdProvider(IEnumerable<Lazy<IModuleIdFactoryProvider, IModuleIdFactoryProviderMetadata>> moduleIdFactoryProviders)
+    {
+        _moduleIdFactoryProviders = moduleIdFactoryProviders.OrderBy(a => a.Metadata.Order).ToArray();
+        _moduleDictionary = new ConditionalWeakTable<ModuleDef, StrongBox<ModuleId>>();
+        _callbackCreateCore = CreateCore;
+    }
 
-		StrongBox<ModuleId> CreateCore(ModuleDef module) {
-			if (factories is null) {
-				var list = new List<IModuleIdFactory>(moduleIdFactoryProviders.Length);
-				foreach (var provider in moduleIdFactoryProviders) {
-					var factory = provider.Value.Create();
-					if (factory is not null)
-						list.Add(factory);
-				}
-				factories = list.ToArray();
-			}
+    public ModuleId Create(ModuleDef? module)
+    {
+        if (module is null)
+            return new ModuleId();
 
-			foreach (var factory in factories) {
-				var id = factory.Create(module);
-				if (id is not null)
-					return new StrongBox<ModuleId>(id.Value);
-			}
+        var res = _moduleDictionary.GetValue(module, _callbackCreateCore).Value;
+        // Don't cache dynamic modules. The reason is that their ModuleIds could change,
+        // see CorDebug's DbgEngineImpl.UpdateDynamicModuleIds()
+        return res.IsDynamic
+            ? CreateCore(module).Value
+            : res;
+    }
 
-			return new StrongBox<ModuleId>(ModuleId.CreateFromFile(module));
-		}
-	}
+    StrongBox<ModuleId> CreateCore(ModuleDef module)
+    {
+        _factories ??= _moduleIdFactoryProviders
+            .Select(provider => provider.Value.Create())
+            .Where(factory => factory is not null)
+            .ToArray()!;
+
+        foreach (var factory in _factories)
+        {
+            var id = factory.Create(module);
+
+            if (id is not null)
+                return new StrongBox<ModuleId>(id.Value);
+        }
+
+        return new StrongBox<ModuleId>(ModuleId.CreateFromFile(module));
+    }
 }

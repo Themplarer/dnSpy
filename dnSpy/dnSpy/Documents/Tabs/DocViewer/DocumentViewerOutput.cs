@@ -137,6 +137,8 @@ namespace dnSpy.Documents.Tabs.DocViewer {
 			}
 		}
 
+		public void Clear() => stringBuilder.Clear();
+
 		public void AddCustomData<TData>(string id, TData data) {
 			VerifyGeneratingOrPostProcessing();
 			List<TData> list;

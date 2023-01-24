@@ -19,25 +19,28 @@
 
 using System;
 
-namespace dnSpy.Extension {
-	sealed class ExtensionConfig {
-		/// <summary>
-		/// Minimum OS version (<see cref="Environment.OSVersion"/>'s <see cref="OperatingSystem.Version"/> property) or null if any version
-		/// </summary>
-		public Version? OSVersion { get; set; }
+namespace dnSpy.Extension;
 
-		/// <summary>
-		/// Minimum .NET Framework version (<see cref="Environment.Version"/>) or null if any version
-		/// </summary>
-		public Version? FrameworkVersion { get; set; }
+internal sealed class ExtensionConfig
+{
+    /// <summary>
+    /// Minimum OS version (<see cref="Environment.OSVersion"/>'s <see cref="OperatingSystem.Version"/> property) or null if any version
+    /// </summary>
+    public Version? OsVersion { get; set; }
 
-		/// <summary>
-		/// Minimum dnSpy version or null if any version
-		/// </summary>
-		public Version? AppVersion { get; set; }
+    /// <summary>
+    /// Minimum .NET Framework version (<see cref="Environment.Version"/>) or null if any version
+    /// </summary>
+    public Version? FrameworkVersion { get; set; }
 
-		public bool IsSupportedOSversion(Version version) => OSVersion is null || OSVersion <= version;
-		public bool IsSupportedFrameworkVersion(Version version) => FrameworkVersion is null || FrameworkVersion <= version;
-		public bool IsSupportedAppVersion(Version version) => AppVersion is null || AppVersion <= version;
-	}
+    /// <summary>
+    /// Minimum dnSpy version or null if any version
+    /// </summary>
+    public Version? AppVersion { get; set; }
+
+    public bool IsSupportedOsVersion(Version version) => OsVersion is null || OsVersion <= version;
+
+    public bool IsSupportedFrameworkVersion(Version version) => FrameworkVersion is null || FrameworkVersion <= version;
+
+    public bool IsSupportedAppVersion(Version version) => AppVersion is null || AppVersion <= version;
 }

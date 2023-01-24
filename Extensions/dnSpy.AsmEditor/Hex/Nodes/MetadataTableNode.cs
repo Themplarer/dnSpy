@@ -30,136 +30,171 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	sealed class MetadataTableNode : HexNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.MDTBL_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid, ((byte)MetadataTableVM.Table).ToString());
-		public override object VMObject => MetadataTableVM;
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected override IEnumerable<HexVM> HexVMs {
-			get { yield return MetadataTableVM; }
-		}
+sealed class MetadataTableNode : HexNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.MDTBL_NODE_GUID);
 
-		protected override ImageReference IconReference => DsImages.Metadata;
-		public override bool IsVirtualizingCollectionVM => true;
-		public MetadataTableVM MetadataTableVM { get; }
+    public override NodePathName NodePathName => new NodePathName(Guid, ((byte)MetadataTableVM.Table).ToString());
 
-		// It could have tens of thousands of children so prevent loading all of them when
-		// single-clicking the treenode
-		public override bool SingleClickExpandsChildren => false;
+    public override object VMObject => MetadataTableVM;
 
-		public TableInfo TableInfo { get; }
-		internal HexBuffer Buffer => MetadataTableVM.Buffer;
+    protected override IEnumerable<HexVM> HexVMs
+    {
+        get { yield return MetadataTableVM; }
+    }
 
-		public MetadataTableNode(MetadataTableVM mdTable)
-			: base(mdTable.Span) {
-			TableInfo = mdTable.TableInfo;
-			MetadataTableVM = mdTable;
-			MetadataTableVM.Owner = this;
-		}
+    protected override ImageReference IconReference => DsImages.Metadata;
 
-		public override void Initialize() => TreeNode.LazyLoading = true;
+    public override bool IsVirtualizingCollectionVM => true;
 
-		protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) {
-			output.Write(BoxedTextColor.Number, ((byte)MetadataTableVM.Table).ToString("X2"));
-			output.WriteSpace();
-			output.Write(BoxedTextColor.HexTableName, MetadataTableVM.Table.ToString());
-			output.WriteSpace();
-			output.Write(BoxedTextColor.Punctuation, "(");
-			output.Write(BoxedTextColor.Number, MetadataTableVM.Rows.ToString());
-			output.Write(BoxedTextColor.Punctuation, ")");
-		}
+    public MetadataTableVM MetadataTableVM { get; }
 
-		protected override void DecompileFields(IDecompiler decompiler, IDecompilerOutput output) {
-			decompiler.WriteCommentLine(output, string.Empty);
-			decompiler.WriteCommentBegin(output, true);
-			WriteHeader(output);
-			decompiler.WriteCommentEnd(output, true);
-			output.WriteLine();
+    // It could have tens of thousands of children so prevent loading all of them when
+    // single-clicking the treenode
+    public override bool SingleClickExpandsChildren => false;
 
-			for (int i = 0; i < (int)MetadataTableVM.Rows; i++) {
-				var obj = MetadataTableVM.Get(i);
-				decompiler.WriteCommentBegin(output, true);
-				Write(output, obj);
-				decompiler.WriteCommentEnd(output, true);
-				output.WriteLine();
-			}
-		}
+    public TableInfo TableInfo { get; }
 
-		public void WriteHeader(IDecompilerOutput output) {
-			var cols = MetadataTableVM.TableInfo.Columns;
+    internal HexBuffer Buffer => MetadataTableVM.Buffer;
 
-			output.Write($"{dnSpy_AsmEditor_Resources.RowIdentifier}\t{dnSpy_AsmEditor_Resources.Token}\t{dnSpy_AsmEditor_Resources.Offset}", BoxedTextColor.Comment);
-			for (int i = 0; i < cols.Count; i++) {
-				output.Write("\t", BoxedTextColor.Comment);
-				output.Write(MetadataTableVM.GetColumnName(i), BoxedTextColor.Comment);
-			}
-			if (MetadataTableVM.HasInfo) {
-				output.Write("\t", BoxedTextColor.Comment);
-				output.Write(MetadataTableVM.InfoName, BoxedTextColor.Comment);
-			}
-			output.WriteLine();
-		}
+    public MetadataTableNode(MetadataTableVM mdTable, IDocumentTreeNodeDataContext context)
+        : base(mdTable.Span, context)
+    {
+        TableInfo = mdTable.TableInfo;
+        MetadataTableVM = mdTable;
+        MetadataTableVM.Owner = this;
+    }
 
-		public void Write(IDecompilerOutput output, MetadataTableRecordVM mdVM) {
-			var cols = MetadataTableVM.TableInfo.Columns;
+    public override void Initialize() => TreeNode.LazyLoading = true;
 
-			output.Write(mdVM.RidString, BoxedTextColor.Comment);
-			output.Write("\t", BoxedTextColor.Comment);
-			output.Write(mdVM.TokenString, BoxedTextColor.Comment);
-			output.Write("\t", BoxedTextColor.Comment);
-			output.Write(mdVM.OffsetString, BoxedTextColor.Comment);
-			for (int j = 0; j < cols.Count; j++) {
-				output.Write("\t", BoxedTextColor.Comment);
-				output.Write(mdVM.GetField(j)!.DataFieldVM.StringValue, BoxedTextColor.Comment);
-			}
-			if (MetadataTableVM.HasInfo) {
-				output.Write("\t", BoxedTextColor.Comment);
-				output.Write(mdVM.Info, BoxedTextColor.Comment);
-			}
-			output.WriteLine();
-		}
+    protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options)
+    {
+        output.Write(BoxedTextColor.Number, ((byte)MetadataTableVM.Table).ToString("X2"));
+        output.WriteSpace();
+        output.Write(BoxedTextColor.HexTableName, MetadataTableVM.Table.ToString());
+        output.WriteSpace();
+        output.Write(BoxedTextColor.Punctuation, "(");
+        output.Write(BoxedTextColor.Number, MetadataTableVM.Rows.ToString());
+        output.Write(BoxedTextColor.Punctuation, ")");
+    }
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			Debug.Assert(TreeNode.Children.Count == 0);
+    protected override void DecompileFields(IDecompiler decompiler, IDecompilerOutput output)
+    {
+        decompiler.WriteCommentLine(output, string.Empty);
+        decompiler.WriteCommentBegin(output, true);
+        WriteHeader(output);
+        decompiler.WriteCommentEnd(output, true);
+        output.WriteLine();
 
-			var pos = Span.Start;
-			ulong rowSize = (ulong)MetadataTableVM.TableInfo.RowSize;
-			for (uint i = 0; i < MetadataTableVM.Rows; i++) {
-				yield return new MetadataTableRecordNode(TableInfo, (int)i, pos, pos + rowSize);
-				pos += rowSize;
-			}
-		}
+        for (int i = 0; i < (int)MetadataTableVM.Rows; i++)
+        {
+            var obj = MetadataTableVM.Get(i);
+            decompiler.WriteCommentBegin(output, true);
+            Write(output, obj);
+            decompiler.WriteCommentEnd(output, true);
+            output.WriteLine();
+        }
+    }
 
-		public override void OnBufferChanged(NormalizedHexChangeCollection changes) {
-			base.OnBufferChanged(changes);
+    public void WriteHeader(IDecompilerOutput output)
+    {
+        var cols = MetadataTableVM.TableInfo.Columns;
 
-			if (TreeNode.Children.Count == 0)
-				return;
+        output.Write($"{dnSpy_AsmEditor_Resources.RowIdentifier}\t{dnSpy_AsmEditor_Resources.Token}\t{dnSpy_AsmEditor_Resources.Offset}",
+            BoxedTextColor.Comment);
 
-			foreach (var change in changes) {
-				if (!changes.OverlapsWith(Span))
-					continue;
+        for (int i = 0; i < cols.Count; i++)
+        {
+            output.Write("\t", BoxedTextColor.Comment);
+            output.Write(MetadataTableVM.GetColumnName(i), BoxedTextColor.Comment);
+        }
 
-				var start = HexPosition.Max(Span.Start, change.OldSpan.Start);
-				var end = HexPosition.Min(Span.End, change.OldSpan.End);
-				int i = (int)((start - Span.Start).ToUInt64() / (ulong)TableInfo.RowSize);
-				int endi = (int)((end - 1 - Span.Start).ToUInt64() / (ulong)TableInfo.RowSize);
-				Debug.Assert(0 <= i && i <= endi && endi < TreeNode.Children.Count);
-				while (i <= endi) {
-					var obj = (MetadataTableRecordNode)TreeNode.Children[i].Data;
-					obj.OnBufferChanged(changes);
-					i++;
-				}
-			}
-		}
+        if (MetadataTableVM.HasInfo)
+        {
+            output.Write("\t", BoxedTextColor.Comment);
+            output.Write(MetadataTableVM.InfoName, BoxedTextColor.Comment);
+        }
 
-		public MetadataTableRecordNode? FindTokenNode(uint token) {
-			uint rid = token & 0x00FFFFFF;
-			if (rid - 1 >= MetadataTableVM.Rows)
-				return null;
-			TreeNode.EnsureChildrenLoaded();
-			return (MetadataTableRecordNode)TreeNode.Children[(int)rid - 1].Data;
-		}
-	}
+        output.WriteLine();
+    }
+
+    public void Write(IDecompilerOutput output, MetadataTableRecordVM mdVM)
+    {
+        var cols = MetadataTableVM.TableInfo.Columns;
+
+        output.Write(mdVM.RidString, BoxedTextColor.Comment);
+        output.Write("\t", BoxedTextColor.Comment);
+        output.Write(mdVM.TokenString, BoxedTextColor.Comment);
+        output.Write("\t", BoxedTextColor.Comment);
+        output.Write(mdVM.OffsetString, BoxedTextColor.Comment);
+
+        for (var i = 0; i < cols.Count; i++)
+        {
+            output.Write("\t", BoxedTextColor.Comment);
+            output.Write(mdVM.GetField(i)!.DataFieldVM.StringValue, BoxedTextColor.Comment);
+        }
+
+        if (MetadataTableVM.HasInfo)
+        {
+            output.Write("\t", BoxedTextColor.Comment);
+            output.Write(mdVM.Info, BoxedTextColor.Comment);
+        }
+
+        output.WriteLine();
+    }
+
+    public override IEnumerable<TreeNodeData> CreateChildren()
+    {
+        Debug.Assert(TreeNode.Children.Count == 0);
+
+        var pos = Span.Start;
+        var rowSize = (ulong)MetadataTableVM.TableInfo.RowSize;
+
+        for (uint i = 0; i < MetadataTableVM.Rows; i++)
+        {
+            yield return new MetadataTableRecordNode(TableInfo, (int)i, pos, pos + rowSize, Context);
+
+            pos += rowSize;
+        }
+    }
+
+    public override void OnBufferChanged(NormalizedHexChangeCollection changes)
+    {
+        base.OnBufferChanged(changes);
+
+        if (TreeNode.Children.Count == 0)
+            return;
+
+        foreach (var change in changes)
+        {
+            if (!changes.OverlapsWith(Span))
+                continue;
+
+            var start = HexPosition.Max(Span.Start, change.OldSpan.Start);
+            var end = HexPosition.Min(Span.End, change.OldSpan.End);
+            var i = (int)((start - Span.Start).ToUInt64() / (ulong)TableInfo.RowSize);
+            var iEnd = (int)((end - 1 - Span.Start).ToUInt64() / (ulong)TableInfo.RowSize);
+            Debug.Assert(0 <= i && i <= iEnd && iEnd < TreeNode.Children.Count);
+
+            while (i <= iEnd)
+            {
+                var obj = (MetadataTableRecordNode)TreeNode.Children[i].Data;
+                obj.OnBufferChanged(changes);
+                i++;
+            }
+        }
+    }
+
+    public MetadataTableRecordNode? FindTokenNode(uint token)
+    {
+        var rid = token & 0x00FFFFFF;
+
+        if (rid - 1 >= MetadataTableVM.Rows)
+            return null;
+
+        TreeNode.EnsureChildrenLoaded();
+        return (MetadataTableRecordNode)TreeNode.Children[(int)rid - 1].Data;
+    }
 }

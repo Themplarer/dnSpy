@@ -19,23 +19,28 @@
 
 using dnlib.DotNet;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// References node
-	/// </summary>
-	public abstract class ReferencesFolderNode : DocumentTreeNodeData {
-		/// <summary>
-		/// Creates a <see cref="AssemblyReferenceNode"/>
-		/// </summary>
-		/// <param name="asmRef">Assembly reference</param>
-		/// <returns></returns>
-		public abstract AssemblyReferenceNode Create(AssemblyRef asmRef);
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		/// <summary>
-		/// Creates a <see cref="ModuleReferenceNode"/>
-		/// </summary>
-		/// <param name="modRef">Module reference</param>
-		/// <returns></returns>
-		public ModuleReferenceNode Create(ModuleRef modRef) => Context.DocumentTreeView.Create(modRef);
-	}
+/// <summary>
+/// References node
+/// </summary>
+public abstract class ReferencesFolderNode : DocumentTreeNodeData
+{
+    /// <summary>
+    /// Creates a <see cref="AssemblyReferenceNode"/>
+    /// </summary>
+    /// <param name="asmRef">Assembly reference</param>
+    /// <returns></returns>
+    public abstract AssemblyReferenceNode Create(AssemblyRef asmRef);
+
+    /// <summary>
+    /// Creates a <see cref="ModuleReferenceNode"/>
+    /// </summary>
+    /// <param name="modRef">Module reference</param>
+    /// <returns></returns>
+    public ModuleReferenceNode Create(ModuleRef modRef) => Context.DocumentTreeView.Create(modRef);
+
+    protected ReferencesFolderNode(IDocumentTreeNodeDataContext context) : base(context)
+    {
+    }
 }

@@ -27,47 +27,63 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Documents.TreeView {
-	sealed class NamespaceNodeImpl : NamespaceNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.NAMESPACE_NODE_GUID);
-		protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) =>
-			dnImgMgr.GetNamespaceImageReference();
-		public override NodePathName NodePathName => new NodePathName(Guid, Name);
-		public override ITreeNodeGroup? TreeNodeGroup { get; }
+namespace dnSpy.Documents.TreeView;
 
-		public NamespaceNodeImpl(ITreeNodeGroup treeNodeGroup, string name, List<TypeDef> types)
-			: base(name) {
-			TreeNodeGroup = treeNodeGroup;
-			typesToCreate = types;
-		}
+sealed class NamespaceNodeImpl : NamespaceNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.NAMESPACE_NODE_GUID);
 
-		public override void Initialize() => TreeNode.LazyLoading = true;
+    protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) =>
+        dnImgMgr.GetNamespaceImageReference();
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			foreach (var type in typesToCreate!)
-				yield return new TypeNodeImpl(Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.TypeTreeNodeGroupNamespace), type);
-			typesToCreate = null;
-		}
-		List<TypeDef>? typesToCreate;
+    public override NodePathName NodePathName => new NodePathName(Guid, Name);
 
-		protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			new NodeFormatter().WriteNamespace(output, decompiler, Name);
-			if ((options & DocumentNodeWriteOptions.ToolTip) != 0) {
-				output.WriteLine();
-				WriteFilename(output);
-			}
-		}
+    public override ITreeNodeGroup? TreeNodeGroup { get; }
 
-		public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) {
-			var p = TreeNode.Parent;
-			var parent = p is null ? null : p.Data as ModuleDocumentNode;
-			Debug2.Assert(parent is not null);
-			if (parent is null)
-				return FilterType.Default;
-			var res = filter.GetResult(Name, parent.Document);
-			if (res.FilterType != FilterType.Default)
-				return res.FilterType;
-			return FilterType.CheckChildren;
-		}
-	}
+    public NamespaceNodeImpl(ITreeNodeGroup treeNodeGroup, string name, List<TypeDef> types, IDocumentTreeNodeDataContext context)
+        : base(name, context)
+    {
+        TreeNodeGroup = treeNodeGroup;
+        typesToCreate = types;
+    }
+
+    public override void Initialize() => TreeNode.LazyLoading = true;
+
+    public override IEnumerable<TreeNodeData> CreateChildren()
+    {
+        foreach (var type in typesToCreate!)
+            yield return new TypeNodeImpl(
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.TypeTreeNodeGroupNamespace), type, Context);
+
+        typesToCreate = null;
+    }
+
+    List<TypeDef>? typesToCreate;
+
+    protected override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        new NodeFormatter().WriteNamespace(output, decompiler, Name);
+
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
+        {
+            output.WriteLine();
+            WriteFilename(output);
+        }
+    }
+
+    public override FilterType GetFilterType(IDocumentTreeNodeFilter filter)
+    {
+        var p = TreeNode.Parent;
+        var parent = p?.Data as ModuleDocumentNode;
+        Debug.Assert(parent is not null);
+
+        if (parent is null)
+            return FilterType.Default;
+
+        var res = filter.GetResult(Name, parent.Document);
+        if (res.FilterType != FilterType.Default)
+            return res.FilterType;
+
+        return FilterType.CheckChildren;
+    }
 }

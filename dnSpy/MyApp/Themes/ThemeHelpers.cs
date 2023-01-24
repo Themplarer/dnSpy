@@ -21,25 +21,16 @@ using dnSpy.Contracts.Themes;
 
 namespace MyApp.Themes;
 
-static class ThemeHelpers
+internal static class ThemeHelpers
 {
     public static string GetMenuName(this ITheme theme)
     {
-        var name = theme.MenuName;
-        if (!string.IsNullOrWhiteSpace(name))
-            return name;
+        if (theme.MenuName is var menuName && !string.IsNullOrWhiteSpace(menuName))
+            return menuName;
 
-        name = theme.Name;
-        if (!string.IsNullOrWhiteSpace(name))
+        if (theme.Name is var name && !string.IsNullOrWhiteSpace(name))
             return name;
 
         return theme.Guid.ToString();
-    }
-
-    public static string GetName(this ITheme theme)
-    {
-        var name = theme.GetMenuName();
-        const string underscoreTmpReplacement = "<<<<<<>>>>>>";
-        return name.Replace("__", underscoreTmpReplacement).Replace("_", "").Replace(underscoreTmpReplacement, "_");
     }
 }

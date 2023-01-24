@@ -7,17 +7,17 @@
              x:Class="MyApp.Views.AssemblyExplorerView"
              x:CompileBindings="True" x:DataType="viewModels:MainWindowViewModel">
 
-    <ScrollViewer HorizontalAlignment="Stretch">
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
-            <Label Background="Blue" Foreground="White" Content="Assembly Explorer" HorizontalAlignment="Stretch" />
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch">
+        <Label Background="Blue" Foreground="White" Content="Assembly Explorer" HorizontalAlignment="Stretch" />
+        <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Top">
             <TreeView Items="{Binding Items}">
                 <TreeView.ItemTemplate>
                     <TreeDataTemplate ItemsSource="{Binding Children}">
-                        <TextBlock Text="{Binding Name}" Background="Blue" />
+                        <Label DoubleTapped="OpenDocument" Content="{Binding Name}" />
                     </TreeDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-        </StackPanel>
-    </ScrollViewer>
+        </ScrollViewer>
+    </StackPanel>
 
 </UserControl>

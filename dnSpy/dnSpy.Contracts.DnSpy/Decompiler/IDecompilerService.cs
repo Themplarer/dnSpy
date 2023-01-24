@@ -20,38 +20,39 @@
 using System;
 using System.Collections.Generic;
 
-namespace dnSpy.Contracts.Decompiler {
-	/// <summary>
-	/// Decompiler manager
-	/// </summary>
-	public interface IDecompilerService {
-		/// <summary>
-		/// Gets all languages
-		/// </summary>
-		IEnumerable<IDecompiler> AllDecompilers { get; }
+namespace dnSpy.Contracts.Decompiler;
 
-		/// <summary>
-		/// Current default decompiler
-		/// </summary>
-		IDecompiler Decompiler { get; set; }
+/// <summary>
+/// Decompiler manager
+/// </summary>
+public interface IDecompilerService
+{
+    /// <summary>
+    /// Gets all languages
+    /// </summary>
+    IEnumerable<IDecompiler> AllDecompilers { get; }
 
-		/// <summary>
-		/// Raised when <see cref="Decompiler"/> has been updated
-		/// </summary>
-		event EventHandler<EventArgs> DecompilerChanged;
+    /// <summary>
+    /// Current default decompiler
+    /// </summary>
+    IDecompiler Decompiler { get; set; }
 
-		/// <summary>
-		/// Finds a <see cref="IDecompiler"/> instance. null is returned if it wasn't found
-		/// </summary>
-		/// <param name="guid">Language guid, see <see cref="IDecompiler.UniqueGuid"/> and <see cref="IDecompiler.GenericGuid"/></param>
-		/// <returns></returns>
-		IDecompiler? Find(Guid guid);
+    /// <summary>
+    /// Raised when <see cref="Decompiler"/> has been updated
+    /// </summary>
+    event EventHandler<EventArgs> DecompilerChanged;
 
-		/// <summary>
-		/// Finds a <see cref="IDecompiler"/> instance. Returns the first one if the language wasn't found
-		/// </summary>
-		/// <param name="guid">Language guid, see <see cref="IDecompiler.UniqueGuid"/> and <see cref="IDecompiler.GenericGuid"/></param>
-		/// <returns></returns>
-		IDecompiler FindOrDefault(Guid guid);
-	}
+    /// <summary>
+    /// Finds a <see cref="IDecompiler"/> instance. null is returned if it wasn't found
+    /// </summary>
+    /// <param name="guid">Language guid, see <see cref="IDecompiler.UniqueGuid"/> and <see cref="IDecompiler.GenericGuid"/></param>
+    /// <returns></returns>
+    IDecompiler? Find(Guid guid);
+
+    /// <summary>
+    /// Finds a <see cref="IDecompiler"/> instance. Returns the first one if the language wasn't found
+    /// </summary>
+    /// <param name="guid">Language guid, see <see cref="IDecompiler.UniqueGuid"/> and <see cref="IDecompiler.GenericGuid"/></param>
+    /// <returns></returns>
+    IDecompiler FindOrDefault(Guid guid);
 }

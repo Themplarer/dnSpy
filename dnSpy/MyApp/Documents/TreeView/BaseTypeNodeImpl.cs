@@ -65,7 +65,8 @@ sealed class BaseTypeNodeImpl : BaseTypeNode
     WeakReference weakRefResolvedTypeDef;
     readonly WeakReference weakRefTypeDefOrRef;
 
-    public BaseTypeNodeImpl(ITreeNodeGroup treeNodeGroup, ITypeDefOrRef typeDefOrRef, bool isBaseType)
+    public BaseTypeNodeImpl(ITreeNodeGroup treeNodeGroup, ITypeDefOrRef typeDefOrRef, bool isBaseType, IDocumentTreeNodeDataContext context)
+        : base(context)
     {
         TreeNodeGroup = treeNodeGroup;
         this.isBaseType = isBaseType;
@@ -106,11 +107,13 @@ sealed class BaseTypeNodeImpl : BaseTypeNode
 
         if (td.BaseType is not null)
             yield return new BaseTypeNodeImpl(
-                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.BaseTypeTreeNodeGroupBaseType), td.BaseType, true);
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.BaseTypeTreeNodeGroupBaseType), td.BaseType, true,
+                Context);
+
         foreach (var iface in td.Interfaces)
             yield return new BaseTypeNodeImpl(
                 Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.InterfaceBaseTypeTreeNodeGroupBaseType),
-                iface.Interface, false);
+                iface.Interface, false, Context);
     }
 
     public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResult(this).FilterType;

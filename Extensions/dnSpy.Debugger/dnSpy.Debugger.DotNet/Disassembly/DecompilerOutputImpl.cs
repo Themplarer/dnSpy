@@ -41,7 +41,7 @@ namespace dnSpy.Debugger.DotNet.Disassembly {
 			addIndent = true;
 		}
 
-		internal void Clear() {
+		public void Clear() {
 			sb.Length = 0;
 			indentLevel = 0;
 			addIndent = true;

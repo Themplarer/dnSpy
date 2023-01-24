@@ -20,18 +20,20 @@
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// A <see cref="ResourceNode"/> created from an unknown resource
-	/// </summary>
-	public abstract class UnknownResourceNode : ResourceNode {
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="treeNodeGroup">Treenode group</param>
-		/// <param name="resource">Resource</param>
-		protected UnknownResourceNode(ITreeNodeGroup treeNodeGroup, Resource resource)
-			: base(treeNodeGroup, resource) {
-		}
-	}
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
+
+/// <summary>
+/// A <see cref="ResourceNode"/> created from an unknown resource
+/// </summary>
+public abstract class UnknownResourceNode : ResourceNode
+{
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="treeNodeGroup">Treenode group</param>
+    /// <param name="resource">Resource</param>
+    protected UnknownResourceNode(ITreeNodeGroup treeNodeGroup, Resource resource, IDocumentTreeNodeDataContext context)
+        : base(treeNodeGroup, resource, context)
+    {
+    }
 }

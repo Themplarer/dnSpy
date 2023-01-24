@@ -21,22 +21,24 @@ using System;
 using dnlib.DotNet;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView {
-	/// <summary>
-	/// A module reference node
-	/// </summary>
-	public abstract class ModuleReferenceNode : DocumentTreeNodeData, IMDTokenNode {
-		/// <summary>
-		/// Gets the module reference
-		/// </summary>
-		public ModuleRef ModuleRef { get; }
+namespace dnSpy.Contracts.Documents.TreeView;
 
-		IMDTokenProvider? IMDTokenNode.Reference => ModuleRef;
+/// <summary>
+/// A module reference node
+/// </summary>
+public abstract class ModuleReferenceNode : DocumentTreeNodeData, IMDTokenNode
+{
+    /// <summary>
+    /// Gets the module reference
+    /// </summary>
+    public ModuleRef ModuleRef { get; }
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="moduleRef">Module reference</param>
-		protected ModuleReferenceNode(ModuleRef moduleRef) => ModuleRef = moduleRef ?? throw new ArgumentNullException(nameof(moduleRef));
-	}
+    IMDTokenProvider IMDTokenNode.Reference => ModuleRef;
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="moduleRef">Module reference</param>
+    protected ModuleReferenceNode(ModuleRef moduleRef, IDocumentTreeNodeDataContext context) : base(context) =>
+        ModuleRef = moduleRef ?? throw new ArgumentNullException(nameof(moduleRef));
 }

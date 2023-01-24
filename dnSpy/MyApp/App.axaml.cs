@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,6 +19,7 @@ using dnSpy.Contracts.TreeView;
 using dnSpy.Contracts.TreeView.Text;
 using dnSpy.Debugger.DotNet.Metadata;
 using dnSpy.Decompiler.ILSpy.Core.Settings;
+using dnSpy.Decompiler.ILSpy.CSharp;
 using dnSpy.Documents.TreeView;
 using dnSpy.TreeView;
 using MyApp.Decompiler;
@@ -56,8 +58,7 @@ public partial class App : Application
     }
 
     // ReSharper disable once InconsistentNaming
-    private void SetUpDIContainer()
-    {
+    private void SetUpDIContainer() =>
         AppHost = Host
             .CreateDefaultBuilder()
             .ConfigureServices((_, services) =>
@@ -70,9 +71,6 @@ public partial class App : Application
                 RegisterDependencies(services);
             })
             .Build();
-
-        // AppHost.Services.UseMicrosoftDependencyResolver();
-    }
 
     private static void RegisterDependencies(IServiceCollection services)
     {
@@ -104,7 +102,7 @@ public partial class App : Application
         services.AddTransient<IDocumentTreeViewSettings, DocumentTreeViewSettingsImpl>();
         services.AddTransient<DecompilerServiceSettingsImpl>();
         services.AddTransient(_ => Enumerable.Empty<IDecompiler>());
-        services.AddTransient(_ => Enumerable.Empty<IDecompilerCreator>());
+        services.AddTransient<IEnumerable<IDecompilerCreator>>(p => new[] { new MyDecompilerCreator(p.GetService<DecompilerSettingsService>()!) });
 
         services.AddTransient<IDsDocumentService, DsDocumentService>();
         services.AddTransient<IDsDocumentServiceSettings, DsDocumentServiceSettingsImpl>();
@@ -128,5 +126,10 @@ public partial class App : Application
         //         r.GetType().GetCustomAttribute<ExportDocumentTreeNodeDataFinderAttribute>()!)));
         services.AddTransient(_ => Enumerable.Empty<Lazy<IDocumentTreeNodeDataFinder, IDocumentTreeNodeDataFinderMetadata>>());
         services.AddTransient<ITreeViewNodeTextElementProvider>(_ => null!);
+
+        services.AddTransient<DecompilationHandler>();
+        services.AddTransient<DecompilationContext>();
+        services.AddSingleton<IDecompilerOutput, StringBuilderDecompilerOutput>();
+        services.AddTransient<IDecompiler>(p => new MyDecompilerCreator(p.GetService<DecompilerSettingsService>()!).Create().First());
     }
 }

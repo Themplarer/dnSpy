@@ -38,13 +38,14 @@ sealed class AssemblyReferenceNodeImpl : AssemblyReferenceNode
 
     protected override ImageReference GetIcon(IDotNetImageService dnImgMgr) => dnImgMgr.GetImageReferenceAssemblyRef();
 
-    public override NodePathName NodePathName => new NodePathName(Guid, AssemblyRef.FullName);
+    public override NodePathName NodePathName => new(Guid, AssemblyRef.FullName);
 
     public override ITreeNodeGroup? TreeNodeGroup { get; }
 
     readonly WeakReference asmRefOwnerModule;
 
-    public AssemblyReferenceNodeImpl(ITreeNodeGroup treeNodeGroup, ModuleDef asmRefOwnerModule, AssemblyRef assemblyRef)
+    public AssemblyReferenceNodeImpl(ITreeNodeGroup treeNodeGroup, ModuleDef asmRefOwnerModule, AssemblyRef assemblyRef,
+        IDocumentTreeNodeDataContext context) : base(context)
     {
         TreeNodeGroup = treeNodeGroup;
         this.asmRefOwnerModule = new WeakReference(asmRefOwnerModule);
@@ -75,13 +76,15 @@ sealed class AssemblyReferenceNodeImpl : AssemblyReferenceNode
             yield break;
 
         var mod = document.ModuleDef;
-        Debug2.Assert(mod is not null);
+        Debug.Assert(mod is not null);
+
         if (mod is null)
             yield break;
 
         foreach (var asmRef in mod.GetAssemblyRefs())
             yield return new AssemblyReferenceNodeImpl(
-                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.AssemblyRefTreeNodeGroupAssemblyRef), mod, asmRef);
+                Context.DocumentTreeView.DocumentTreeNodeGroups.GetGroup(DocumentTreeNodeGroupType.AssemblyRefTreeNodeGroupAssemblyRef), mod, asmRef,
+                Context);
     }
 
     public override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResult(AssemblyRef).FilterType;

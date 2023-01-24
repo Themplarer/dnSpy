@@ -19,10 +19,11 @@
 
 using System.Reflection;
 
-namespace dnSpy.Extension {
-	sealed class LoadedExtension {
-		public Assembly Assembly { get; }
+namespace dnSpy.Extension;
 
-		public LoadedExtension(Assembly asm) => Assembly = asm;
-	}
+internal sealed class LoadedExtension
+{
+    public LoadedExtension(Assembly asm) => Assembly = asm;
+
+    public Assembly Assembly { get; }
 }

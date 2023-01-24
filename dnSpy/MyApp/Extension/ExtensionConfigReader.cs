@@ -22,45 +22,50 @@ using System.IO;
 using System.Xml;
 using System.Xml.Linq;
 
-namespace dnSpy.Extension {
-	sealed class ExtensionConfigReader {
-		const string XML_ROOT_NAME = "extension";
-		const string OS_VERSION_SECT = "os-version";
-		const string FRAMEWORK_VERSION_SECT = "framework-version";
-		const string APP_VERSION_SECT = "version";
+namespace dnSpy.Extension;
 
-		/// <summary>
-		/// Reads the extension config file
-		/// </summary>
-		/// <param name="filename">Filename</param>
-		/// <returns></returns>
-		public static ExtensionConfig Read(string filename) {
-			var config = new ExtensionConfig();
-			if (!File.Exists(filename))
-				return config;
-			var doc = XDocument.Load(filename, LoadOptions.None);
-			var root = doc.Root;
-			if (root?.Name == XML_ROOT_NAME)
-				Read(root, config);
-			return config;
-		}
+internal sealed class ExtensionConfigReader
+{
+    const string XML_ROOT_NAME = "extension";
+    const string OS_VERSION_SECT = "os-version";
+    const string FRAMEWORK_VERSION_SECT = "framework-version";
+    const string APP_VERSION_SECT = "version";
 
-		static void Read(XElement root, ExtensionConfig config) {
-			config.OSVersion = ReadVersion(root, OS_VERSION_SECT);
-			config.FrameworkVersion = ReadVersion(root, FRAMEWORK_VERSION_SECT);
-			config.AppVersion = ReadVersion(root, APP_VERSION_SECT);
-		}
+    /// <summary>
+    /// Reads the extension config file
+    /// </summary>
+    /// <param name="filename">Filename</param>
+    /// <returns></returns>
+    public static ExtensionConfig Read(string filename)
+    {
+        var config = new ExtensionConfig();
+        if (!File.Exists(filename))
+            return config;
 
-		static Version? ReadVersion(XElement elem, string name) {
-			var fn = elem.Element(name)?.FirstNode;
-			if (fn?.NodeType != XmlNodeType.Text)
-				return null;
+        var doc = XDocument.Load(filename, LoadOptions.None);
+        var root = doc.Root;
+        if (root?.Name == XML_ROOT_NAME)
+            Read(root, config);
+        return config;
+    }
 
-			var s = ((XText)fn).Value;
-			if (Version.TryParse(s, out var version))
-				return version;
+    static void Read(XElement root, ExtensionConfig config)
+    {
+        config.OsVersion = ReadVersion(root, OS_VERSION_SECT);
+        config.FrameworkVersion = ReadVersion(root, FRAMEWORK_VERSION_SECT);
+        config.AppVersion = ReadVersion(root, APP_VERSION_SECT);
+    }
 
-			return null;
-		}
-	}
+    static Version? ReadVersion(XElement elem, string name)
+    {
+        var firstNode = elem.Element(name)?.FirstNode;
+        if (firstNode?.NodeType != XmlNodeType.Text)
+            return null;
+
+        var s = ((XText)firstNode).Value;
+        if (Version.TryParse(s, out var version))
+            return version;
+
+        return null;
+    }
 }

@@ -6,7 +6,7 @@ using dnSpy.Decompiler.ILSpy.Core.Settings;
 
 namespace dnSpy.Decompiler.ILSpy.Core.CSharp;
 
-internal sealed class DecompilerProvider : IDecompilerProvider
+public sealed class DecompilerProvider : IDecompilerProvider
 {
     private readonly DecompilerSettingsService _decompilerSettingsService;
 

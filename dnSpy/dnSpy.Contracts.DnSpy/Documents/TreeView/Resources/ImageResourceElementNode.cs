@@ -20,18 +20,20 @@
 using dnlib.DotNet.Resources;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// A resource node created from an image
-	/// </summary>
-	public abstract class ImageResourceElementNode : ResourceElementNode {
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="treeNodeGroup">Treenode group</param>
-		/// <param name="resourceElement">Resource element</param>
-		protected ImageResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement)
-			: base(treeNodeGroup, resourceElement) {
-		}
-	}
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
+
+/// <summary>
+/// A resource node created from an image
+/// </summary>
+public abstract class ImageResourceElementNode : ResourceElementNode
+{
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="treeNodeGroup">Treenode group</param>
+    /// <param name="resourceElement">Resource element</param>
+    protected ImageResourceElementNode(ITreeNodeGroup treeNodeGroup, ResourceElement resourceElement, IDocumentTreeNodeDataContext context)
+        : base(treeNodeGroup, resourceElement, context)
+    {
+    }
 }

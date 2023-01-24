@@ -29,217 +29,223 @@ using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 using dnSpy.Contracts.Utilities;
 
-namespace dnSpy.Contracts.Documents.TreeView.Resources {
-	/// <summary>
-	/// Resource node base class
-	/// </summary>
-	public abstract class ResourceNode : DocumentTreeNodeData, IResourceNode {
-		/// <summary>
-		/// Gets the resource
-		/// </summary>
-		public Resource Resource { get; set; }
+namespace dnSpy.Contracts.Documents.TreeView.Resources;
 
-		/// <summary>
-		/// Gets the name
-		/// </summary>
-		public string Name => Resource.Name;
+/// <summary>
+/// Resource node base class
+/// </summary>
+public abstract class ResourceNode : DocumentTreeNodeData, IResourceNode
+{
+    /// <summary>
+    /// Gets the resource
+    /// </summary>
+    public Resource Resource { get; set; }
 
-		/// <inheritdoc/>
-		protected sealed override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options) {
-			output.WriteFilename(Resource.Name);
-			if ((options & DocumentNodeWriteOptions.ToolTip) != 0) {
-				output.WriteLine();
-				WriteFilename(output);
-			}
-		}
+    /// <summary>
+    /// Gets the name
+    /// </summary>
+    public string Name => Resource.Name;
 
-		/// <inheritdoc/>
-		protected sealed override ImageReference? GetExpandedIcon(IDotNetImageService dnImgMgr) => null;
+    /// <inheritdoc/>
+    protected sealed override void WriteCore(ITextColorWriter output, IDecompiler decompiler, DocumentNodeWriteOptions options)
+    {
+        output.WriteFilename(Resource.Name);
 
-		/// <inheritdoc/>
-		protected sealed override ImageReference GetIcon(IDotNetImageService dnImgMgr) {
-			var imgRef = GetIcon();
-			if (!imgRef.IsDefault)
-				return imgRef;
-			var asm = dnImgMgr.GetType().Assembly;
-			return ResourceUtilities.TryGetImageReference(asm, Resource.Name) ?? DsImages.Dialog;
-		}
+        if ((options & DocumentNodeWriteOptions.ToolTip) != 0)
+        {
+            output.WriteLine();
+            WriteFilename(output);
+        }
+    }
 
-		/// <summary>
-		/// Gets the icon
-		/// </summary>
-		/// <returns></returns>
-		protected virtual ImageReference GetIcon() => new ImageReference();
+    /// <inheritdoc/>
+    protected sealed override ImageReference? GetExpandedIcon(IDotNetImageService dnImgMgr) => null;
 
-		/// <inheritdoc/>
-		public sealed override NodePathName NodePathName => new NodePathName(Guid, NameUtilities.CleanName(Resource.Name));
+    /// <inheritdoc/>
+    protected sealed override ImageReference GetIcon(IDotNetImageService dnImgMgr)
+    {
+        var imgRef = GetIcon();
 
-		/// <summary>
-		/// Gets the offset of the resource
-		/// </summary>
-		public uint FileOffset {
-			get {
-				GetModuleOffset(out var fo);
-				return (uint)fo;
-			}
-		}
+        if (!imgRef.IsDefault)
+            return imgRef;
 
-		/// <summary>
-		/// Gets the length of the resource
-		/// </summary>
-		public uint Length {
-			get {
-				var er = Resource as EmbeddedResource;
-				return er is null ? 0 : er.Length;
-			}
-		}
+        var asm = dnImgMgr.GetType().Assembly;
+        return ResourceUtilities.TryGetImageReference(asm, Resource.Name) ?? DsImages.Dialog;
+    }
 
-		/// <summary>
-		/// Gets the RVA of the resource
-		/// </summary>
-		public uint RVA {
-			get {
-				var module = GetModuleOffset(out var fo);
-				if (module is null)
-					return 0;
+    /// <summary>
+    /// Gets the icon
+    /// </summary>
+    /// <returns></returns>
+    protected virtual ImageReference GetIcon() => new();
 
-				return (uint)module.Metadata.PEImage.ToRVA(fo);
-			}
-		}
+    /// <inheritdoc/>
+    public sealed override NodePathName NodePathName => new(Guid, NameUtilities.CleanName(Resource.Name));
 
-		ModuleDefMD? GetModuleOffset(out FileOffset fileOffset) =>
-			GetModuleOffset(this, Resource, out fileOffset);
+    /// <summary>
+    /// Gets the offset of the resource
+    /// </summary>
+    public uint FileOffset
+    {
+        get
+        {
+            GetModuleOffset(out var fo);
+            return (uint)fo;
+        }
+    }
 
-		internal static ModuleDefMD? GetModuleOffset(DocumentTreeNodeData node, Resource resource, out FileOffset fileOffset) {
-			fileOffset = 0;
+    /// <summary>
+    /// Gets the length of the resource
+    /// </summary>
+    public uint Length => (Resource as EmbeddedResource)?.Length ?? 0;
 
-			var er = resource as EmbeddedResource;
-			if (er is null)
-				return null;
+    /// <summary>
+    /// Gets the RVA of the resource
+    /// </summary>
+    public uint RVA => (uint)(GetModuleOffset(out var fo)?.Metadata.PEImage.ToRVA(fo) ?? 0);
 
-			var module = node.GetModule() as ModuleDefMD;//TODO: Support CorModuleDef
-			if (module is null)
-				return null;
+    ModuleDefMD? GetModuleOffset(out FileOffset fileOffset) => GetModuleOffset(this, Resource, out fileOffset);
 
-			fileOffset = (FileOffset)er.CreateReader().StartOffset;
-			return module;
-		}
+    internal static ModuleDefMD? GetModuleOffset(DocumentTreeNodeData node, Resource resource, out FileOffset fileOffset)
+    {
+        fileOffset = 0;
 
-		/// <inheritdoc/>
-		public override ITreeNodeGroup? TreeNodeGroup => treeNodeGroup;
-		readonly ITreeNodeGroup treeNodeGroup;
+        if (resource is not EmbeddedResource er)
+            return null;
 
-		/// <summary>
-		/// Constructor
-		/// </summary>
-		/// <param name="treeNodeGroup">Treenode group</param>
-		/// <param name="resource">Resource</param>
-		protected ResourceNode(ITreeNodeGroup treeNodeGroup, Resource resource) {
-			this.treeNodeGroup = treeNodeGroup ?? throw new ArgumentNullException(nameof(treeNodeGroup));
-			Resource = resource ?? throw new ArgumentNullException(nameof(resource));
-		}
+        if (node.GetModule() is not ModuleDefMD module)
+            return null;
 
-		/// <summary>
-		/// Saves the resource
-		/// </summary>
-		// protected void Save() =>
-		// 	SaveResources.Save(new IResourceDataProvider[] { this }, false, ResourceDataType.Deserialized);
+        fileOffset = (FileOffset)er.CreateReader().StartOffset;
+        return module;
+    }
 
-		/// <inheritdoc/>
-		public virtual void WriteShort(IDecompilerOutput output, IDecompiler decompiler, bool showOffset) {
-			decompiler.WriteCommentBegin(output, true);
-			output.WriteOffsetComment(this, showOffset);
-			const string LTR = "\u200E";
-			output.Write(NameUtilities.CleanName(Name) + LTR, this, DecompilerReferenceFlags.Local | DecompilerReferenceFlags.Definition, BoxedTextColor.Comment);
-			string? extra = null;
-			switch (Resource.ResourceType) {
-			case ResourceType.AssemblyLinked:
-				extra = ((AssemblyLinkedResource)Resource).Assembly.FullName;
-				break;
-			case ResourceType.Linked:
-				var file = ((LinkedResource)Resource).File;
-				extra = $"{file.Name}, {(file.ContainsNoMetadata ? "ContainsNoMetaData" : "ContainsMetaData")}, {SimpleTypeConverter.ByteArrayToString(file.HashValue)}";
-				break;
-			case ResourceType.Embedded:
-				extra = string.Format(dnSpy_Contracts_DnSpy_Resources.NumberOfBytes, ((EmbeddedResource)Resource).Length);
-				break;
-			}
-			output.Write($" ({(extra is null ? string.Empty : $"{extra}, ")}{Resource.ResourceType}, {Resource.Attributes})", BoxedTextColor.Comment);
-			decompiler.WriteCommentEnd(output, true);
-			output.WriteLine();
-		}
+    /// <inheritdoc/>
+    public override ITreeNodeGroup TreeNodeGroup { get; }
 
-		/// <summary>
-		/// Converts the value to a string
-		/// </summary>
-		/// <param name="token">Cancellation token</param>
-		/// <param name="canDecompile">true if the data can be decompiled</param>
-		/// <returns></returns>
-		public virtual string? ToString(CancellationToken token, bool canDecompile) => null;
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    /// <param name="treeNodeGroup">Treenode group</param>
+    /// <param name="resource">Resource</param>
+    protected ResourceNode(ITreeNodeGroup treeNodeGroup, Resource resource, IDocumentTreeNodeDataContext context) : base(context)
+    {
+        TreeNodeGroup = treeNodeGroup ?? throw new ArgumentNullException(nameof(treeNodeGroup));
+        Resource = resource ?? throw new ArgumentNullException(nameof(resource));
+    }
 
-		/// <inheritdoc/>
-		public IEnumerable<ResourceData> GetResourceData(ResourceDataType type) {
-			switch (type) {
-			case ResourceDataType.Deserialized:
-				return GetDeserializedData();
-			case ResourceDataType.Serialized:
-				return GetSerializedData();
-			default:
-				throw new InvalidOperationException();
-			}
-		}
+    /// <summary>
+    /// Saves the resource
+    /// </summary>
+    // protected void Save() =>
+    // 	SaveResources.Save(new IResourceDataProvider[] { this }, false, ResourceDataType.Deserialized);
 
-		/// <summary>
-		/// Gets the deserialized data
-		/// </summary>
-		/// <returns></returns>
-		protected virtual IEnumerable<ResourceData> GetDeserializedData() => GetSerializedData();
+    /// <inheritdoc/>
+    public virtual void WriteShort(IDecompilerOutput output, IDecompiler decompiler, bool showOffset)
+    {
+        decompiler.WriteCommentBegin(output, true);
+        output.WriteOffsetComment(this, showOffset);
+        const string LTR = "\u200E";
+        output.Write(NameUtilities.CleanName(Name) + LTR, this, DecompilerReferenceFlags.Local | DecompilerReferenceFlags.Definition,
+            BoxedTextColor.Comment);
+        string? extra = null;
 
-		/// <summary>
-		/// Gets the serialized data
-		/// </summary>
-		/// <returns></returns>
-		protected virtual IEnumerable<ResourceData> GetSerializedData() {
-			if (Resource is EmbeddedResource er)
-				yield return new ResourceData(Resource.Name, token => er.CreateReader().AsStream());
-		}
+        switch (Resource.ResourceType)
+        {
+            case ResourceType.AssemblyLinked:
+                extra = ((AssemblyLinkedResource)Resource).Assembly.FullName;
+                break;
+            case ResourceType.Linked:
+                var file = ((LinkedResource)Resource).File;
+                extra =
+                    $"{file.Name}, {(file.ContainsNoMetadata ? "ContainsNoMetaData" : "ContainsMetaData")}, {SimpleTypeConverter.ByteArrayToString(file.HashValue)}";
+                break;
+            case ResourceType.Embedded:
+                extra = string.Format(dnSpy_Contracts_DnSpy_Resources.NumberOfBytes, ((EmbeddedResource)Resource).Length);
+                break;
+        }
 
-		/// <inheritdoc/>
-		public sealed override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResult(this).FilterType;
+        output.Write($" ({(extra is null ? string.Empty : $"{extra}, ")}{Resource.ResourceType}, {Resource.Attributes})", BoxedTextColor.Comment);
+        decompiler.WriteCommentEnd(output, true);
+        output.WriteLine();
+    }
 
-		sealed class Data {
-			public readonly Resource Resource;
-			public Data(Resource resource) => Resource = resource;
-		}
+    /// <summary>
+    /// Converts the value to a string
+    /// </summary>
+    /// <param name="token">Cancellation token</param>
+    /// <param name="canDecompile">true if the data can be decompiled</param>
+    /// <returns></returns>
+    public virtual string? ToString(CancellationToken token, bool canDecompile) => null;
 
-		/// <summary>
-		/// Gets the resource or null
-		/// </summary>
-		/// <param name="node">Node</param>
-		/// <returns></returns>
-		public static Resource? GetResource(DocumentTreeNodeData node) {
-			if (node is ResourceNode resourceNode)
-				return resourceNode.Resource;
-			if (node.TryGetData(out Data? data))
-				return data.Resource;
-			return null;
-		}
+    /// <inheritdoc/>
+    public IEnumerable<ResourceData> GetResourceData(ResourceDataType type) =>
+        type switch
+        {
+            ResourceDataType.Deserialized => GetDeserializedData(),
+            ResourceDataType.Serialized => GetSerializedData(),
+            _ => throw new InvalidOperationException()
+        };
 
-		/// <summary>
-		/// Adds the resource to a resource node
-		/// </summary>
-		/// <param name="node">Node</param>
-		/// <param name="resource">Resource</param>
-		public static void AddResource(DocumentTreeNodeData node, Resource resource) {
-			if (node is ResourceNode resourceNode) {
-				if (resourceNode.Resource != resource)
-					throw new InvalidOperationException();
-			}
-			else {
-				if (node.TryGetData<Data>(out _))
-					throw new InvalidOperationException();
-				node.AddData(new Data(resource));
-			}
-		}
-	}
+    /// <summary>
+    /// Gets the deserialized data
+    /// </summary>
+    /// <returns></returns>
+    protected virtual IEnumerable<ResourceData> GetDeserializedData() => GetSerializedData();
+
+    /// <summary>
+    /// Gets the serialized data
+    /// </summary>
+    /// <returns></returns>
+    protected virtual IEnumerable<ResourceData> GetSerializedData()
+    {
+        if (Resource is EmbeddedResource er)
+            yield return new ResourceData(Resource.Name, _ => er.CreateReader().AsStream());
+    }
+
+    /// <inheritdoc/>
+    public sealed override FilterType GetFilterType(IDocumentTreeNodeFilter filter) => filter.GetResult(this).FilterType;
+
+    sealed class Data
+    {
+        public readonly Resource Resource;
+
+        public Data(Resource resource) => Resource = resource;
+    }
+
+    /// <summary>
+    /// Gets the resource or null
+    /// </summary>
+    /// <param name="node">Node</param>
+    /// <returns></returns>
+    public static Resource? GetResource(DocumentTreeNodeData node)
+    {
+        if (node is ResourceNode resourceNode)
+            return resourceNode.Resource;
+        if (node.TryGetData(out Data? data))
+            return data.Resource;
+
+        return null;
+    }
+
+    /// <summary>
+    /// Adds the resource to a resource node
+    /// </summary>
+    /// <param name="node">Node</param>
+    /// <param name="resource">Resource</param>
+    public static void AddResource(DocumentTreeNodeData node, Resource resource)
+    {
+        if (node is ResourceNode resourceNode)
+        {
+            if (resourceNode.Resource != resource)
+                throw new InvalidOperationException();
+        }
+        else
+        {
+            if (node.TryGetData<Data>(out _))
+                throw new InvalidOperationException();
+
+            node.AddData(new Data(resource));
+        }
+    }
 }

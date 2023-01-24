@@ -28,65 +28,78 @@ using dnSpy.Contracts.Images;
 using dnSpy.Contracts.Text;
 using dnSpy.Contracts.TreeView;
 
-namespace dnSpy.AsmEditor.Hex.Nodes {
-	class StorageStreamNode : HexNode {
-		public override Guid Guid => new Guid(DocumentTreeViewConstants.STRGSTREAM_NODE_GUID);
-		public override NodePathName NodePathName => new NodePathName(Guid, StreamNumber.ToString());
-		public DotNetHeapKind HeapKind => storageStreamVM.HeapKind;
-		public override object VMObject => storageStreamVM;
-		protected override ImageReference IconReference => DsImages.BinaryFile;
-		public int StreamNumber => storageStreamVM.StreamNumber;
+namespace dnSpy.AsmEditor.Hex.Nodes;
 
-		protected override IEnumerable<HexVM> HexVMs {
-			get { yield return storageStreamVM; }
-		}
+class StorageStreamNode : HexNode
+{
+    public override Guid Guid => new Guid(DocumentTreeViewConstants.STRGSTREAM_NODE_GUID);
 
-		readonly StorageStreamVM storageStreamVM;
+    public override NodePathName NodePathName => new NodePathName(Guid, StreamNumber.ToString());
 
-		public StorageStreamNode(StorageStreamVM storageStream)
-			: base(storageStream.Span) => storageStreamVM = storageStream;
+    public DotNetHeapKind HeapKind => storageStreamVM.HeapKind;
 
-		public override void OnBufferChanged(NormalizedHexChangeCollection changes) {
-			base.OnBufferChanged(changes);
-			if (changes.OverlapsWith(storageStreamVM.RCNameVM.Span))
-				TreeNode.RefreshUI();
+    public override object VMObject => storageStreamVM;
 
-			foreach (HexNode node in TreeNode.DataChildren)
-				node.OnBufferChanged(changes);
-		}
+    protected override ImageReference IconReference => DsImages.BinaryFile;
 
-		protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options) {
-			output.Write(BoxedTextColor.HexStorageStream, dnSpy_AsmEditor_Resources.HexNode_StorageStream);
-			output.WriteSpace();
-			output.Write(BoxedTextColor.Operator, "#");
-			output.Write(BoxedTextColor.Number, StreamNumber.ToString());
-			output.Write(BoxedTextColor.Punctuation, ":");
-			output.WriteSpace();
-			output.Write(HeapKind == DotNetHeapKind.Unknown ? BoxedTextColor.HexStorageStreamNameInvalid : BoxedTextColor.HexStorageStreamName, storageStreamVM.RCNameVM.StringZ);
-		}
+    public int StreamNumber => storageStreamVM.StreamNumber;
 
-		public MetadataTableRecordNode? FindTokenNode(uint token) {
-			if (HeapKind != DotNetHeapKind.Tables)
-				return null;
-			return ((TablesStreamNode)TreeNode.Children[0].Data).FindTokenNode(token);
-		}
-	}
+    protected override IEnumerable<HexVM> HexVMs
+    {
+        get { yield return storageStreamVM; }
+    }
 
-	sealed class TablesStorageStreamNode : StorageStreamNode {
-		readonly TablesStreamVM tablesStream;
+    readonly StorageStreamVM storageStreamVM;
 
-		public TablesStorageStreamNode(StorageStreamVM storageStream, TablesStreamVM tablesStream)
-			: base(storageStream) => this.tablesStream = tablesStream;
+    public StorageStreamNode(StorageStreamVM storageStream, IDocumentTreeNodeDataContext context)
+        : base(storageStream.Span, context) =>
+        storageStreamVM = storageStream;
 
-		public override IEnumerable<TreeNodeData> CreateChildren() {
-			yield return new TablesStreamNode(tablesStream);
-		}
+    public override void OnBufferChanged(NormalizedHexChangeCollection changes)
+    {
+        base.OnBufferChanged(changes);
+        if (changes.OverlapsWith(storageStreamVM.RCNameVM.Span))
+            TreeNode.RefreshUI();
 
-		protected override IEnumerable<HexSpan> Spans {
-			get {
-				yield return Span;
-				yield return tablesStream.Span;
-			}
-		}
-	}
+        foreach (HexNode node in TreeNode.DataChildren)
+            node.OnBufferChanged(changes);
+    }
+
+    protected override void WriteCore(ITextColorWriter output, DocumentNodeWriteOptions options)
+    {
+        output.Write(BoxedTextColor.HexStorageStream, dnSpy_AsmEditor_Resources.HexNode_StorageStream);
+        output.WriteSpace();
+        output.Write(BoxedTextColor.Operator, "#");
+        output.Write(BoxedTextColor.Number, StreamNumber.ToString());
+        output.Write(BoxedTextColor.Punctuation, ":");
+        output.WriteSpace();
+        output.Write(HeapKind == DotNetHeapKind.Unknown ? BoxedTextColor.HexStorageStreamNameInvalid : BoxedTextColor.HexStorageStreamName,
+            storageStreamVM.RCNameVM.StringZ);
+    }
+
+    public MetadataTableRecordNode? FindTokenNode(uint token) => HeapKind != DotNetHeapKind.Tables
+        ? null
+        : ((TablesStreamNode)TreeNode.Children[0].Data).FindTokenNode(token);
+}
+
+sealed class TablesStorageStreamNode : StorageStreamNode
+{
+    readonly TablesStreamVM tablesStream;
+
+    public TablesStorageStreamNode(StorageStreamVM storageStream, TablesStreamVM tablesStream, IDocumentTreeNodeDataContext context)
+        : base(storageStream, context) => this.tablesStream = tablesStream;
+
+    public override IEnumerable<TreeNodeData> CreateChildren()
+    {
+        yield return new TablesStreamNode(tablesStream, Context);
+    }
+
+    protected override IEnumerable<HexSpan> Spans
+    {
+        get
+        {
+            yield return Span;
+            yield return tablesStream.Span;
+        }
+    }
 }
