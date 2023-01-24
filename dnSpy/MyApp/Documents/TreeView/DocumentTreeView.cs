@@ -298,36 +298,20 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
     private void RefreshNodes() => TreeView.RefreshAllNodes();
 
     private void DocumentService_CollectionChanged(object? sender, NotifyDocumentCollectionChangedEventArgs e) =>
-        NewMethod(e.Type, e.Documents, e.Data);
+        ActOnNodes(e.Type, e.Documents, e.Data);
 
-    public void NewMethod(NotifyDocumentCollectionType type, IDsDocument[] documents, object? data)
+    private void ActOnNodes(NotifyDocumentCollectionType type, IDsDocument[] documents, object? data)
     {
         switch (type)
         {
             case NotifyDocumentCollectionType.Add:
-                DsDocumentNode newNode;
-                int index;
-
-                if (data is AddDocumentInfo addDocumentInfo)
-                {
-                    newNode = addDocumentInfo.DsDocumentNode;
-                    index = addDocumentInfo.Index;
-                    if (newNode.TreeNode is null)
-                        TreeView.Create(newNode);
-                    Debug2.Assert(newNode.TreeNode is not null);
-                }
-                else
-                {
-                    newNode = CreateNode(null, documents[0]);
-                    TreeView.Create(newNode);
-                    index = TreeView.Root.Children.Count;
-                }
+                var newNode = CreateNodeFromDocs(documents);
+                var index = TreeView.Root.Children.Count;
 
                 if ((uint)index >= (uint)TreeView.Root.Children.Count)
                     index = TreeView.Root.Children.Count;
 
                 TreeView.Root.Children.Insert(index, newNode.TreeNode);
-                CallCollectionChanged(NotifyDocumentTreeViewCollectionChangedEventArgs.CreateAdd(newNode));
                 break;
 
             case NotifyDocumentCollectionType.Remove:
@@ -386,6 +370,13 @@ internal sealed class DocumentTreeView : IDocumentTreeView, ITreeViewListener
                 Debug.Fail($"Unknown event type: {type}");
                 break;
         }
+    }
+
+    public DsDocumentNode CreateNodeFromDocs(IReadOnlyList<IDsDocument> documents)
+    {
+        var newNode = CreateNode(null, documents[0]);
+        TreeView.Create(newNode);
+        return newNode;
     }
 
     public void Remove(IEnumerable<DsDocumentNode> nodes) => DocumentService.Remove(nodes.Select(a => a.Document));

@@ -20,7 +20,6 @@
 using System.Collections.Generic;
 using dnSpy.Contracts.Documents;
 using dnSpy.Documents;
-using dnSpy.Documents.TreeView;
 using MyApp.Documents.TreeView;
 
 namespace MyApp.Documents;

@@ -45,19 +45,19 @@ public class MainWindowViewModel : ViewModelBase
 
         if (files is null or []) return;
 
-        var openDocuments = OpenDocumentsHelper.OpenDocuments(DocumentTreeView, _mruList, files
-            .Select(f => (f.TryGetUri(out var uri), uri))
-            .Where(t => t.Item1)
-            .Select(t => t.uri!.AbsolutePath));
-        ((DocumentTreeView)DocumentTreeView).NewMethod(NotifyDocumentCollectionType.Add, openDocuments, null!);
+        var filenames = files
+            .Select(f => (GotUri: f.TryGetUri(out var uri), Uri: uri))
+            .Where(t => t.GotUri)
+            .Select(t => t.Uri!.AbsolutePath);
+        var openDocuments = OpenDocumentsHelper.OpenDocuments(DocumentTreeView, _mruList, filenames);
+        var docNode = DocumentTreeView.CreateNodeFromDocs(openDocuments);
 
-        foreach (var child in DocumentTreeView.TreeView.Root.Children.TakeLast(1))
-            if (child.Data is AssemblyDocumentNodeImpl documentNode)
-            {
-                var node = new Node(documentNode.ToString(), documentNode, this);
-                Items.Add(node);
-                node.LoadChildren();
-            }
+        if (docNode is AssemblyDocumentNodeImpl documentNode)
+        {
+            var node = new Node(documentNode.ToString(), documentNode, this);
+            Items.Add(node);
+            node.LoadChildren();
+        }
     }
 
     public void AppendNode(string name, TreeNodeData treeNodeData) => _nodes[name] = treeNodeData;
