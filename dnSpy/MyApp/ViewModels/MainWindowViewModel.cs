@@ -7,7 +7,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using Avalonia.Threading;
-using dnSpy.Contracts.Documents;
+using dnSpy.Contracts.Decompiler;
 using dnSpy.Contracts.Documents.TreeView;
 using dnSpy.Contracts.TreeView;
 using dnSpy.Documents.TreeView;
@@ -25,17 +25,21 @@ public class MainWindowViewModel : ViewModelBase
 
     private IDocumentTreeView DocumentTreeView { get; }
 
-    public ObservableCollection<Node> Items { get; }
+    public ObservableCollection<Node> Items { get; } = new();
 
     public DecompilationHandler DecompilationHandler { get; }
 
+    public IDecompilerOutput DecompilerOutput { get; }
+
+    public ObservableCollection<EditorTab> Tabs { get; } = new();
+
     public MainWindowViewModel(IDocumentTreeView documentTreeView, AssemblyExplorerMostRecentlyUsedList mruList,
-        DecompilationHandler decompilationHandler)
+        DecompilationHandler decompilationHandler, IDecompilerOutput decompilerOutput)
     {
         DocumentTreeView = documentTreeView;
         DecompilationHandler = decompilationHandler;
+        DecompilerOutput = decompilerOutput;
         _mruList = mruList;
-        Items = new ObservableCollection<Node>();
     }
 
     public async Task OpenFilesAsync()

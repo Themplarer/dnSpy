@@ -36,7 +36,7 @@ namespace dnSpy.Debugger.DotNet.Code {
 
 		public DecompilerOutputImpl() => addIndent = true;
 
-		internal void Clear() {
+		public void Clear() {
 			textLength = 0;
 			indentLevel = 0;
 			addIndent = true;

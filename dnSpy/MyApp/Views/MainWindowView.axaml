@@ -18,9 +18,7 @@
         <Grid ColumnDefinitions="200,1,*">
             <views:AssemblyExplorerView Grid.Column="0" HorizontalContentAlignment="Left" />
             <GridSplitter Grid.Column="1" />
-            <Border Background="DarkGray" Grid.Column="2">
-                <TextBlock Name="Code" />
-            </Border>
+            <views:EditorView Grid.Column="2" />
         </Grid>
     </DockPanel>
 

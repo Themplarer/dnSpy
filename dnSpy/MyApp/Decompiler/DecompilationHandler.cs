@@ -240,6 +240,8 @@ public class DecompilationHandler
 
     DocumentTreeNodeData[] GetChildren(DocumentTreeNodeData node)
     {
+        if (node.TreeNode is null) return Array.Empty<DocumentTreeNodeData>();
+
         node.TreeNode.EnsureChildrenLoaded();
         return node.TreeNode.DataChildren.OfType<DocumentTreeNodeData>().ToArray();
     }

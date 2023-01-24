@@ -101,6 +101,8 @@ namespace dnSpy.Contracts.Decompiler {
 		/// have to be called.
 		/// </summary>
 		bool UsesCustomData { get; }
+
+		void Clear();
 	}
 
 	/// <summary>

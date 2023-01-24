@@ -129,7 +129,7 @@ public partial class App : Application
 
         services.AddTransient<DecompilationHandler>();
         services.AddTransient<DecompilationContext>();
-        services.AddTransient<IDecompilerOutput, StringBuilderDecompilerOutput>();
+        services.AddSingleton<IDecompilerOutput, StringBuilderDecompilerOutput>();
         services.AddTransient<IDecompiler>(p => new MyDecompilerCreator(p.GetService<DecompilerSettingsService>()!).Create().First());
     }
 }

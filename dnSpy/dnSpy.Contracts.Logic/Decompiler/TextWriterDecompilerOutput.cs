@@ -44,6 +44,10 @@ namespace dnSpy.Contracts.Decompiler {
 
 		bool IDecompilerOutput.UsesCustomData => false;
 
+		public void Clear()
+		{
+		}
+
 		/// <summary>
 		/// Constructor
 		/// </summary>

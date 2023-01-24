@@ -9,23 +9,16 @@ namespace MyApp.Models;
 
 public class Node
 {
-    // private static readonly Node EmptyNode = new("", null!, Array.Empty<Node>());
-
     private readonly TreeNodeData _nodeData;
     private readonly MainWindowViewModel _mainWindowViewModel;
 
     public Node(string name, TreeNodeData treeNodeData, MainWindowViewModel mainWindowViewModel)
-        : this(name, treeNodeData, mainWindowViewModel, Array.Empty<Node>())
-    {
-    }
-
-    private Node(string name, TreeNodeData treeNodeData, MainWindowViewModel mainWindowViewModel, IEnumerable<Node> children)
     {
         Name = name;
         _nodeData = treeNodeData;
         _mainWindowViewModel = mainWindowViewModel;
         _mainWindowViewModel.AppendNode(name, treeNodeData);
-        Children = new ObservableCollection<Node>(children);
+        Children = new ObservableCollection<Node>();
     }
 
     public string Name { get; }

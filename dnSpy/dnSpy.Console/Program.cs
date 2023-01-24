@@ -161,6 +161,10 @@ namespace dnSpy_Console {
 		public void Write(string text, int index, int length, object? reference, DecompilerReferenceFlags flags, object color) => AddText(text, index, length, color);
 		public override string ToString() => writer.ToString()!;
 		public void Dispose() => writer.Dispose();
+
+		public void Clear()
+		{
+		}
 	}
 
 	sealed class DnSpyDecompiler : IMSBuildProjectWriterLogger {
